@@ -167,19 +167,21 @@ namespace DotSpatial.Data.Rasters.GdalExtension
 
         private IImageData OpenFile(string fileName)
         {
-            var dataset = Helpers.Open(fileName);
             bool hasOverviews;
-            using (var red = dataset.GetRasterBand(1))
+            using (var dataset = Helpers.Open(fileName))
             {
-                ColorInterp bandType = red.GetRasterColorInterpretation();
-                if (bandType != ColorInterp.GCI_PaletteIndex && bandType != ColorInterp.GCI_GrayIndex && bandType != ColorInterp.GCI_RedBand && bandType != ColorInterp.GCI_AlphaBand)
+                using (var red = dataset.GetRasterBand(1))
                 {
-                    // This is an image, not a raster, so return null.
-                    dataset.Dispose();
-                    return null;
-                }
+                    //ColorInterp bandType = red.GetRasterColorInterpretation();
+                    //if (bandType != ColorInterp.GCI_PaletteIndex && bandType != ColorInterp.GCI_GrayIndex && bandType != ColorInterp.GCI_RedBand && bandType != ColorInterp.GCI_AlphaBand)
+                    //{
+                    //    // This is an image, not a raster, so return null.
+                    //    dataset.Dispose();
+                    //    return null;
+                    //}
 
-                hasOverviews = red.GetOverviewCount() > 0;
+                    hasOverviews = red.GetOverviewCount() > 0;
+                }
             }
 
             GdalImage result = new GdalImage(fileName);

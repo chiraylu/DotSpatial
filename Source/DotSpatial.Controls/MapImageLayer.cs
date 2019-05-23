@@ -198,7 +198,7 @@ namespace DotSpatial.Controls
                         bmp.MakeTransparent(_transparent);
                     }
                 }
-                catch
+                catch(Exception e)
                 {
                     bmp?.Dispose();
                     continue;

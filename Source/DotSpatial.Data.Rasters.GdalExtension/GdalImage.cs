@@ -280,6 +280,24 @@ namespace DotSpatial.Data.Rasters.GdalExtension
             Bitmap result = null;
             using (var first = _dataset.GetRasterBand(1))
             {
+                Action action = new Action(() =>
+                {
+                    switch (NumBands)
+                    {
+                        case 0:
+                            break;
+                        case 1:
+                        case 2:
+                            result = ReadGrayIndex(xOffset, yOffset, xSize, ySize, first);
+                            break;
+                        case 3:
+                            result = ReadRgb(xOffset, yOffset, xSize, ySize, first, _dataset);
+                            break;
+                        default:
+                            result = ReadArgb(xOffset, yOffset, xSize, ySize, first, _dataset);
+                            break;
+                    }
+                });
                 switch (first.GetRasterColorInterpretation())
                 {
                     case ColorInterp.GCI_PaletteIndex:
@@ -293,6 +311,9 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                         break;
                     case ColorInterp.GCI_AlphaBand:
                         result = ReadArgb(xOffset, yOffset, xSize, ySize, first, _dataset);
+                        break;
+                    default:
+                        action.Invoke();
                         break;
                 }
             }
@@ -664,7 +685,17 @@ namespace DotSpatial.Data.Rasters.GdalExtension
             float yShift = (float)((envelope.MaxY - t) * dy);
             g.PixelOffsetMode = PixelOffsetMode.Half;
 
-            if (m11 > 1 || m22 > 1)
+            int overviewCount = _red.GetOverviewCount();
+            float xRatio = 1, yRatio = 1;
+            if (overviewCount > 0)
+            {
+                using (Band firstOverview = _red.GetOverview(0))
+                {
+                    xRatio = (float)firstOverview.XSize / _red.XSize;
+                    yRatio = (float)firstOverview.YSize / _red.XSize;
+                }
+            }
+            if (m11 > xRatio || m22 > yRatio)
             {
                 // out of pyramids
                 g.InterpolationMode = InterpolationMode.NearestNeighbor;
@@ -678,7 +709,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                 _overview = (int)Math.Min(Math.Log(Math.Abs(1 / m11), 2), Math.Log(Math.Abs(1 / m22), 2));
 
                 // limit it to the available pyramids
-                _overview = Math.Min(_overview, _red.GetOverviewCount() - 1);
+                _overview = Math.Min(_overview, overviewCount - 1);
 
                 // additional test but probably not needed
                 if (_overview < 0)
@@ -702,7 +733,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
 
             // get the optimal block size to request gdal.
             // if the image is stored line by line then ask for a 100px stripe.
-            if (_overview >= 0 && _red.GetOverviewCount() > 0)
+            if (_overview >= 0 && overviewCount > 0)
             {
                 using (var overview = _red.GetOverview(_overview))
                 {
@@ -750,9 +781,16 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                 for (var j = 0; j < nbY; j++)
                 {
                     // The +1 is to remove the white stripes artifacts
-                    using (var bitmap = ReadBlock((int)(tLx / overviewPow) + (i * blockXsize), (int)(tLy / overviewPow) + (j * blockYsize), blockXsize + 1, blockYsize + 1))
+                    int xOffset = (int)(tLx / overviewPow) + (i * blockXsize);
+                    int yOffset = (int)(tLy / overviewPow) + (j * blockYsize);
+                    int xSize = blockXsize + 1;
+                    int ySize = blockYsize + 1;
+                    using (var bitmap = ReadBlock(xOffset, yOffset, xSize, ySize))
                     {
-                        g.DrawImage(bitmap, (int)(tLx / overviewPow) + (i * blockXsize), (int)(tLy / overviewPow) + (j * blockYsize));
+                        if (bitmap != null)
+                        {
+                            g.DrawImage(bitmap, xOffset, yOffset);
+                        }
                     }
                 }
             }
@@ -999,6 +1037,10 @@ namespace DotSpatial.Data.Rasters.GdalExtension
 
             int width, height;
             NormalizeSizeToBand(xOffset, yOffset, xSize, ySize, firstO, out width, out height);
+            if (xOffset >= firstO.XSize || yOffset >= firstO.YSize)
+            {
+                return null;
+            }
             Bitmap result = new Bitmap(width, height, PixelFormat.Format32bppArgb);
 
             byte[] r = new byte[width * height];
