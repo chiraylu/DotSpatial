@@ -14,7 +14,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
     /// <summary>
     /// GDAL Image Source
     /// </summary>
-    public class GdalImageSource
+    public class GdalImageSource : IDisposable
     {
         #region Fields
 
@@ -43,7 +43,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
         /// <param name="fileName">The file name.</param>
         public GdalImageSource(string fileName)
         {
-            Filename = fileName;
+            Filename = fileName; 
             ReadHeader();
         }
 

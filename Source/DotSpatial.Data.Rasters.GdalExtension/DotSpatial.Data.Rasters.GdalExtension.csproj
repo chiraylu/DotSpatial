@@ -112,6 +112,7 @@
     <Compile Include="..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
+    <Compile Include="GCHandleHelper.cs" />
     <Compile Include="GdalConfiguration.cs" />
     <Compile Include="GdalImageSource.cs" />
     <Compile Include="GdalTiledImage.cs" />
@@ -125,6 +126,7 @@
     <Compile Include="MapSelfLoadLineLayer.cs" />
     <Compile Include="MapSelfLoadPointLayer.cs" />
     <Compile Include="MapSelfLoadPolygonLayer.cs" />
+    <Compile Include="MarshalHelper.cs" />
     <Compile Include="MultiLayerDataSet.cs" />
     <Compile Include="OgrDataReader.cs" />
     <Compile Include="OgrDataProvider.cs" />

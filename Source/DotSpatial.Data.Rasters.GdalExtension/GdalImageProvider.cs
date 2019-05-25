@@ -20,6 +20,18 @@ namespace DotSpatial.Data.Rasters.GdalExtension
             GdalConfiguration.ConfigureGdal();
         }
 
+        public GdalImageProvider()
+        {
+            string[] extensions = { ".tif" };
+            foreach (string extension in extensions)
+            {
+                if (!DataManager.DefaultDataManager.PreferredProviders.ContainsKey(extension))
+                {
+                    DataManager.DefaultDataManager.PreferredProviders.Add(extension, this);
+                }
+            }
+        }
+
         #endregion
 
         #region Properties
@@ -190,6 +202,10 @@ namespace DotSpatial.Data.Rasters.GdalExtension
             // without creating our own pyramid image.
             if ((result.Width > 8000 || result.Height > 8000) && !hasOverviews)
             {
+                result.Open();
+                int ret = result.CreateOverview();
+                return result;
+
                 // For now, we can't get fast, low-res versions without some kind of pyramiding happening.
                 // since that can take a while for huge images, I'd rather do this once, and create a kind of
                 // standardized file-based pyramid system.  Maybe in future pyramid tiffs could be used instead?
@@ -211,8 +227,8 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                 if (blockHeight > gs.Bounds.NumRows) blockHeight = gs.Bounds.NumRows;
                 int numBlocks = (int)Math.Ceiling(gs.Bounds.NumRows / (double)blockHeight);
                 ProgressMeter pm = new ProgressMeter(ProgressHandler, "Copying Data To Pyramids", numBlocks * 2);
-
                 Application.DoEvents();
+                int scale = 0;
                 for (int j = 0; j < numBlocks; j++)
                 {
                     int h = blockHeight;
@@ -224,7 +240,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                     byte[] vals = gs.ReadWindow(j * blockHeight, 0, h, width, 0);
 
                     pm.CurrentValue = (j * 2) + 1;
-                    py.WriteWindow(vals, j * blockHeight, 0, h, width, 0);
+                    py.WriteWindow(vals, j * blockHeight, 0, h, width, scale);
                     pm.CurrentValue = (j + 1) * 2;
                 }
 

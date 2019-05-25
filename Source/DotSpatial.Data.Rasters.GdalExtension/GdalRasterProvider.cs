@@ -25,14 +25,14 @@ namespace DotSpatial.Data.Rasters.GdalExtension
         public GdalRasterProvider()
         {
             // Add ourself in for these extensions, unless another provider is registered for them.
-            string[] extensions = { ".tif", ".tiff", ".adf" };
-            foreach (string extension in extensions)
-            {
-                if (!DataManager.DefaultDataManager.PreferredProviders.ContainsKey(extension))
-                {
-                    DataManager.DefaultDataManager.PreferredProviders.Add(extension, this);
-                }
-            }
+            // string[] extensions = { ".tif", ".tiff", ".adf" };
+            // foreach (string extension in extensions)
+            // {
+            //    if (!DataManager.DefaultDataManager.PreferredProviders.ContainsKey(extension))
+            //    {
+            //        DataManager.DefaultDataManager.PreferredProviders.Add(extension, this);
+            //    }
+            // }
         }
 
         #endregion

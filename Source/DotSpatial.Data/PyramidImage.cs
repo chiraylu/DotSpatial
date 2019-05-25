@@ -105,7 +105,7 @@ namespace DotSpatial.Data
             long offset = 0;
             int nr = numRows;
             int nc = numColumns;
-            while (nr > 2 && nc > 2)
+            while (nr > 256 && nc > 256)
             {
                 PyramidImageHeader ph = new PyramidImageHeader();
                 ph.SetAffine(affineCoefficients, scale);
