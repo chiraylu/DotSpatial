@@ -397,31 +397,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
         /// <returns>overviews count</returns>
         public int CreateOverview(string resampling = "NEAREST", int[] overviewlist = null)
         {
-            int value = -1;
-            if (_dataset == null)
-            {
-                return value;
-            }
-
-            if (overviewlist == null)
-            {
-                List<int> intList = new List<int>();
-                int width = Width;
-                int height = Height;
-                int k = 1;
-                while (width > 256 && height > 256)
-                {
-                    k *= 2;
-                    intList.Add(k);
-                    width /= 2;
-                    height /= 2;
-                }
-
-                overviewlist = intList.ToArray();
-            }
-
-            value = _dataset.BuildOverviews(resampling, overviewlist);
-            return value;
+            return Helpers.CreateOverview(_dataset, resampling, overviewlist);
         }
 
         /// <inheritdoc />
@@ -492,7 +468,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
             return Convert.ToByte(result);
         }
 
-        private static void NormalizeSizeToBand(int xOffset, int yOffset, int xSize, int ySize, Band band, out int width, out int height)
+        public static void NormalizeSizeToBand(int xOffset, int yOffset, int xSize, int ySize, Band band, out int width, out int height)
         {
             width = xSize;
             height = ySize;
@@ -868,15 +844,10 @@ namespace DotSpatial.Data.Rasters.GdalExtension
             NormalizeSizeToBand(xOffset, yOffset, xSize, ySize, firstO, out width, out height);
             Bitmap result = new Bitmap(width, height, PixelFormat.Format32bppArgb);
 
-            byte[] a = new byte[width * height];
-            byte[] r = new byte[width * height];
-            byte[] g = new byte[width * height];
-            byte[] b = new byte[width * height];
-
-            firstO.ReadRaster(0, 0, width, height, a, width, height, 0, 0);
-            redO.ReadRaster(0, 0, width, height, r, width, height, 0, 0);
-            greenO.ReadRaster(0, 0, width, height, g, width, height, 0, 0);
-            blueO.ReadRaster(0, 0, width, height, b, width, height, 0, 0);
+            byte[] a = ReadBand(firstO, xOffset, yOffset, xSize, ySize, width, height);
+            byte[] r = ReadBand(redO, xOffset, yOffset, xSize, ySize, width, height);
+            byte[] g = ReadBand(greenO, xOffset, yOffset, xSize, ySize, width, height);
+            byte[] b = ReadBand(blueO, xOffset, yOffset, xSize, ySize, width, height);
 
             if (disposeO)
             {
@@ -912,7 +883,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
             return result;
         }
 
-        private byte[] ReadBand(Band band, int xOffset, int yOffset, int xSize, int ySize, int width, int height)
+        public static byte[] ReadBand(Band band, int xOffset, int yOffset, int xSize, int ySize, int width, int height)
         {
             int length = width * height;
             byte[] buffer = new byte[length];
@@ -1270,14 +1241,9 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                 return null;
             }
             Bitmap result = new Bitmap(width, height, PixelFormat.Format32bppArgb);
-
-            byte[] r = new byte[width * height];
-            byte[] g = new byte[width * height];
-            byte[] b = new byte[width * height];
-
-            firstO.ReadRaster(xOffset, yOffset, width, height, r, width, height, 0, 0);
-            greenO.ReadRaster(xOffset, yOffset, width, height, g, width, height, 0, 0);
-            blueO.ReadRaster(xOffset, yOffset, width, height, b, width, height, 0, 0);
+            byte[] r = ReadBand(firstO, xOffset, yOffset, xSize, ySize, width, height);
+            byte[] g = ReadBand(greenO, xOffset, yOffset, xSize, ySize, width, height);
+            byte[] b = ReadBand(blueO, xOffset, yOffset, xSize, ySize, width, height);
 
             if (disposeO)
             {

@@ -21,12 +21,10 @@ namespace DotSpatial.Symbology
     public class RasterLayer : Layer, IRasterLayer
     {
         #region Fields
-
-        private IGetBitmap _bitmapGetter;
-
+        
         [Serialize("Symbolizer", ConstructorArgumentIndex = 1)]
         private IRasterSymbolizer _symbolizer;
-
+        
         #endregion
 
         #region Constructors
@@ -89,29 +87,6 @@ namespace DotSpatial.Symbology
         public static int MaxCellsInMemory { get; set; } = 8000 * 8000;
 
         /// <summary>
-        /// Gets or sets the bitmamp. This is what the raster layer uses to retrieve a bitmap representing the specified
-        /// extent. This could later be redesigned to generate the bitmap on the fly, but I think
-        /// that that would be slow, so caching is probably better.
-        /// </summary>
-        [Browsable(false)]
-        [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
-        public IGetBitmap BitmapGetter
-        {
-            get
-            {
-                return _bitmapGetter;
-            }
-
-            set
-            {
-                if (value == _bitmapGetter) return;
-
-                _bitmapGetter?.Dispose(); // Dispose previous bitmapGetter to avoid memory leaks
-                _bitmapGetter = value;
-            }
-        }
-
-        /// <summary>
         /// Gets or sets the boundaries of the raster.
         /// </summary>
         /// <remarks>
@@ -130,7 +105,6 @@ namespace DotSpatial.Symbology
             set
             {
                 if (DataSet != null) DataSet.Bounds = value;
-                if (BitmapGetter != null) BitmapGetter.Bounds = value;
             }
         }
 
@@ -537,7 +511,7 @@ namespace DotSpatial.Symbology
                 int rowCount = blockRows;
                 if (iblock == numBlocks - 1) rowCount = rows - (blockRows * iblock);
                 Rectangle r = new Rectangle(0, iblock * blockRows, cols, rowCount);
-                Bitmap block = BitmapGetter.GetBitmap(ph.PixelToProj(r), r);
+                Bitmap block = DataSet.GetBitmap(ph.PixelToProj(r), r);
                 result.WriteBlock(block, 0, iblock * blockRows);
             }
         }
@@ -551,12 +525,6 @@ namespace DotSpatial.Symbology
             if (DataSet != null)
             {
                 DataSet.Reproject(targetProjection);
-                if (BitmapGetter != null)
-                {
-                    double[] aff = new double[6];
-                    Array.Copy(DataSet.Bounds.AffineCoefficients, aff, 6);
-                    BitmapGetter.Bounds.AffineCoefficients = aff;
-                }
             }
         }
 
@@ -586,63 +554,63 @@ namespace DotSpatial.Symbology
         /// <param name="progressHandler">The progress handler.</param>
         protected void DefaultWriteBitmap(IProgressHandler progressHandler)
         {
-            if ((long)DataSet.NumRowsInFile * DataSet.NumColumnsInFile > MaxCellsInMemory)
-            {
-                // For huge images, assume that GDAL or something was needed anyway,
-                // and we would rather avoid having to re-create the pyramids if there is any chance
-                // that the old values will work ok.
-                string pyrFile = Path.ChangeExtension(DataSet.Filename, ".mwi");
+            //if ((long)DataSet.NumRowsInFile * DataSet.NumColumnsInFile > MaxCellsInMemory)
+            //{
+            //    // For huge images, assume that GDAL or something was needed anyway,
+            //    // and we would rather avoid having to re-create the pyramids if there is any chance
+            //    // that the old values will work ok.
+            //    string pyrFile = Path.ChangeExtension(DataSet.Filename, ".mwi");
 
-                BitmapGetter = CreatePyramidImage(pyrFile, progressHandler);
-                OnItemChanged(this);
-                return;
-            }
+            //    BitmapGetter = CreatePyramidImage(pyrFile, progressHandler);
+            //    OnItemChanged(this);
+            //    return;
+            //}
 
-            Bitmap bmp = new Bitmap(DataSet.NumColumns, DataSet.NumRows, PixelFormat.Format32bppArgb);
+            //Bitmap bmp = new Bitmap(DataSet.NumColumns, DataSet.NumRows, PixelFormat.Format32bppArgb);
 
-            if (_symbolizer.DrapeVectorLayers == false)
-            {
-                // Generate the colorscheme, modified by hillshading if that hillshading is used all in one pass
-                DataSet.DrawToBitmap(Symbolizer, bmp, progressHandler);
-            }
-            else
-            {
-                // work backwards. when we get to this layer do the colorscheme.
-                // First, use this raster and its colorscheme to drop the background
-                DataSet.PaintColorSchemeToBitmap(Symbolizer, bmp, progressHandler);
+            //if (_symbolizer.DrapeVectorLayers == false)
+            //{
+            //    // Generate the colorscheme, modified by hillshading if that hillshading is used all in one pass
+            //    DataSet.DrawToBitmap(Symbolizer, bmp, progressHandler);
+            //}
+            //else
+            //{
+            //    // work backwards. when we get to this layer do the colorscheme.
+            //    // First, use this raster and its colorscheme to drop the background
+            //    DataSet.PaintColorSchemeToBitmap(Symbolizer, bmp, progressHandler);
 
-                // Set up a graphics object with a transformation pre-set so drawing a geographic coordinate
-                // will draw to the correct location on the bitmap
-                Graphics g = Graphics.FromImage(bmp);
-                g.SmoothingMode = SmoothingMode.AntiAlias;
+            //    // Set up a graphics object with a transformation pre-set so drawing a geographic coordinate
+            //    // will draw to the correct location on the bitmap
+            //    Graphics g = Graphics.FromImage(bmp);
+            //    g.SmoothingMode = SmoothingMode.AntiAlias;
 
-                Extent extents = DataSet.Extent;
-                Rectangle target = new Rectangle(0, 0, bmp.Width, bmp.Height);
-                ImageProjection ip = new ImageProjection(extents, target);
+            //    Extent extents = DataSet.Extent;
+            //    Rectangle target = new Rectangle(0, 0, bmp.Width, bmp.Height);
+            //    ImageProjection ip = new ImageProjection(extents, target);
 
-                // Cycle through each layer, and as long as it is not this layer, draw the bmp
-                foreach (ILegendItem layer in GetParentItem().LegendItems)
-                {
-                    // Temporarily I am only interested in doing this for vector datasets
-                    IFeatureLayer fl = layer as IFeatureLayer;
-                    fl?.DrawSnapShot(g, ip);
-                }
+            //    // Cycle through each layer, and as long as it is not this layer, draw the bmp
+            //    foreach (ILegendItem layer in GetParentItem().LegendItems)
+            //    {
+            //        // Temporarily I am only interested in doing this for vector datasets
+            //        IFeatureLayer fl = layer as IFeatureLayer;
+            //        fl?.DrawSnapShot(g, ip);
+            //    }
 
-                if (Symbolizer.ShadedRelief.IsUsed)
-                {
-                    // After we have drawn the underlying texture, apply a hillshade if it is requested
-                    Symbolizer.PaintShadingToBitmap(bmp, progressHandler);
-                }
-            }
+            //    if (Symbolizer.ShadedRelief.IsUsed)
+            //    {
+            //        // After we have drawn the underlying texture, apply a hillshade if it is requested
+            //        Symbolizer.PaintShadingToBitmap(bmp, progressHandler);
+            //    }
+            //}
 
-            InRamImage image = new InRamImage(bmp)
-            {
-                Bounds = DataSet.Bounds.Copy()
-            };
-            BitmapGetter = image;
-            Symbolizer.Validate();
-            OnInvalidate(this, EventArgs.Empty);
-            OnItemChanged();
+            //InRamImage image = new InRamImage(bmp)
+            //{
+            //    Bounds = DataSet.Bounds.Copy()
+            //};
+            //BitmapGetter = image;
+            //Symbolizer.Validate();
+            //OnInvalidate(this, EventArgs.Empty);
+            //OnItemChanged();
         }
 
         /// <summary>
@@ -653,7 +621,6 @@ namespace DotSpatial.Symbology
         {
             if (disposing)
             {
-                BitmapGetter = null;
                 RasterLayerActions = null;
                 Symbolizer = null;
             }

@@ -453,6 +453,18 @@ namespace DotSpatial.Data
         }
 
         /// <summary>
+        /// Attempts to call the open fileName method for any IDataProvider plugin that matches the extension on the string.
+        /// </summary>
+        /// <param name="fileName">A String fileName to attempt to open.</param>
+        /// <param name="inRam">A boolean value that if true will attempt to force a load of the data into memory. This value overrides the property on this DataManager.</param>
+        /// <param name="progressHandler">Specifies the progressHandler to receive progress messages. This value overrides the property on this DataManager.</param>
+        /// <returns>An IDataSet loaded from the specified file.</returns>
+        public static IFeatureSet OpenFile(string fileName, bool inRam, IProgressHandler progressHandler)
+        {
+            return DataManager.DefaultDataManager.OpenFile(fileName, inRam, progressHandler) as IFeatureSet;
+        }
+
+        /// <summary>
         /// Generates a new feature, adds it to the features and returns the value.
         /// </summary>
         /// <param name="geometry">The geometry.</param>

@@ -10,7 +10,7 @@ namespace DotSpatial.Data
     /// <summary>
     /// Interface for Raster.
     /// </summary>
-    public interface IRaster : IRasterBoundDataSet, ICloneable
+    public interface IRaster : IRasterBoundDataSet, ICloneable, IGetBitmap
     {
         #region Events
 

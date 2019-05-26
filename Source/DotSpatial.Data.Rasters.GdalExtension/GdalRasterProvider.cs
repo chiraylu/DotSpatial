@@ -25,14 +25,14 @@ namespace DotSpatial.Data.Rasters.GdalExtension
         public GdalRasterProvider()
         {
             // Add ourself in for these extensions, unless another provider is registered for them.
-            // string[] extensions = { ".tif", ".tiff", ".adf" };
-            // foreach (string extension in extensions)
-            // {
-            //    if (!DataManager.DefaultDataManager.PreferredProviders.ContainsKey(extension))
-            //    {
-            //        DataManager.DefaultDataManager.PreferredProviders.Add(extension, this);
-            //    }
-            // }
+            string[] extensions = { ".tif", ".tiff", ".adf", ".img", ".jpg" };
+            foreach (string extension in extensions)
+            {
+                if (!DataManager.DefaultDataManager.PreferredProviders.ContainsKey(extension))
+                {
+                    DataManager.DefaultDataManager.PreferredProviders.Add(extension, this);
+                }
+            }
         }
 
         #endregion
@@ -131,7 +131,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
             {
                 // Single band rasters are easy, just return the band as the raster.
                 // TODO: make a more complicated raster structure with individual bands.
-                result = GetBand(fileName, dataset, dataset.GetRasterBand(1));
+                result = GetBand(fileName, dataset);
 
                 // If we opened the dataset but did not find a raster to return, close the dataset
                 if (result == null)
@@ -152,37 +152,41 @@ namespace DotSpatial.Data.Rasters.GdalExtension
         {
             return Open(fileName);
         }
-
-        private static IRaster GetBand(string fileName, Dataset dataset, Band band)
+        
+        private static IRaster GetBand(string fileName, Dataset dataset)
         {
             Raster result = null;
-
+            Band band = dataset?.GetRasterBand(1);
+            if (band == null)
+            {
+                return null;
+            }
             switch (band.DataType)
             {
                 case DataType.GDT_Byte:
-                    result = new GdalRaster<byte>(fileName, dataset, band);
+                    result = new GdalRaster<byte>(fileName, dataset);
                     break;
                 case DataType.GDT_CFloat32:
                 case DataType.GDT_CFloat64:
                 case DataType.GDT_CInt16:
                 case DataType.GDT_CInt32: break;
                 case DataType.GDT_Float32:
-                    result = new GdalRaster<float>(fileName, dataset, band);
+                    result = new GdalRaster<float>(fileName, dataset);
                     break;
                 case DataType.GDT_Float64:
-                    result = new GdalRaster<double>(fileName, dataset, band);
+                    result = new GdalRaster<double>(fileName, dataset);
                     break;
                 case DataType.GDT_Int16:
-                    result = new GdalRaster<short>(fileName, dataset, band);
+                    result = new GdalRaster<short>(fileName, dataset);
                     break;
                 case DataType.GDT_UInt16:
                 case DataType.GDT_Int32:
-                    result = new GdalRaster<int>(fileName, dataset, band);
+                    result = new GdalRaster<int>(fileName, dataset);
                     break;
                 case DataType.GDT_TypeCount: break;
 
                 case DataType.GDT_UInt32:
-                    result = new GdalRaster<long>(fileName, dataset, band);
+                    result = new GdalRaster<long>(fileName, dataset);
                     break;
                 case DataType.GDT_Unknown: break;
                 default: break;

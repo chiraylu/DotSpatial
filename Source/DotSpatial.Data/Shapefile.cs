@@ -199,6 +199,57 @@ namespace DotSpatial.Data
         }
 
         /// <summary>
+        /// Attempts to call the open fileName method for any IDataProvider plugin that matches the extension on the string.
+        /// </summary>
+        /// <param name="fileName">A String fileName to attempt to open.</param>
+        /// <param name="inRam">A boolean value that if true will attempt to force a load of the data into memory. This value overrides the property on this DataManager.</param>
+        /// <param name="progressHandler">Specifies the progressHandler to receive progress messages. This value overrides the property on this DataManager.</param>
+        /// <returns>The opened IDataSet.</returns>
+        public static new Shapefile OpenFile(string fileName, bool inRam, IProgressHandler progressHandler)
+        {
+            var ext = Path.GetExtension(fileName)?.ToLower();
+            if (ext != ".shp" && ext != ".shx" && ext != ".dbf") throw new ArgumentException(string.Format(DataStrings.FileExtension0NotSupportedByShapefileDataProvider, ext));
+
+            string name = Path.ChangeExtension(fileName, ".shp");
+            var head = new ShapefileHeader();
+            head.Open(name);
+            switch (head.ShapeType)
+            {
+                case ShapeType.MultiPatch:
+                case ShapeType.NullShape:
+                    throw new NotImplementedException(DataStrings.ShapeTypeNotYetSupported);
+
+                case ShapeType.MultiPoint:
+                case ShapeType.MultiPointM:
+                case ShapeType.MultiPointZ:
+                    var mpsf = new MultiPointShapefile();
+                    mpsf.Open(name, progressHandler);
+                    return mpsf;
+
+                case ShapeType.Point:
+                case ShapeType.PointM:
+                case ShapeType.PointZ:
+                    var psf = new PointShapefile();
+                    psf.Open(name, progressHandler);
+                    return psf;
+
+                case ShapeType.Polygon:
+                case ShapeType.PolygonM:
+                case ShapeType.PolygonZ:
+                    var pgsf = new PolygonShapefile();
+                    pgsf.Open(name, progressHandler);
+                    return pgsf;
+
+                case ShapeType.PolyLine:
+                case ShapeType.PolyLineM:
+                case ShapeType.PolyLineZ:
+                    var lsf = new LineShapefile();
+                    lsf.Open(name, progressHandler);
+                    return lsf;
+            }
+            return null;
+        }
+        /// <summary>
         /// Reads 8 bytes from the specified byte array starting with offset.
         /// If IsBigEndian = true, then this flips the order of the byte values.
         /// </summary>

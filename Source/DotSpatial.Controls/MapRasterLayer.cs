@@ -28,23 +28,6 @@ namespace DotSpatial.Controls
             : base(fileName, symbolizer)
         {
             LegendText = Path.GetFileNameWithoutExtension(fileName);
-            if ((long)DataSet.NumRows * DataSet.NumColumns > MaxCellsInMemory)
-            {
-                string pyrFile = Path.ChangeExtension(fileName, ".mwi");
-                BitmapGetter = File.Exists(pyrFile) && File.Exists(Path.ChangeExtension(pyrFile, ".mwh")) ? new PyramidImage(pyrFile) : CreatePyramidImage(pyrFile, DataManager.DefaultDataManager.ProgressHandler);
-            }
-            else
-            {
-                Bitmap bmp = new Bitmap(DataSet.NumColumns, DataSet.NumRows);
-                symbolizer.Raster = DataSet;
-
-                DataSet.DrawToBitmap(symbolizer, bmp);
-                var id = new InRamImage(bmp)
-                {
-                    Bounds = DataSet.Bounds
-                };
-                BitmapGetter = id;
-            }
         }
 
         /// <summary>
@@ -56,7 +39,6 @@ namespace DotSpatial.Controls
             : base(baseRaster)
         {
             LegendText = Path.GetFileNameWithoutExtension(baseRaster.Filename);
-            BitmapGetter = baseImage;
         }
 
         /// <summary>
@@ -67,34 +49,6 @@ namespace DotSpatial.Controls
             : base(raster)
         {
             LegendText = Path.GetFileNameWithoutExtension(raster.Filename);
-
-            // string imageFile = Path.ChangeExtension(raster.Filename, ".png");
-            // if (File.Exists(imageFile)) File.Delete(imageFile);
-            if ((long)raster.NumRows * raster.NumColumns > MaxCellsInMemory)
-            {
-                // For huge images, assume that GDAL or something was needed anyway,
-                // and we would rather avoid having to re-create the pyramids if there is any chance
-                // that the old values will work ok.
-                string pyrFile = Path.ChangeExtension(raster.Filename, ".mwi");
-                if (File.Exists(pyrFile) && File.Exists(Path.ChangeExtension(pyrFile, ".mwh")))
-                {
-                    BitmapGetter = new PyramidImage(pyrFile);
-                    LegendText = Path.GetFileNameWithoutExtension(raster.Filename);
-                }
-                else
-                {
-                    BitmapGetter = CreatePyramidImage(pyrFile, DataManager.DefaultDataManager.ProgressHandler);
-                }
-            }
-            else
-            {
-                // Ensure smaller images match the scheme.
-                Bitmap bmp = new Bitmap(raster.NumColumns, raster.NumRows);
-                raster.PaintColorSchemeToBitmap(Symbolizer, bmp, raster.ProgressHandler);
-
-                var id = new InRamImage(bmp) { Bounds = { AffineCoefficients = raster.Bounds.AffineCoefficients } };
-                BitmapGetter = id;
-            }
         }
 
         #endregion
@@ -305,7 +259,7 @@ namespace DotSpatial.Controls
 
             for (int i = 0; i < numBounds; i++)
             {
-                using (Bitmap bmp = BitmapGetter.GetBitmap(regions[i], clipRectangles[i]))
+                using (Bitmap bmp = DataSet.GetBitmap(regions[i], clipRectangles[i]))
                 {
                     if (bmp != null) g.DrawImage(bmp, new Rectangle(0, 0, clipRectangles[i].Width, clipRectangles[i].Height));
                 }

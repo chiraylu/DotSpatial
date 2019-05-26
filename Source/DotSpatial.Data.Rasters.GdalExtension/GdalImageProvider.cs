@@ -19,19 +19,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
         {
             GdalConfiguration.ConfigureGdal();
         }
-
-        public GdalImageProvider()
-        {
-            string[] extensions = { ".tif" };
-            foreach (string extension in extensions)
-            {
-                if (!DataManager.DefaultDataManager.PreferredProviders.ContainsKey(extension))
-                {
-                    DataManager.DefaultDataManager.PreferredProviders.Add(extension, this);
-                }
-            }
-        }
-
+        
         #endregion
 
         #region Properties

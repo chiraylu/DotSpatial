@@ -25,13 +25,8 @@ namespace DotSpatial.Symbology.Tests
             var raster = Raster.Create(FileTools.GetTempFileName(".bgd"), string.Empty, 1, 1, 1, typeof(byte), new[] { string.Empty });
             try
             {
-                var target = new RasterLayer(raster)
-                {
-                    BitmapGetter = new ImageData()
-                };
-                var bitmapGetter = (DisposeBase)target.BitmapGetter;
-                target.BitmapGetter = null;
-                Assert.IsTrue(bitmapGetter.IsDisposed);
+                var target = new RasterLayer(raster);
+                Assert.IsTrue(target.IsDisposed);
             }
             finally
             {

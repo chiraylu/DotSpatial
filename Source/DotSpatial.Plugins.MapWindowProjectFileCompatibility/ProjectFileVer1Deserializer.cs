@@ -114,7 +114,7 @@ namespace DotSpatial.Plugins.MapWindowProjectFileCompatibility
         {
             var symbolizer = new RasterSymbolizer();
             Layer mapLayer = new MapRasterLayer(layer["Path"], symbolizer);
-
+            
             // DeserializeLayer not implemented.
             return mapLayer;
         }

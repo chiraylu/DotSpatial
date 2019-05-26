@@ -94,6 +94,39 @@ namespace DotSpatial.Data
             ReadProjection();
         }
 
+        /// <summary>
+        /// Opens a shapefile
+        /// </summary>
+        /// <param name="fileName">The string fileName of the point shapefile to load</param>
+        /// /// <param name="inRam">A boolean value that if true will attempt to force a load of the data into memory. </param>
+        /// <param name="progressHandler">Any valid implementation of the DotSpatial.Data.IProgressHandler</param>
+        public void Open(string fileName, bool inRam, IProgressHandler progressHandler)
+        {
+            IndexMode = true;
+            Filename = fileName;
+            FeatureType = FeatureType.MultiPoint;
+            Header = new ShapefileHeader(Filename);
+
+            switch (Header.ShapeType)
+            {
+                case ShapeType.MultiPointM:
+                    CoordinateType = CoordinateType.M;
+                    break;
+                case ShapeType.MultiPointZ:
+                    CoordinateType = CoordinateType.Z;
+                    break;
+                default:
+                    CoordinateType = CoordinateType.Regular;
+                    break;
+            }
+
+            Extent = Header.ToExtent();
+            Name = Path.GetFileNameWithoutExtension(fileName);
+            Attributes.Open(Filename);
+            FillPoints(Filename, progressHandler);
+            ReadProjection();
+        }
+
         /// <inheritdoc />
         protected override StreamLengthPair PopulateShpAndShxStreams(Stream shpStream, Stream shxStream, bool indexed)
         {

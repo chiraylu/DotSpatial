@@ -668,6 +668,7 @@ namespace DotSpatial.Controls
                 if (r != null)
                 {
                     results.Add(Layers.Add(r));
+                    continue;
                 }
 
                 var ss = set as ISelfLoadSet;

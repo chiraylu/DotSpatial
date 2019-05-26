@@ -12,12 +12,7 @@ namespace DotSpatial.Symbology
     public interface IRasterLayer : ILayer
     {
         #region Properties
-
-        /// <summary>
-        /// Gets or sets the item that controls rendering this raster as a bitmap.
-        /// </summary>
-        IGetBitmap BitmapGetter { get; set; }
-
+        
         /// <summary>
         /// Gets or sets the boundaries of the raster.
         /// </summary>
