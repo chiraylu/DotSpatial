@@ -33,6 +33,7 @@ namespace DotSpatial.Symbology
         {
             _color = SymbologyGlobal.RandomDarkColor(1);
             _width = 1;
+            StrokeStyle = StrokeStyle.Simple;
         }
 
         /// <summary>
@@ -42,6 +43,7 @@ namespace DotSpatial.Symbology
         public SimpleStroke(double width)
         {
             Width = width;
+            StrokeStyle = StrokeStyle.Simple;
         }
 
         /// <summary>
@@ -52,6 +54,7 @@ namespace DotSpatial.Symbology
         {
             Color = color;
             _width = 1;
+            StrokeStyle = StrokeStyle.Simple;
         }
 
         /// <summary>
@@ -63,6 +66,7 @@ namespace DotSpatial.Symbology
         {
             Width = width;
             Color = color;
+            StrokeStyle = StrokeStyle.Simple;
         }
 
         #endregion

@@ -50,6 +50,8 @@ namespace DotSpatial.Symbology.Forms
             this.cmbStrokeStyle = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
             this.dblWidth = new DotSpatial.Symbology.Forms.DoubleBox();
+            this.tabMarker = new System.Windows.Forms.TabPage();
+            this.btnMarker = new System.Windows.Forms.Button();
             this.tabCartographic = new System.Windows.Forms.TabPage();
             this.lblColorCartographic = new System.Windows.Forms.Label();
             this.lblOpacityCartographic = new System.Windows.Forms.Label();
@@ -86,6 +88,7 @@ namespace DotSpatial.Symbology.Forms
             this.groupBox1.SuspendLayout();
             this.tabStrokeProperties.SuspendLayout();
             this.tabSimple.SuspendLayout();
+            this.tabMarker.SuspendLayout();
             this.tabCartographic.SuspendLayout();
             this.grpCaps.SuspendLayout();
             this.tabDash.SuspendLayout();
@@ -103,7 +106,11 @@ namespace DotSpatial.Symbology.Forms
             this.cmbStrokeType.FormattingEnabled = true;
             this.cmbStrokeType.Items.AddRange(new object[] {
             resources.GetString("cmbStrokeType.Items"),
-            resources.GetString("cmbStrokeType.Items1")});
+            resources.GetString("cmbStrokeType.Items1"),
+            resources.GetString("cmbStrokeType.Items2"),
+            resources.GetString("cmbStrokeType.Items3"),
+            resources.GetString("cmbStrokeType.Items4"),
+            resources.GetString("cmbStrokeType.Items5")});
             this.cmbStrokeType.Name = "cmbStrokeType";
             this.ttHelp.SetToolTip(this.cmbStrokeType, resources.GetString("cmbStrokeType.ToolTip"));
             this.cmbStrokeType.SelectedIndexChanged += new System.EventHandler(this.CmbStrokeTypeSelectedIndexChanged);
@@ -171,6 +178,7 @@ namespace DotSpatial.Symbology.Forms
             // 
             resources.ApplyResources(this.tabStrokeProperties, "tabStrokeProperties");
             this.tabStrokeProperties.Controls.Add(this.tabSimple);
+            this.tabStrokeProperties.Controls.Add(this.tabMarker);
             this.tabStrokeProperties.Controls.Add(this.tabCartographic);
             this.tabStrokeProperties.Controls.Add(this.tabDash);
             this.tabStrokeProperties.Controls.Add(this.tabDecoration);
@@ -281,6 +289,22 @@ namespace DotSpatial.Symbology.Forms
             this.ttHelp.SetToolTip(this.dblWidth, resources.GetString("dblWidth.ToolTip"));
             this.dblWidth.Value = 0D;
             this.dblWidth.TextChanged += new System.EventHandler(this.DblWidthTextChanged);
+            // 
+            // tabMarker
+            // 
+            resources.ApplyResources(this.tabMarker, "tabMarker");
+            this.tabMarker.Controls.Add(this.btnMarker);
+            this.tabMarker.Name = "tabMarker";
+            this.ttHelp.SetToolTip(this.tabMarker, resources.GetString("tabMarker.ToolTip"));
+            this.tabMarker.UseVisualStyleBackColor = true;
+            // 
+            // btnMarker
+            // 
+            resources.ApplyResources(this.btnMarker, "btnMarker");
+            this.btnMarker.Name = "btnMarker";
+            this.ttHelp.SetToolTip(this.btnMarker, resources.GetString("btnMarker.ToolTip"));
+            this.btnMarker.UseVisualStyleBackColor = true;
+            this.btnMarker.Click += new System.EventHandler(this.BtnMarkerClick);
             // 
             // tabCartographic
             // 
@@ -622,6 +646,7 @@ namespace DotSpatial.Symbology.Forms
             this.tabStrokeProperties.ResumeLayout(false);
             this.tabSimple.ResumeLayout(false);
             this.tabSimple.PerformLayout();
+            this.tabMarker.ResumeLayout(false);
             this.tabCartographic.ResumeLayout(false);
             this.tabCartographic.PerformLayout();
             this.grpCaps.ResumeLayout(false);
@@ -692,5 +717,7 @@ namespace DotSpatial.Symbology.Forms
         private ComboBox cmbStrokeType;
         private Label lblPercentualPosition;
         private NumericUpDown nudPercentualPosition;
+        private TabPage tabMarker;
+        private Button btnMarker;
     }
 }

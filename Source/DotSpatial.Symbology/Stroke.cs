@@ -27,7 +27,7 @@ namespace DotSpatial.Symbology
     {
         #region Fields
 
-        private IStroke _innerStroke;
+        private StrokeStyle _strokeStyle;
 
         #endregion
 
@@ -41,33 +41,18 @@ namespace DotSpatial.Symbology
         {
             get
             {
-                if (_innerStroke != null) return _innerStroke.StrokeStyle;
-
-                return StrokeStyle.Simple;
+                return _strokeStyle;
+            }
+            set
+            {
+                _strokeStyle = value;
             }
         }
 
         #endregion
 
         #region Methods
-
-        /// <summary>
-        /// Defines this stroke as a new kind of stroke.
-        /// </summary>
-        /// <param name="style">Style of the new stroke.</param>
-        public void CreateNew(StrokeStyle style)
-        {
-            switch (style)
-            {
-                case StrokeStyle.Simple:
-                    _innerStroke = new SimpleStroke();
-                    break;
-                case StrokeStyle.Catographic:
-                    _innerStroke = new CartographicStroke();
-                    break;
-            }
-        }
-
+        
         /// <summary>
         /// This is an optional expression that allows drawing to the specified GraphicsPath.
         /// Overriding this allows for unconventional behavior to be included, such as
@@ -80,12 +65,6 @@ namespace DotSpatial.Symbology
         /// any number for geographic drawing.</param>
         public virtual void DrawPath(Graphics g, GraphicsPath path, double scaleWidth)
         {
-            if (_innerStroke != null)
-            {
-                _innerStroke.DrawPath(g, path, scaleWidth);
-                return;
-            }
-
             Pen p = ToPen(scaleWidth);
             try
             {
@@ -124,8 +103,6 @@ namespace DotSpatial.Symbology
         /// <returns>The created pen.</returns>
         public virtual Pen ToPen(double width)
         {
-            if (_innerStroke != null) return _innerStroke.ToPen(width);
-
             return new Pen(Color.Black, (float)width);
         }
 

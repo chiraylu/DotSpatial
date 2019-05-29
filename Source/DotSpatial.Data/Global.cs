@@ -284,6 +284,28 @@ namespace DotSpatial.Data
             return SafeCastTo<T>(Enum.Parse(typeof(T), text));
         }
 
+        public static T ParseEnum<T>(int index)
+        {
+            object obj = Enum.GetValues(typeof(T)).GetValue(index);
+            return SafeCastTo<T>(obj);
+        }
+
+        public static int GetEnumIndex<T>(T t)
+        {
+            Array array = Enum.GetValues(typeof(T));
+            int index = -1;
+            for (int i = 0; i < array.Length; i++)
+            {
+                var item = array.GetValue(i);
+                if (item.Equals(t))
+                {
+                    index = i;
+                    break;
+                }
+            }
+            return index;
+        }
+
         /// <summary>
         /// A Generic Safe Casting method that should simply exist as part of the core framework
         /// </summary>

@@ -81,6 +81,7 @@ namespace DotSpatial.Symbology
         /// This is only used if DashStyle is set to custom, and only controls the pattern control,
         /// and does not directly affect the drawing pen.
         /// </summary>
+        [Serialize("CompoundButtons")]
         public bool[] CompoundButtons
         {
             get
@@ -99,6 +100,7 @@ namespace DotSpatial.Symbology
         /// This is only used if DashStyle is set to custom, and only controls the pattern control,
         /// and does not directly affect the drawing pen.
         /// </summary>
+        [Serialize("DashButtons")]
         public bool[] DashButtons
         {
             get
@@ -245,7 +247,7 @@ namespace DotSpatial.Symbology
         /// <param name="g">The graphics object used for drawing.</param>
         /// <param name="path">The path that should be drawn.</param>
         /// <param name="scaleWidth">The double scale width for controling markers.</param>
-        public void DrawLegendPath(Graphics g, GraphicsPath path, double scaleWidth)
+        public virtual void DrawLegendPath(Graphics g, GraphicsPath path, double scaleWidth)
         {
             base.DrawPath(g, path, scaleWidth); // draw the actual line
             if (Decorations != null)
@@ -402,6 +404,7 @@ namespace DotSpatial.Symbology
 
         private void Configure()
         {
+            StrokeStyle = StrokeStyle.Catographic;
             _joinType = LineJoinType.Round;
             _startCap = LineCap.Round;
             _endCap = LineCap.Round;
