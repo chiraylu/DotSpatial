@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See License.txt file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
@@ -21,6 +22,9 @@ namespace DotSpatial.Symbology.Forms
         private Size _cellSize;
         private bool _isPopup;
         private int _numColumns;
+        private int _numRows;
+        private int _worldCount;
+        private List<FontRange> _fontRanges;
         #endregion
 
         #region Constructors
@@ -57,6 +61,31 @@ namespace DotSpatial.Symbology.Forms
         #endregion
 
         #region Properties
+        public override Font Font
+        {
+            get => base.Font;
+            set
+            {
+                _fontRanges = FontHelper.GetUnicodeRangesForFont(value);
+                _worldCount = 0;
+                if (_fontRanges != null)
+                {
+                    for (int i = 0; i < _fontRanges.Count; i++)
+                    {
+                        FontRange fontRange = _fontRanges[i];
+                        for (int j = fontRange.Low; j <= fontRange.High; j++)
+                        {
+                            _worldCount++;
+                        }
+                    }
+                }
+                if (_numColumns != 0)
+                {
+                    NumRows = _worldCount / _numColumns + 1;
+                }
+                base.Font = value;
+            }
+        }
 
         /// <summary>
         /// Gets or sets the cell size.
@@ -128,16 +157,27 @@ namespace DotSpatial.Symbology.Forms
         {
             get
             {
-                if (_numColumns == 0) return 256;
-
-                return (int)Math.Ceiling(256 / (double)_numColumns);
+                if (_numRows == 0)
+                {
+                    _numRows = 20;
+                }
+                return _numRows;
+            }
+            private set
+            {
+                if (_numRows != value)
+                {
+                    _numRows = value;
+                    ResetScroll();
+                    Invalidate();
+                }
             }
         }
 
         /// <summary>
         /// Gets or sets the selected character
         /// </summary>
-        public byte SelectedChar { get; set; }
+        public int SelectedChar { get; set; }
 
         /// <summary>
         /// Gets the string form of the selected character.
@@ -182,15 +222,21 @@ namespace DotSpatial.Symbology.Forms
                     return;
                 }
             }
-
-            if (_numColumns == 0) _numColumns = 1;
             Font smallFont = new Font(Font.FontFamily, CellSize.Width * .8F, GraphicsUnit.Pixel);
-            for (int i = 0; i < 256; i++)
+            if (_numColumns == 0) _numColumns = 1;
+            int k = 0;
+            for (int i = 0; i < _fontRanges.Count; i++)
             {
-                int row = i / _numColumns;
-                int col = i % _numColumns;
-                string text = ((char)((TypeSet * 256) + i)).ToString();
-                e.Graphics.DrawString(text, smallFont, Brushes.Black, new PointF(col * _cellSize.Width, row * _cellSize.Height));
+                FontRange fontRange = _fontRanges[i];
+                for (int j = fontRange.Low; j <= fontRange.High; j++)
+                {
+                    char c = (char)j;
+                    int row = k / _numColumns;
+                    int col = k % _numColumns;
+                    string text = c.ToString();
+                    e.Graphics.DrawString(text, smallFont, Brushes.Black, new PointF(col * _cellSize.Width, row * _cellSize.Height));
+                    k++;
+                }
             }
 
             for (int col = 0; col <= _numColumns; col++)
@@ -221,7 +267,7 @@ namespace DotSpatial.Symbology.Forms
                 Font bigFont = new Font(Font.FontFamily, CellSize.Width * 2.7F, GraphicsUnit.Pixel);
                 e.Graphics.DrawString(SelectedString, bigFont, foreBrush, new PointF(pRect.X, pRect.Y));
             }
-
+            smallFont.Dispose();
             backBrush.Dispose();
             foreBrush.Dispose();
         }
@@ -251,17 +297,43 @@ namespace DotSpatial.Symbology.Forms
 
             int col = (e.X + ControlRectangle.X) / _cellSize.Width;
             int row = (e.Y + ControlRectangle.Y) / _cellSize.Height;
-            if (((_numColumns * row) + col) < 256)
+            if (((_numColumns * row) + col) < _worldCount)
             {
                 IsSelected = true;
-                SelectedChar = (byte)((_numColumns * row) + col);
+                SelectedChar = GetSelectedChar(col, row);
                 _isPopup = true;
             }
 
             Invalidate();
             base.OnMouseUp(e);
         }
-
+        private int GetSelectedChar(int col, int row)
+        {
+            int index = (_numColumns * row) + col;
+            int k = 0;
+            int selected = -1;
+            if (_fontRanges != null)
+            {
+                for (int i = 0; i < _fontRanges.Count; i++)
+                {
+                    FontRange fontRange = _fontRanges[i];
+                    for (int j = fontRange.Low; j <= fontRange.High; j++)
+                    {
+                        if (k == index)
+                        {
+                            selected = j;
+                            break;
+                        }
+                        k++;
+                    }
+                    if (selected >= 0)
+                    {
+                        break;
+                    }
+                }
+            }
+            return selected;
+        }
         /// <summary>
         /// Fires the PopupClicked event args, and closes a drop down editor if it exists.
         /// </summary>
@@ -269,7 +341,7 @@ namespace DotSpatial.Symbology.Forms
         {
             if (_editorService != null)
             {
-                _symbol.Code = SelectedChar;
+                _symbol.Character = (char)SelectedChar;
                 _editorService.CloseDropDown();
             }
 
@@ -303,8 +375,7 @@ namespace DotSpatial.Symbology.Forms
 
         private Rectangle GetPopupRectangle()
         {
-            int pr = SelectedChar / _numColumns;
-            int pc = SelectedChar % _numColumns;
+            GetSelectedCell(out int pc, out int pr);
             if (pc == 0) pc = 1;
             if (pc == _numColumns - 1) pc = _numColumns - 2;
             if (pr == 0) pr = 1;
@@ -314,10 +385,35 @@ namespace DotSpatial.Symbology.Forms
 
         private Rectangle GetSelectedRectangle()
         {
-            int row = SelectedChar / _numColumns;
-            int col = SelectedChar % _numColumns;
-
+            GetSelectedCell(out int col, out int row);
             return new Rectangle((col * _cellSize.Width) + 1, (row * _cellSize.Height) + 1, _cellSize.Width - 1, CellSize.Height - 1);
+        }
+        private void GetSelectedCell(out int col, out int row)
+        {
+            int k = 0;
+            bool ret = false;
+            if (_fontRanges != null)
+            {
+                for (int i = 0; i < _fontRanges.Count; i++)
+                {
+                    FontRange fontRange = _fontRanges[i];
+                    for (int j = fontRange.Low; j <= fontRange.High; j++)
+                    {
+                        if (j == SelectedChar)
+                        {
+                            ret = true;
+                            break;
+                        }
+                        k++;
+                    }
+                    if (ret)
+                    {
+                        break;
+                    }
+                }
+            }
+            row = k / _numColumns;
+            col = k % _numColumns;
         }
 
         #endregion

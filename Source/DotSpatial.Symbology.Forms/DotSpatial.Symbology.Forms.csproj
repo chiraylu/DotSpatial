@@ -189,6 +189,7 @@
     <Compile Include="FontBox.Designer.cs">
       <DependentUpon>FontBox.cs</DependentUpon>
     </Compile>
+    <Compile Include="FontHelper.cs" />
     <Compile Include="GradientControl.Designer.cs">
       <DependentUpon>GradientControl.cs</DependentUpon>
     </Compile>
@@ -241,6 +242,11 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
     <Compile Include="PropertyDialog.Designer.cs">
       <DependentUpon>PropertyDialog.cs</DependentUpon>
@@ -1273,6 +1279,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
     <None Include="Resources\add.png" />
   </ItemGroup>
   <ItemGroup>

@@ -192,8 +192,9 @@ namespace DotSpatial.Symbology.Forms
             int ch = Height;
             if (dw == 0 || dh == 0) return; // prevent divide by 0
             if (cw == 0 || ch == 0) return;
-            _scrVertical.LargeChange = (ch * ch) / dh;
             _scrVertical.Maximum = dh;
+            _scrVertical.SmallChange = dh / 50;
+            _scrVertical.LargeChange = dh / 10;
 
             if (dh <= ch)
             {

@@ -117,83 +117,41 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="dbxHeight.Caption" xml:space="preserve">
-    <value>Height:</value>
-  </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="dialogButtons1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>-1, 77</value>
+  </data>
   <data name="dialogButtons1.Size" type="System.Drawing.Size, System.Drawing">
     <value>244, 30</value>
   </data>
-  <data name="&gt;&gt;dbxHeight.Type" xml:space="preserve">
-    <value>DotSpatial.Symbology.Forms.DoubleBox, DotSpatial.Symbology.Forms, Version=1.6.0.0, Culture=neutral, PublicKeyToken=0544cdeefb662382</value>
-  </data>
-  <data name="dbxHeight.Size" type="System.Drawing.Size, System.Drawing">
-    <value>219, 27</value>
-  </data>
-  <data name="&gt;&gt;$this.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Form, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="dbxHeight.Location" type="System.Drawing.Point, System.Drawing">
-    <value>12, 44</value>
-  </data>
   <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="dbxWidth.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
-  </data>
-  <data name="&gt;&gt;$this.Name" xml:space="preserve">
-    <value>Size2DDialog</value>
-  </data>
-  <data name="&gt;&gt;dbxWidth.ZOrder" xml:space="preserve">
-    <value>2</value>
-  </data>
-  <data name="&gt;&gt;dbxWidth.Name" xml:space="preserve">
-    <value>dbxWidth</value>
-  </data>
-  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
-    <value>243, 109</value>
-  </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
-    <value>CenterParent</value>
-  </data>
-  <data name="&gt;&gt;dialogButtons1.Type" xml:space="preserve">
-    <value>DotSpatial.Symbology.Forms.DialogButtons, DotSpatial.Symbology.Forms, Version=1.6.0.0, Culture=neutral, PublicKeyToken=0544cdeefb662382</value>
-  </data>
-  <data name="&gt;&gt;dbxHeight.ZOrder" xml:space="preserve">
-    <value>1</value>
+  <data name="dialogButtons1.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
   </data>
   <data name="&gt;&gt;dialogButtons1.Name" xml:space="preserve">
     <value>dialogButtons1</value>
   </data>
-  <data name="&gt;&gt;dbxWidth.Type" xml:space="preserve">
-    <value>DotSpatial.Symbology.Forms.DoubleBox, DotSpatial.Symbology.Forms, Version=1.6.0.0, Culture=neutral, PublicKeyToken=0544cdeefb662382</value>
-  </data>
-  <data name="dbxWidth.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Top, Left, Right</value>
+  <data name="&gt;&gt;dialogButtons1.Type" xml:space="preserve">
+    <value>DotSpatial.Symbology.Forms.DialogButtons, DotSpatial.Symbology.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0544cdeefb662382</value>
   </data>
   <data name="&gt;&gt;dialogButtons1.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
-  <data name="&gt;&gt;dbxHeight.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="dbxHeight.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
-    <value>Top, Left, Right</value>
-  </data>
   <data name="&gt;&gt;dialogButtons1.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
-  <data name="&gt;&gt;dbxWidth.Parent" xml:space="preserve">
-    <value>$this</value>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="dbxHeight.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Left, Right</value>
   </data>
-  <data name="dbxWidth.Caption" xml:space="preserve">
-    <value>Width:</value>
+  <data name="dbxHeight.Caption" xml:space="preserve">
+    <value>Height:</value>
   </data>
-  <data name="dbxWidth.Size" type="System.Drawing.Size, System.Drawing">
-    <value>219, 26</value>
+  <data name="dbxHeight.Location" type="System.Drawing.Point, System.Drawing">
+    <value>12, 44</value>
   </data>
-  <data name="dialogButtons1.TabIndex" type="System.Int32, mscorlib">
-    <value>3</value>
+  <data name="dbxHeight.Size" type="System.Drawing.Size, System.Drawing">
+    <value>219, 27</value>
   </data>
   <data name="dbxHeight.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
@@ -201,16 +159,58 @@
   <data name="&gt;&gt;dbxHeight.Name" xml:space="preserve">
     <value>dbxHeight</value>
   </data>
-  <data name="dialogButtons1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>-1, 77</value>
+  <data name="&gt;&gt;dbxHeight.Type" xml:space="preserve">
+    <value>DotSpatial.Symbology.Forms.DoubleBox, DotSpatial.Symbology.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0544cdeefb662382</value>
   </data>
-  <data name="$this.Text" xml:space="preserve">
-    <value>Symbol Size</value>
+  <data name="&gt;&gt;dbxHeight.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;dbxHeight.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="dbxWidth.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
+    <value>Top, Left, Right</value>
+  </data>
+  <data name="dbxWidth.Caption" xml:space="preserve">
+    <value>Width:</value>
   </data>
   <data name="dbxWidth.Location" type="System.Drawing.Point, System.Drawing">
     <value>12, 12</value>
   </data>
+  <data name="dbxWidth.Size" type="System.Drawing.Size, System.Drawing">
+    <value>219, 26</value>
+  </data>
+  <data name="dbxWidth.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;dbxWidth.Name" xml:space="preserve">
+    <value>dbxWidth</value>
+  </data>
+  <data name="&gt;&gt;dbxWidth.Type" xml:space="preserve">
+    <value>DotSpatial.Symbology.Forms.DoubleBox, DotSpatial.Symbology.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0544cdeefb662382</value>
+  </data>
+  <data name="&gt;&gt;dbxWidth.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;dbxWidth.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>
+  <data name="$this.ClientSize" type="System.Drawing.Size, System.Drawing">
+    <value>243, 109</value>
+  </data>
+  <data name="$this.StartPosition" type="System.Windows.Forms.FormStartPosition, System.Windows.Forms">
+    <value>CenterParent</value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>Symbol Size</value>
+  </data>
+  <data name="&gt;&gt;$this.Name" xml:space="preserve">
+    <value>Size2DDialog</value>
+  </data>
+  <data name="&gt;&gt;$this.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Form, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
 </root>

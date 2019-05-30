@@ -29,7 +29,6 @@ namespace DotSpatial.Symbology.Forms
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Size2DDialog));
             this.dialogButtons1 = new DotSpatial.Symbology.Forms.DialogButtons();
             this.dbxHeight = new DotSpatial.Symbology.Forms.DoubleBox();
@@ -46,7 +45,8 @@ namespace DotSpatial.Symbology.Forms
             resources.ApplyResources(this.dbxHeight, "dbxHeight");
             this.dbxHeight.BackColorInvalid = System.Drawing.Color.Salmon;
             this.dbxHeight.BackColorRegular = System.Drawing.Color.Empty;
-            this.dbxHeight.InvalidHelp = "The value entered could not be correctly parsed into a valid double precision floating point value.";
+            this.dbxHeight.InvalidHelp = "The value entered could not be correctly parsed into a valid double precision flo" +
+    "ating point value.";
             this.dbxHeight.IsValid = true;
             this.dbxHeight.Name = "dbxHeight";
             this.dbxHeight.NumberFormat = null;
@@ -59,7 +59,8 @@ namespace DotSpatial.Symbology.Forms
             resources.ApplyResources(this.dbxWidth, "dbxWidth");
             this.dbxWidth.BackColorInvalid = System.Drawing.Color.Salmon;
             this.dbxWidth.BackColorRegular = System.Drawing.Color.Empty;
-            this.dbxWidth.InvalidHelp = "The value entered could not be correctly parsed into a valid double precision floating point value.";
+            this.dbxWidth.InvalidHelp = "The value entered could not be correctly parsed into a valid double precision flo" +
+    "ating point value.";
             this.dbxWidth.IsValid = true;
             this.dbxWidth.Name = "dbxWidth";
             this.dbxWidth.NumberFormat = null;
@@ -81,6 +82,7 @@ namespace DotSpatial.Symbology.Forms
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
             this.ResumeLayout(false);
+
         }
 
         #endregion

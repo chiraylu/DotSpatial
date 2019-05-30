@@ -2,10 +2,13 @@
 // Licensed under the MIT license. See License.txt file in the project root for full license information.
 
 using System;
+using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Text;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace DotSpatial.Symbology.Forms
@@ -21,7 +24,6 @@ namespace DotSpatial.Symbology.Forms
 
         private Color _color;
         private bool _isDown;
-
         #endregion
 
         #region Constructors
@@ -31,9 +33,11 @@ namespace DotSpatial.Symbology.Forms
         /// </summary>
         public ColorButton()
         {
-            _color = Color.Blue;
+            _color = Properties.Settings.Default.ColorButtonColor;
             LaunchDialogOnClick = true;
         }
+
+
 
         #endregion
 
@@ -72,7 +76,6 @@ namespace DotSpatial.Symbology.Forms
                 OnColorChanged();
             }
         }
-
         /// <summary>
         /// Gets or sets a value indicating whether this button should launch a
         /// color dialog to alter its color when it is clicked.
@@ -99,7 +102,6 @@ namespace DotSpatial.Symbology.Forms
             _color = color;
             Invalidate();
         }
-
         /// <summary>
         /// Clicking launches a color dialog by default.
         /// </summary>
@@ -108,15 +110,42 @@ namespace DotSpatial.Symbology.Forms
         {
             if (LaunchDialogOnClick)
             {
+                List<int> customColors = new List<int>();
+                StringCollection customColorsCollection = Properties.Settings.Default.ColorButtonCustomColors;
+                bool ret = false;
+                int oleColor = 0;
+                if (customColorsCollection != null)
+                {
+                    foreach (string customColorStr in customColorsCollection)
+                    {
+                        ret = int.TryParse(customColorStr, out oleColor);
+                        if (ret)
+                        {
+                            customColors.Add(oleColor);
+                        }
+                    }
+                }
                 using (ColorDialog cd = new ColorDialog
                 {
                     AnyColor = true,
-                    CustomColors = new[] { ToDialogColor(_color) },
+                    CustomColors = customColors.ToArray(),
                     Color = _color
                 })
                 {
-                    if (cd.ShowDialog() != DialogResult.OK) return;
+                    if (cd.ShowDialog() != DialogResult.OK)
+                    {
+                        return;
+                    }
                     Color = cd.Color;
+                    customColors.Clear();
+                    Properties.Settings.Default.ColorButtonColor = Color;
+                    customColorsCollection = new StringCollection();
+                    foreach (var customColor in cd.CustomColors)
+                    {
+                        customColorsCollection.Add(customColor.ToString());
+                    }
+                    Properties.Settings.Default.ColorButtonCustomColors = customColorsCollection;
+                    Properties.Settings.Default.Save();
                 }
             }
 
@@ -257,7 +286,6 @@ namespace DotSpatial.Symbology.Forms
         {
             return color.R + (color.G << 8) + (color.B << 16);
         }
-
         #endregion
     }
 }

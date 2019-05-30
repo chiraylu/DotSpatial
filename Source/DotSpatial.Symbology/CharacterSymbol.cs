@@ -383,7 +383,6 @@ namespace DotSpatial.Symbology
                 // Use the width instead
                 y = -fSize.Width / 2;
             }
-
             g.DrawString(txt, fnt, b, new PointF(x, y));
             b.Dispose();
         }
