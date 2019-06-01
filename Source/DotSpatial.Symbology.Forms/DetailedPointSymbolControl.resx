@@ -118,30 +118,114 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="btnAddToCustom.Location" type="System.Drawing.Point, System.Drawing">
-    <value>417, 130</value>
+  <data name="btnSaveSymbol.Location" type="System.Drawing.Point, System.Drawing">
+    <value>417, 124</value>
   </data>
-  <data name="btnAddToCustom.Size" type="System.Drawing.Size, System.Drawing">
-    <value>157, 23</value>
+  <data name="btnSaveSymbol.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 23</value>
   </data>
   <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="btnAddToCustom.TabIndex" type="System.Int32, mscorlib">
+  <data name="btnSaveSymbol.TabIndex" type="System.Int32, mscorlib">
     <value>7</value>
   </data>
-  <data name="btnAddToCustom.Text" xml:space="preserve">
-    <value>&amp;Add to Custom Symbols</value>
+  <data name="btnSaveSymbol.Text" xml:space="preserve">
+    <value>&amp;Save</value>
   </data>
-  <data name="&gt;&gt;btnAddToCustom.Name" xml:space="preserve">
-    <value>btnAddToCustom</value>
+  <data name="&gt;&gt;btnSaveSymbol.Name" xml:space="preserve">
+    <value>btnSaveSymbol</value>
   </data>
-  <data name="&gt;&gt;btnAddToCustom.Type" xml:space="preserve">
+  <data name="&gt;&gt;btnSaveSymbol.Type" xml:space="preserve">
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;btnAddToCustom.Parent" xml:space="preserve">
+  <data name="&gt;&gt;btnSaveSymbol.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
-  <data name="&gt;&gt;btnAddToCustom.ZOrder" xml:space="preserve">
+  <data name="&gt;&gt;btnSaveSymbol.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;cmbUnits.Name" xml:space="preserve">
+    <value>cmbUnits</value>
+  </data>
+  <data name="&gt;&gt;cmbUnits.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cmbUnits.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="&gt;&gt;cmbUnits.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;lblUnits.Name" xml:space="preserve">
+    <value>lblUnits</value>
+  </data>
+  <data name="&gt;&gt;lblUnits.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lblUnits.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="&gt;&gt;lblUnits.ZOrder" xml:space="preserve">
     <value>1</value>
+  </data>
+  <data name="&gt;&gt;lblScaleMode.Name" xml:space="preserve">
+    <value>lblScaleMode</value>
+  </data>
+  <data name="&gt;&gt;lblScaleMode.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lblScaleMode.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="&gt;&gt;lblScaleMode.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;cmbScaleMode.Name" xml:space="preserve">
+    <value>cmbScaleMode</value>
+  </data>
+  <data name="&gt;&gt;cmbScaleMode.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cmbScaleMode.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="&gt;&gt;cmbScaleMode.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;chkSmoothing.Name" xml:space="preserve">
+    <value>chkSmoothing</value>
+  </data>
+  <data name="&gt;&gt;chkSmoothing.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;chkSmoothing.Parent" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="&gt;&gt;chkSmoothing.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="groupBox1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>111, 3</value>
+  </data>
+  <data name="groupBox1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>255, 86</value>
+  </data>
+  <data name="groupBox1.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
+  <data name="groupBox1.Text" xml:space="preserve">
+    <value>Symbolizer Characteristics</value>
+  </data>
+  <data name="&gt;&gt;groupBox1.Name" xml:space="preserve">
+    <value>groupBox1</value>
+  </data>
+  <data name="&gt;&gt;groupBox1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;groupBox1.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;groupBox1.ZOrder" xml:space="preserve">
+    <value>8</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="cmbUnits.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
@@ -303,30 +387,6 @@
   <data name="&gt;&gt;chkSmoothing.ZOrder" xml:space="preserve">
     <value>4</value>
   </data>
-  <data name="groupBox1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>111, 3</value>
-  </data>
-  <data name="groupBox1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>255, 86</value>
-  </data>
-  <data name="groupBox1.TabIndex" type="System.Int32, mscorlib">
-    <value>1</value>
-  </data>
-  <data name="groupBox1.Text" xml:space="preserve">
-    <value>Symbolizer Characteristics</value>
-  </data>
-  <data name="&gt;&gt;groupBox1.Name" xml:space="preserve">
-    <value>groupBox1</value>
-  </data>
-  <data name="&gt;&gt;groupBox1.Type" xml:space="preserve">
-    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;groupBox1.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;groupBox1.ZOrder" xml:space="preserve">
-    <value>7</value>
-  </data>
   <data name="label3.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
@@ -352,7 +412,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;label3.ZOrder" xml:space="preserve">
-    <value>2</value>
+    <value>3</value>
   </data>
   <data name="lblPreview.Location" type="System.Drawing.Point, System.Drawing">
     <value>417, 26</value>
@@ -373,7 +433,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;lblPreview.ZOrder" xml:space="preserve">
-    <value>4</value>
+    <value>5</value>
   </data>
   <data name="lblSymbolType.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -400,7 +460,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;lblSymbolType.ZOrder" xml:space="preserve">
-    <value>5</value>
+    <value>6</value>
   </data>
   <data name="cmbSymbolType.Items" xml:space="preserve">
     <value>Character</value>
@@ -433,7 +493,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;cmbSymbolType.ZOrder" xml:space="preserve">
-    <value>6</value>
+    <value>7</value>
   </data>
   <data name="label10.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -455,6 +515,48 @@
   </data>
   <data name="&gt;&gt;label10.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;doubleBox7.Name" xml:space="preserve">
+    <value>doubleBox7</value>
+  </data>
+  <data name="&gt;&gt;doubleBox7.Type" xml:space="preserve">
+    <value>DotSpatial.Symbology.Forms.DoubleBox, DotSpatial.Symbology.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0544cdeefb662382</value>
+  </data>
+  <data name="&gt;&gt;doubleBox7.Parent" xml:space="preserve">
+    <value>groupBox6</value>
+  </data>
+  <data name="&gt;&gt;doubleBox7.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;doubleBox8.Name" xml:space="preserve">
+    <value>doubleBox8</value>
+  </data>
+  <data name="&gt;&gt;doubleBox8.Type" xml:space="preserve">
+    <value>DotSpatial.Symbology.Forms.DoubleBox, DotSpatial.Symbology.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0544cdeefb662382</value>
+  </data>
+  <data name="&gt;&gt;doubleBox8.Parent" xml:space="preserve">
+    <value>groupBox6</value>
+  </data>
+  <data name="&gt;&gt;doubleBox8.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="groupBox6.Location" type="System.Drawing.Point, System.Drawing">
+    <value>11, 19</value>
+  </data>
+  <data name="groupBox6.Size" type="System.Drawing.Size, System.Drawing">
+    <value>187, 89</value>
+  </data>
+  <data name="groupBox6.TabIndex" type="System.Int32, mscorlib">
+    <value>38</value>
+  </data>
+  <data name="groupBox6.Text" xml:space="preserve">
+    <value>Size</value>
+  </data>
+  <data name="&gt;&gt;groupBox6.Name" xml:space="preserve">
+    <value>groupBox6</value>
+  </data>
+  <data name="&gt;&gt;groupBox6.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="doubleBox7.Caption" xml:space="preserve">
     <value>Width:</value>
@@ -504,22 +606,46 @@
   <data name="&gt;&gt;doubleBox8.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
-  <data name="groupBox6.Location" type="System.Drawing.Point, System.Drawing">
-    <value>11, 19</value>
+  <data name="&gt;&gt;doubleBox10.Name" xml:space="preserve">
+    <value>doubleBox10</value>
   </data>
-  <data name="groupBox6.Size" type="System.Drawing.Size, System.Drawing">
-    <value>187, 89</value>
+  <data name="&gt;&gt;doubleBox10.Type" xml:space="preserve">
+    <value>DotSpatial.Symbology.Forms.DoubleBox, DotSpatial.Symbology.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0544cdeefb662382</value>
   </data>
-  <data name="groupBox6.TabIndex" type="System.Int32, mscorlib">
-    <value>38</value>
+  <data name="&gt;&gt;doubleBox10.Parent" xml:space="preserve">
+    <value>groupBox7</value>
   </data>
-  <data name="groupBox6.Text" xml:space="preserve">
-    <value>Size</value>
+  <data name="&gt;&gt;doubleBox10.ZOrder" xml:space="preserve">
+    <value>0</value>
   </data>
-  <data name="&gt;&gt;groupBox6.Name" xml:space="preserve">
-    <value>groupBox6</value>
+  <data name="&gt;&gt;doubleBox11.Name" xml:space="preserve">
+    <value>doubleBox11</value>
   </data>
-  <data name="&gt;&gt;groupBox6.Type" xml:space="preserve">
+  <data name="&gt;&gt;doubleBox11.Type" xml:space="preserve">
+    <value>DotSpatial.Symbology.Forms.DoubleBox, DotSpatial.Symbology.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0544cdeefb662382</value>
+  </data>
+  <data name="&gt;&gt;doubleBox11.Parent" xml:space="preserve">
+    <value>groupBox7</value>
+  </data>
+  <data name="&gt;&gt;doubleBox11.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="groupBox7.Location" type="System.Drawing.Point, System.Drawing">
+    <value>11, 114</value>
+  </data>
+  <data name="groupBox7.Size" type="System.Drawing.Size, System.Drawing">
+    <value>187, 86</value>
+  </data>
+  <data name="groupBox7.TabIndex" type="System.Int32, mscorlib">
+    <value>37</value>
+  </data>
+  <data name="groupBox7.Text" xml:space="preserve">
+    <value>Offset</value>
+  </data>
+  <data name="&gt;&gt;groupBox7.Name" xml:space="preserve">
+    <value>groupBox7</value>
+  </data>
+  <data name="&gt;&gt;groupBox7.Type" xml:space="preserve">
     <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="doubleBox10.Caption" xml:space="preserve">
@@ -570,23 +696,104 @@
   <data name="&gt;&gt;doubleBox11.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
-  <data name="groupBox7.Location" type="System.Drawing.Point, System.Drawing">
-    <value>11, 114</value>
+  <data name="&gt;&gt;lblImageOpacity.Name" xml:space="preserve">
+    <value>lblImageOpacity</value>
   </data>
-  <data name="groupBox7.Size" type="System.Drawing.Size, System.Drawing">
-    <value>187, 86</value>
+  <data name="&gt;&gt;lblImageOpacity.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="groupBox7.TabIndex" type="System.Int32, mscorlib">
-    <value>37</value>
+  <data name="&gt;&gt;lblImageOpacity.Parent" xml:space="preserve">
+    <value>tabPicture</value>
   </data>
-  <data name="groupBox7.Text" xml:space="preserve">
-    <value>Offset</value>
+  <data name="&gt;&gt;lblImageOpacity.ZOrder" xml:space="preserve">
+    <value>0</value>
   </data>
-  <data name="&gt;&gt;groupBox7.Name" xml:space="preserve">
-    <value>groupBox7</value>
+  <data name="&gt;&gt;grpOutlinePicture.Name" xml:space="preserve">
+    <value>grpOutlinePicture</value>
   </data>
-  <data name="&gt;&gt;groupBox7.Type" xml:space="preserve">
+  <data name="&gt;&gt;grpOutlinePicture.Type" xml:space="preserve">
     <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;grpOutlinePicture.Parent" xml:space="preserve">
+    <value>tabPicture</value>
+  </data>
+  <data name="&gt;&gt;grpOutlinePicture.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;btnBrowseImage.Name" xml:space="preserve">
+    <value>btnBrowseImage</value>
+  </data>
+  <data name="&gt;&gt;btnBrowseImage.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;btnBrowseImage.Parent" xml:space="preserve">
+    <value>tabPicture</value>
+  </data>
+  <data name="&gt;&gt;btnBrowseImage.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;txtImageFilename.Name" xml:space="preserve">
+    <value>txtImageFilename</value>
+  </data>
+  <data name="&gt;&gt;txtImageFilename.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;txtImageFilename.Parent" xml:space="preserve">
+    <value>tabPicture</value>
+  </data>
+  <data name="&gt;&gt;txtImageFilename.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;lblImage.Name" xml:space="preserve">
+    <value>lblImage</value>
+  </data>
+  <data name="&gt;&gt;lblImage.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lblImage.Parent" xml:space="preserve">
+    <value>tabPicture</value>
+  </data>
+  <data name="&gt;&gt;lblImage.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="&gt;&gt;sldImageOpacity.Name" xml:space="preserve">
+    <value>sldImageOpacity</value>
+  </data>
+  <data name="&gt;&gt;sldImageOpacity.Type" xml:space="preserve">
+    <value>DotSpatial.Symbology.Forms.RampSlider, DotSpatial.Symbology.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0544cdeefb662382</value>
+  </data>
+  <data name="&gt;&gt;sldImageOpacity.Parent" xml:space="preserve">
+    <value>tabPicture</value>
+  </data>
+  <data name="&gt;&gt;sldImageOpacity.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="tabPicture.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 22</value>
+  </data>
+  <data name="tabPicture.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>3, 3, 3, 3</value>
+  </data>
+  <data name="tabPicture.Size" type="System.Drawing.Size, System.Drawing">
+    <value>247, 285</value>
+  </data>
+  <data name="tabPicture.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="tabPicture.Text" xml:space="preserve">
+    <value>Picture</value>
+  </data>
+  <data name="&gt;&gt;tabPicture.Name" xml:space="preserve">
+    <value>tabPicture</value>
+  </data>
+  <data name="&gt;&gt;tabPicture.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;tabPicture.Parent" xml:space="preserve">
+    <value>tabSymbolProperties</value>
+  </data>
+  <data name="&gt;&gt;tabPicture.ZOrder" xml:space="preserve">
+    <value>2</value>
   </data>
   <data name="lblImageOpacity.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -614,6 +821,90 @@
   </data>
   <data name="&gt;&gt;lblImageOpacity.ZOrder" xml:space="preserve">
     <value>0</value>
+  </data>
+  <data name="&gt;&gt;cbOutlineColorPicture.Name" xml:space="preserve">
+    <value>cbOutlineColorPicture</value>
+  </data>
+  <data name="&gt;&gt;cbOutlineColorPicture.Type" xml:space="preserve">
+    <value>DotSpatial.Symbology.Forms.ColorButton, DotSpatial.Symbology.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0544cdeefb662382</value>
+  </data>
+  <data name="&gt;&gt;cbOutlineColorPicture.Parent" xml:space="preserve">
+    <value>grpOutlinePicture</value>
+  </data>
+  <data name="&gt;&gt;cbOutlineColorPicture.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;sldOutlineOpacityPicture.Name" xml:space="preserve">
+    <value>sldOutlineOpacityPicture</value>
+  </data>
+  <data name="&gt;&gt;sldOutlineOpacityPicture.Type" xml:space="preserve">
+    <value>DotSpatial.Symbology.Forms.RampSlider, DotSpatial.Symbology.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0544cdeefb662382</value>
+  </data>
+  <data name="&gt;&gt;sldOutlineOpacityPicture.Parent" xml:space="preserve">
+    <value>grpOutlinePicture</value>
+  </data>
+  <data name="&gt;&gt;sldOutlineOpacityPicture.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;lblOutlineColorPicture.Name" xml:space="preserve">
+    <value>lblOutlineColorPicture</value>
+  </data>
+  <data name="&gt;&gt;lblOutlineColorPicture.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lblOutlineColorPicture.Parent" xml:space="preserve">
+    <value>grpOutlinePicture</value>
+  </data>
+  <data name="&gt;&gt;lblOutlineColorPicture.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;dbxOutlineWidthPicture.Name" xml:space="preserve">
+    <value>dbxOutlineWidthPicture</value>
+  </data>
+  <data name="&gt;&gt;dbxOutlineWidthPicture.Type" xml:space="preserve">
+    <value>DotSpatial.Symbology.Forms.DoubleBox, DotSpatial.Symbology.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0544cdeefb662382</value>
+  </data>
+  <data name="&gt;&gt;dbxOutlineWidthPicture.Parent" xml:space="preserve">
+    <value>grpOutlinePicture</value>
+  </data>
+  <data name="&gt;&gt;dbxOutlineWidthPicture.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;chkUseOutlinePicture.Name" xml:space="preserve">
+    <value>chkUseOutlinePicture</value>
+  </data>
+  <data name="&gt;&gt;chkUseOutlinePicture.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;chkUseOutlinePicture.Parent" xml:space="preserve">
+    <value>grpOutlinePicture</value>
+  </data>
+  <data name="&gt;&gt;chkUseOutlinePicture.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="grpOutlinePicture.Location" type="System.Drawing.Point, System.Drawing">
+    <value>19, 125</value>
+  </data>
+  <data name="grpOutlinePicture.Size" type="System.Drawing.Size, System.Drawing">
+    <value>202, 145</value>
+  </data>
+  <data name="grpOutlinePicture.TabIndex" type="System.Int32, mscorlib">
+    <value>5</value>
+  </data>
+  <data name="grpOutlinePicture.Text" xml:space="preserve">
+    <value>Outline</value>
+  </data>
+  <data name="&gt;&gt;grpOutlinePicture.Name" xml:space="preserve">
+    <value>grpOutlinePicture</value>
+  </data>
+  <data name="&gt;&gt;grpOutlinePicture.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;grpOutlinePicture.Parent" xml:space="preserve">
+    <value>tabPicture</value>
+  </data>
+  <data name="&gt;&gt;grpOutlinePicture.ZOrder" xml:space="preserve">
+    <value>1</value>
   </data>
   <data name="cbOutlineColorPicture.Location" type="System.Drawing.Point, System.Drawing">
     <value>32, 100</value>
@@ -741,30 +1032,6 @@
   <data name="&gt;&gt;chkUseOutlinePicture.ZOrder" xml:space="preserve">
     <value>4</value>
   </data>
-  <data name="grpOutlinePicture.Location" type="System.Drawing.Point, System.Drawing">
-    <value>19, 125</value>
-  </data>
-  <data name="grpOutlinePicture.Size" type="System.Drawing.Size, System.Drawing">
-    <value>202, 145</value>
-  </data>
-  <data name="grpOutlinePicture.TabIndex" type="System.Int32, mscorlib">
-    <value>5</value>
-  </data>
-  <data name="grpOutlinePicture.Text" xml:space="preserve">
-    <value>Outline</value>
-  </data>
-  <data name="&gt;&gt;grpOutlinePicture.Name" xml:space="preserve">
-    <value>grpOutlinePicture</value>
-  </data>
-  <data name="&gt;&gt;grpOutlinePicture.Type" xml:space="preserve">
-    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;grpOutlinePicture.Parent" xml:space="preserve">
-    <value>tabPicture</value>
-  </data>
-  <data name="&gt;&gt;grpOutlinePicture.ZOrder" xml:space="preserve">
-    <value>1</value>
-  </data>
   <data name="btnBrowseImage.Location" type="System.Drawing.Point, System.Drawing">
     <value>199, 22</value>
   </data>
@@ -861,32 +1128,128 @@
   <data name="&gt;&gt;sldImageOpacity.ZOrder" xml:space="preserve">
     <value>5</value>
   </data>
-  <data name="tabPicture.Location" type="System.Drawing.Point, System.Drawing">
+  <data name="&gt;&gt;lblColorCharacter.Name" xml:space="preserve">
+    <value>lblColorCharacter</value>
+  </data>
+  <data name="&gt;&gt;lblColorCharacter.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lblColorCharacter.Parent" xml:space="preserve">
+    <value>tabCharacter</value>
+  </data>
+  <data name="&gt;&gt;lblColorCharacter.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;txtUnicode.Name" xml:space="preserve">
+    <value>txtUnicode</value>
+  </data>
+  <data name="&gt;&gt;txtUnicode.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TextBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;txtUnicode.Parent" xml:space="preserve">
+    <value>tabCharacter</value>
+  </data>
+  <data name="&gt;&gt;txtUnicode.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;lblUnicode.Name" xml:space="preserve">
+    <value>lblUnicode</value>
+  </data>
+  <data name="&gt;&gt;lblUnicode.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lblUnicode.Parent" xml:space="preserve">
+    <value>tabCharacter</value>
+  </data>
+  <data name="&gt;&gt;lblUnicode.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;lblFontFamily.Name" xml:space="preserve">
+    <value>lblFontFamily</value>
+  </data>
+  <data name="&gt;&gt;lblFontFamily.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lblFontFamily.Parent" xml:space="preserve">
+    <value>tabCharacter</value>
+  </data>
+  <data name="&gt;&gt;lblFontFamily.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;cbColorCharacter.Name" xml:space="preserve">
+    <value>cbColorCharacter</value>
+  </data>
+  <data name="&gt;&gt;cbColorCharacter.Type" xml:space="preserve">
+    <value>DotSpatial.Symbology.Forms.ColorButton, DotSpatial.Symbology.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0544cdeefb662382</value>
+  </data>
+  <data name="&gt;&gt;cbColorCharacter.Parent" xml:space="preserve">
+    <value>tabCharacter</value>
+  </data>
+  <data name="&gt;&gt;cbColorCharacter.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="&gt;&gt;sldOpacityCharacter.Name" xml:space="preserve">
+    <value>sldOpacityCharacter</value>
+  </data>
+  <data name="&gt;&gt;sldOpacityCharacter.Type" xml:space="preserve">
+    <value>DotSpatial.Symbology.Forms.RampSlider, DotSpatial.Symbology.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0544cdeefb662382</value>
+  </data>
+  <data name="&gt;&gt;sldOpacityCharacter.Parent" xml:space="preserve">
+    <value>tabCharacter</value>
+  </data>
+  <data name="&gt;&gt;sldOpacityCharacter.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="&gt;&gt;charCharacter.Name" xml:space="preserve">
+    <value>charCharacter</value>
+  </data>
+  <data name="&gt;&gt;charCharacter.Type" xml:space="preserve">
+    <value>DotSpatial.Symbology.Forms.CharacterControl, DotSpatial.Symbology.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0544cdeefb662382</value>
+  </data>
+  <data name="&gt;&gt;charCharacter.Parent" xml:space="preserve">
+    <value>tabCharacter</value>
+  </data>
+  <data name="&gt;&gt;charCharacter.ZOrder" xml:space="preserve">
+    <value>6</value>
+  </data>
+  <data name="&gt;&gt;cmbFontFamilly.Name" xml:space="preserve">
+    <value>cmbFontFamilly</value>
+  </data>
+  <data name="&gt;&gt;cmbFontFamilly.Type" xml:space="preserve">
+    <value>DotSpatial.Symbology.Forms.FontFamilyControl, DotSpatial.Symbology.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0544cdeefb662382</value>
+  </data>
+  <data name="&gt;&gt;cmbFontFamilly.Parent" xml:space="preserve">
+    <value>tabCharacter</value>
+  </data>
+  <data name="&gt;&gt;cmbFontFamilly.ZOrder" xml:space="preserve">
+    <value>7</value>
+  </data>
+  <data name="tabCharacter.Location" type="System.Drawing.Point, System.Drawing">
     <value>4, 22</value>
   </data>
-  <data name="tabPicture.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+  <data name="tabCharacter.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>3, 3, 3, 3</value>
   </data>
-  <data name="tabPicture.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="tabCharacter.Size" type="System.Drawing.Size, System.Drawing">
     <value>247, 285</value>
   </data>
-  <data name="tabPicture.TabIndex" type="System.Int32, mscorlib">
-    <value>2</value>
+  <data name="tabCharacter.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
   </data>
-  <data name="tabPicture.Text" xml:space="preserve">
-    <value>Picture</value>
+  <data name="tabCharacter.Text" xml:space="preserve">
+    <value>Character</value>
   </data>
-  <data name="&gt;&gt;tabPicture.Name" xml:space="preserve">
-    <value>tabPicture</value>
+  <data name="&gt;&gt;tabCharacter.Name" xml:space="preserve">
+    <value>tabCharacter</value>
   </data>
-  <data name="&gt;&gt;tabPicture.Type" xml:space="preserve">
+  <data name="&gt;&gt;tabCharacter.Type" xml:space="preserve">
     <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;tabPicture.Parent" xml:space="preserve">
+  <data name="&gt;&gt;tabCharacter.Parent" xml:space="preserve">
     <value>tabSymbolProperties</value>
   </data>
-  <data name="&gt;&gt;tabPicture.ZOrder" xml:space="preserve">
-    <value>2</value>
+  <data name="&gt;&gt;tabCharacter.ZOrder" xml:space="preserve">
+    <value>1</value>
   </data>
   <data name="lblColorCharacter.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -1069,7 +1432,7 @@
     <value>17, 55</value>
   </data>
   <data name="cmbFontFamilly.Size" type="System.Drawing.Size, System.Drawing">
-    <value>195, 20</value>
+    <value>195, 25</value>
   </data>
   <data name="cmbFontFamilly.TabIndex" type="System.Int32, mscorlib">
     <value>4</value>
@@ -1086,32 +1449,188 @@
   <data name="&gt;&gt;cmbFontFamilly.ZOrder" xml:space="preserve">
     <value>7</value>
   </data>
-  <data name="tabCharacter.Location" type="System.Drawing.Point, System.Drawing">
+  <data name="&gt;&gt;groupBox2.Name" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="&gt;&gt;groupBox2.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;groupBox2.Parent" xml:space="preserve">
+    <value>tabSimple</value>
+  </data>
+  <data name="&gt;&gt;groupBox2.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;cmbPointShape.Name" xml:space="preserve">
+    <value>cmbPointShape</value>
+  </data>
+  <data name="&gt;&gt;cmbPointShape.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;cmbPointShape.Parent" xml:space="preserve">
+    <value>tabSimple</value>
+  </data>
+  <data name="&gt;&gt;cmbPointShape.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;label2.Name" xml:space="preserve">
+    <value>label2</value>
+  </data>
+  <data name="&gt;&gt;label2.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;label2.Parent" xml:space="preserve">
+    <value>tabSimple</value>
+  </data>
+  <data name="&gt;&gt;label2.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;lblColorSimple.Name" xml:space="preserve">
+    <value>lblColorSimple</value>
+  </data>
+  <data name="&gt;&gt;lblColorSimple.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lblColorSimple.Parent" xml:space="preserve">
+    <value>tabSimple</value>
+  </data>
+  <data name="&gt;&gt;lblColorSimple.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;cbColorSimple.Name" xml:space="preserve">
+    <value>cbColorSimple</value>
+  </data>
+  <data name="&gt;&gt;cbColorSimple.Type" xml:space="preserve">
+    <value>DotSpatial.Symbology.Forms.ColorButton, DotSpatial.Symbology.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0544cdeefb662382</value>
+  </data>
+  <data name="&gt;&gt;cbColorSimple.Parent" xml:space="preserve">
+    <value>tabSimple</value>
+  </data>
+  <data name="&gt;&gt;cbColorSimple.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="&gt;&gt;sldOpacitySimple.Name" xml:space="preserve">
+    <value>sldOpacitySimple</value>
+  </data>
+  <data name="&gt;&gt;sldOpacitySimple.Type" xml:space="preserve">
+    <value>DotSpatial.Symbology.Forms.RampSlider, DotSpatial.Symbology.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0544cdeefb662382</value>
+  </data>
+  <data name="&gt;&gt;sldOpacitySimple.Parent" xml:space="preserve">
+    <value>tabSimple</value>
+  </data>
+  <data name="&gt;&gt;sldOpacitySimple.ZOrder" xml:space="preserve">
+    <value>5</value>
+  </data>
+  <data name="tabSimple.Location" type="System.Drawing.Point, System.Drawing">
     <value>4, 22</value>
   </data>
-  <data name="tabCharacter.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+  <data name="tabSimple.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>3, 3, 3, 3</value>
   </data>
-  <data name="tabCharacter.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="tabSimple.Size" type="System.Drawing.Size, System.Drawing">
     <value>247, 285</value>
   </data>
-  <data name="tabCharacter.TabIndex" type="System.Int32, mscorlib">
-    <value>1</value>
+  <data name="tabSimple.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
   </data>
-  <data name="tabCharacter.Text" xml:space="preserve">
-    <value>Character</value>
+  <data name="tabSimple.Text" xml:space="preserve">
+    <value>Simple</value>
   </data>
-  <data name="&gt;&gt;tabCharacter.Name" xml:space="preserve">
-    <value>tabCharacter</value>
+  <data name="&gt;&gt;tabSimple.Name" xml:space="preserve">
+    <value>tabSimple</value>
   </data>
-  <data name="&gt;&gt;tabCharacter.Type" xml:space="preserve">
+  <data name="&gt;&gt;tabSimple.Type" xml:space="preserve">
     <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;tabCharacter.Parent" xml:space="preserve">
+  <data name="&gt;&gt;tabSimple.Parent" xml:space="preserve">
     <value>tabSymbolProperties</value>
   </data>
-  <data name="&gt;&gt;tabCharacter.ZOrder" xml:space="preserve">
+  <data name="&gt;&gt;tabSimple.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;cbOutlineColor.Name" xml:space="preserve">
+    <value>cbOutlineColor</value>
+  </data>
+  <data name="&gt;&gt;cbOutlineColor.Type" xml:space="preserve">
+    <value>DotSpatial.Symbology.Forms.ColorButton, DotSpatial.Symbology.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0544cdeefb662382</value>
+  </data>
+  <data name="&gt;&gt;cbOutlineColor.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="&gt;&gt;cbOutlineColor.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;sldOutlineOpacity.Name" xml:space="preserve">
+    <value>sldOutlineOpacity</value>
+  </data>
+  <data name="&gt;&gt;sldOutlineOpacity.Type" xml:space="preserve">
+    <value>DotSpatial.Symbology.Forms.RampSlider, DotSpatial.Symbology.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0544cdeefb662382</value>
+  </data>
+  <data name="&gt;&gt;sldOutlineOpacity.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="&gt;&gt;sldOutlineOpacity.ZOrder" xml:space="preserve">
     <value>1</value>
+  </data>
+  <data name="&gt;&gt;lblOutlineColor.Name" xml:space="preserve">
+    <value>lblOutlineColor</value>
+  </data>
+  <data name="&gt;&gt;lblOutlineColor.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;lblOutlineColor.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="&gt;&gt;lblOutlineColor.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="&gt;&gt;dbxOutlineWidth.Name" xml:space="preserve">
+    <value>dbxOutlineWidth</value>
+  </data>
+  <data name="&gt;&gt;dbxOutlineWidth.Type" xml:space="preserve">
+    <value>DotSpatial.Symbology.Forms.DoubleBox, DotSpatial.Symbology.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0544cdeefb662382</value>
+  </data>
+  <data name="&gt;&gt;dbxOutlineWidth.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="&gt;&gt;dbxOutlineWidth.ZOrder" xml:space="preserve">
+    <value>3</value>
+  </data>
+  <data name="&gt;&gt;chkUseOutline.Name" xml:space="preserve">
+    <value>chkUseOutline</value>
+  </data>
+  <data name="&gt;&gt;chkUseOutline.Type" xml:space="preserve">
+    <value>System.Windows.Forms.CheckBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;chkUseOutline.Parent" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="&gt;&gt;chkUseOutline.ZOrder" xml:space="preserve">
+    <value>4</value>
+  </data>
+  <data name="groupBox2.Location" type="System.Drawing.Point, System.Drawing">
+    <value>19, 133</value>
+  </data>
+  <data name="groupBox2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>206, 147</value>
+  </data>
+  <data name="groupBox2.TabIndex" type="System.Int32, mscorlib">
+    <value>5</value>
+  </data>
+  <data name="groupBox2.Text" xml:space="preserve">
+    <value>Outline</value>
+  </data>
+  <data name="&gt;&gt;groupBox2.Name" xml:space="preserve">
+    <value>groupBox2</value>
+  </data>
+  <data name="&gt;&gt;groupBox2.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;groupBox2.Parent" xml:space="preserve">
+    <value>tabSimple</value>
+  </data>
+  <data name="&gt;&gt;groupBox2.ZOrder" xml:space="preserve">
+    <value>0</value>
   </data>
   <data name="cbOutlineColor.Location" type="System.Drawing.Point, System.Drawing">
     <value>29, 89</value>
@@ -1238,30 +1757,6 @@
   </data>
   <data name="&gt;&gt;chkUseOutline.ZOrder" xml:space="preserve">
     <value>4</value>
-  </data>
-  <data name="groupBox2.Location" type="System.Drawing.Point, System.Drawing">
-    <value>19, 133</value>
-  </data>
-  <data name="groupBox2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>206, 147</value>
-  </data>
-  <data name="groupBox2.TabIndex" type="System.Int32, mscorlib">
-    <value>5</value>
-  </data>
-  <data name="groupBox2.Text" xml:space="preserve">
-    <value>Outline</value>
-  </data>
-  <data name="&gt;&gt;groupBox2.Name" xml:space="preserve">
-    <value>groupBox2</value>
-  </data>
-  <data name="&gt;&gt;groupBox2.Type" xml:space="preserve">
-    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;groupBox2.Parent" xml:space="preserve">
-    <value>tabSimple</value>
-  </data>
-  <data name="&gt;&gt;groupBox2.ZOrder" xml:space="preserve">
-    <value>0</value>
   </data>
   <data name="cmbPointShape.Items" xml:space="preserve">
     <value>Diamond</value>
@@ -1407,38 +1902,119 @@
   <data name="&gt;&gt;sldOpacitySimple.ZOrder" xml:space="preserve">
     <value>5</value>
   </data>
-  <data name="tabSimple.Location" type="System.Drawing.Point, System.Drawing">
-    <value>4, 22</value>
-  </data>
-  <data name="tabSimple.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>3, 3, 3, 3</value>
-  </data>
-  <data name="tabSimple.Size" type="System.Drawing.Size, System.Drawing">
-    <value>247, 285</value>
-  </data>
-  <data name="tabSimple.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
-  </data>
-  <data name="tabSimple.Text" xml:space="preserve">
-    <value>Simple</value>
-  </data>
-  <data name="&gt;&gt;tabSimple.Name" xml:space="preserve">
-    <value>tabSimple</value>
-  </data>
-  <data name="&gt;&gt;tabSimple.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;tabSimple.Parent" xml:space="preserve">
-    <value>tabSymbolProperties</value>
-  </data>
-  <data name="&gt;&gt;tabSimple.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
   <data name="grpPlacement.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Bottom, Left</value>
   </data>
+  <data name="&gt;&gt;grpOffset.Name" xml:space="preserve">
+    <value>grpOffset</value>
+  </data>
+  <data name="&gt;&gt;grpOffset.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;grpOffset.Parent" xml:space="preserve">
+    <value>grpPlacement</value>
+  </data>
+  <data name="&gt;&gt;grpOffset.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;angleControl.Name" xml:space="preserve">
+    <value>angleControl</value>
+  </data>
+  <data name="&gt;&gt;angleControl.Type" xml:space="preserve">
+    <value>DotSpatial.Symbology.Forms.AngleControl, DotSpatial.Symbology.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0544cdeefb662382</value>
+  </data>
+  <data name="&gt;&gt;angleControl.Parent" xml:space="preserve">
+    <value>grpPlacement</value>
+  </data>
+  <data name="&gt;&gt;angleControl.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="&gt;&gt;sizeControl.Name" xml:space="preserve">
+    <value>sizeControl</value>
+  </data>
+  <data name="&gt;&gt;sizeControl.Type" xml:space="preserve">
+    <value>DotSpatial.Symbology.Forms.SizeControl, DotSpatial.Symbology.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0544cdeefb662382</value>
+  </data>
+  <data name="&gt;&gt;sizeControl.Parent" xml:space="preserve">
+    <value>grpPlacement</value>
+  </data>
+  <data name="&gt;&gt;sizeControl.ZOrder" xml:space="preserve">
+    <value>2</value>
+  </data>
+  <data name="grpPlacement.Location" type="System.Drawing.Point, System.Drawing">
+    <value>392, 188</value>
+  </data>
+  <data name="grpPlacement.Size" type="System.Drawing.Size, System.Drawing">
+    <value>214, 253</value>
+  </data>
+  <data name="grpPlacement.TabIndex" type="System.Int32, mscorlib">
+    <value>8</value>
+  </data>
+  <data name="grpPlacement.Text" xml:space="preserve">
+    <value>Placement</value>
+  </data>
+  <data name="&gt;&gt;grpPlacement.Name" xml:space="preserve">
+    <value>grpPlacement</value>
+  </data>
+  <data name="&gt;&gt;grpPlacement.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;grpPlacement.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;grpPlacement.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
   <data name="grpOffset.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Left, Right</value>
+  </data>
+  <data name="&gt;&gt;dbxOffsetX.Name" xml:space="preserve">
+    <value>dbxOffsetX</value>
+  </data>
+  <data name="&gt;&gt;dbxOffsetX.Type" xml:space="preserve">
+    <value>DotSpatial.Symbology.Forms.DoubleBox, DotSpatial.Symbology.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0544cdeefb662382</value>
+  </data>
+  <data name="&gt;&gt;dbxOffsetX.Parent" xml:space="preserve">
+    <value>grpOffset</value>
+  </data>
+  <data name="&gt;&gt;dbxOffsetX.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;dbxOffsetY.Name" xml:space="preserve">
+    <value>dbxOffsetY</value>
+  </data>
+  <data name="&gt;&gt;dbxOffsetY.Type" xml:space="preserve">
+    <value>DotSpatial.Symbology.Forms.DoubleBox, DotSpatial.Symbology.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0544cdeefb662382</value>
+  </data>
+  <data name="&gt;&gt;dbxOffsetY.Parent" xml:space="preserve">
+    <value>grpOffset</value>
+  </data>
+  <data name="&gt;&gt;dbxOffsetY.ZOrder" xml:space="preserve">
+    <value>1</value>
+  </data>
+  <data name="grpOffset.Location" type="System.Drawing.Point, System.Drawing">
+    <value>8, 158</value>
+  </data>
+  <data name="grpOffset.Size" type="System.Drawing.Size, System.Drawing">
+    <value>200, 86</value>
+  </data>
+  <data name="grpOffset.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
+  </data>
+  <data name="grpOffset.Text" xml:space="preserve">
+    <value>Offset</value>
+  </data>
+  <data name="&gt;&gt;grpOffset.Name" xml:space="preserve">
+    <value>grpOffset</value>
+  </data>
+  <data name="&gt;&gt;grpOffset.Type" xml:space="preserve">
+    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;grpOffset.Parent" xml:space="preserve">
+    <value>grpPlacement</value>
+  </data>
+  <data name="&gt;&gt;grpOffset.ZOrder" xml:space="preserve">
+    <value>0</value>
   </data>
   <data name="dbxOffsetX.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Left, Right</value>
@@ -1500,30 +2076,6 @@
   <data name="&gt;&gt;dbxOffsetY.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
-  <data name="grpOffset.Location" type="System.Drawing.Point, System.Drawing">
-    <value>8, 158</value>
-  </data>
-  <data name="grpOffset.Size" type="System.Drawing.Size, System.Drawing">
-    <value>200, 86</value>
-  </data>
-  <data name="grpOffset.TabIndex" type="System.Int32, mscorlib">
-    <value>2</value>
-  </data>
-  <data name="grpOffset.Text" xml:space="preserve">
-    <value>Offset</value>
-  </data>
-  <data name="&gt;&gt;grpOffset.Name" xml:space="preserve">
-    <value>grpOffset</value>
-  </data>
-  <data name="&gt;&gt;grpOffset.Type" xml:space="preserve">
-    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;grpOffset.Parent" xml:space="preserve">
-    <value>grpPlacement</value>
-  </data>
-  <data name="&gt;&gt;grpOffset.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
   <data name="angleControl.Caption" xml:space="preserve">
     <value>&amp;Angle:</value>
   </data>
@@ -1569,30 +2121,6 @@
   <data name="&gt;&gt;sizeControl.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
-  <data name="grpPlacement.Location" type="System.Drawing.Point, System.Drawing">
-    <value>392, 188</value>
-  </data>
-  <data name="grpPlacement.Size" type="System.Drawing.Size, System.Drawing">
-    <value>214, 253</value>
-  </data>
-  <data name="grpPlacement.TabIndex" type="System.Int32, mscorlib">
-    <value>8</value>
-  </data>
-  <data name="grpPlacement.Text" xml:space="preserve">
-    <value>Placement</value>
-  </data>
-  <data name="&gt;&gt;grpPlacement.Name" xml:space="preserve">
-    <value>grpPlacement</value>
-  </data>
-  <data name="&gt;&gt;grpPlacement.Type" xml:space="preserve">
-    <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;grpPlacement.Parent" xml:space="preserve">
-    <value>$this</value>
-  </data>
-  <data name="&gt;&gt;grpPlacement.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
   <data name="tabSymbolProperties.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Bottom, Left</value>
   </data>
@@ -1615,7 +2143,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;tabSymbolProperties.ZOrder" xml:space="preserve">
-    <value>3</value>
+    <value>4</value>
   </data>
   <data name="ccSymbols.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Bottom, Left</value>
@@ -1639,7 +2167,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;ccSymbols.ZOrder" xml:space="preserve">
-    <value>8</value>
+    <value>9</value>
   </data>
   <data name="doubleBox9.Caption" xml:space="preserve">
     <value>Angle:</value>
@@ -1659,9 +2187,33 @@
   <data name="&gt;&gt;doubleBox9.Type" xml:space="preserve">
     <value>DotSpatial.Symbology.Forms.DoubleBox, DotSpatial.Symbology.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0544cdeefb662382</value>
   </data>
-  <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>zh-CN</value>
-  </metadata>
+  <data name="btnImportSymbol.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
+  </data>
+  <data name="btnImportSymbol.Location" type="System.Drawing.Point, System.Drawing">
+    <value>498, 124</value>
+  </data>
+  <data name="btnImportSymbol.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 23</value>
+  </data>
+  <data name="btnImportSymbol.TabIndex" type="System.Int32, mscorlib">
+    <value>9</value>
+  </data>
+  <data name="btnImportSymbol.Text" xml:space="preserve">
+    <value>&amp;Import</value>
+  </data>
+  <data name="&gt;&gt;btnImportSymbol.Name" xml:space="preserve">
+    <value>btnImportSymbol</value>
+  </data>
+  <data name="&gt;&gt;btnImportSymbol.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;btnImportSymbol.Parent" xml:space="preserve">
+    <value>$this</value>
+  </data>
+  <data name="&gt;&gt;btnImportSymbol.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
   <metadata name="$this.Localizable" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>

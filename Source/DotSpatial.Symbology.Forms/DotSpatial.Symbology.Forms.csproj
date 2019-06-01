@@ -304,6 +304,7 @@
     <Compile Include="SymbolizerCollectionControl.Designer.cs">
       <DependentUpon>SymbolizerCollectionControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="SerializeHelper.cs" />
     <Compile Include="TabColorControl.Designer.cs">
       <DependentUpon>TabColorControl.cs</DependentUpon>
     </Compile>

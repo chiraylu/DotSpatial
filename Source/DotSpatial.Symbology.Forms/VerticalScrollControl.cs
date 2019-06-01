@@ -193,9 +193,10 @@ namespace DotSpatial.Symbology.Forms
             if (dw == 0 || dh == 0) return; // prevent divide by 0
             if (cw == 0 || ch == 0) return;
             _scrVertical.Maximum = dh;
-            _scrVertical.SmallChange = dh / 50;
-            _scrVertical.LargeChange = dh / 10;
-
+            _scrVertical.SmallChange = (int)Math.Ceiling(ch/10.0);
+            _scrVertical.LargeChange = ch;
+            _scrVertical.Value = 0;
+            _controlRectangle.Y = _scrVertical.Value;
             if (dh <= ch)
             {
                 _scrVertical.Visible = false;
@@ -205,7 +206,30 @@ namespace DotSpatial.Symbology.Forms
                 _scrVertical.Visible = true;
             }
         }
-
+        protected override void OnMouseWheel(MouseEventArgs e)
+        {
+            if (_scrVertical.Visible)
+            {
+                int value = 120;
+                int times = e.Delta / value;
+                int destValue = _scrVertical.Value - times * _scrVertical.SmallChange;
+                if (destValue < 0)
+                {
+                    destValue = 0;
+                }
+                else
+                {
+                    int maxValue = _scrVertical.Maximum - _scrVertical.LargeChange + 1;
+                    if (destValue > maxValue)
+                    {
+                        destValue = maxValue;
+                    }
+                }
+                _scrVertical.Value = destValue;
+                ScrVerticalScroll();
+            }
+            base.OnMouseWheel(e);
+        }
         /// <summary>
         /// Disposes the unmanaged memory objects and optionally disposes
         /// the managed memory objects
@@ -355,9 +379,16 @@ namespace DotSpatial.Symbology.Forms
 
         private void ScrVerticalScroll(object sender, ScrollEventArgs e)
         {
-            _controlRectangle.Y = _scrVertical.Value;
-            IsInitialized = false;
-            Invalidate();
+            ScrVerticalScroll();
+        }
+        private void ScrVerticalScroll()
+        {
+            if (_controlRectangle.Y != _scrVertical.Value)
+            {
+                _controlRectangle.Y = _scrVertical.Value;
+                IsInitialized = false;
+                Invalidate();
+            }
         }
 
         #endregion

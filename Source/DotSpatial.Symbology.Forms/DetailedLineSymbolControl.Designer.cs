@@ -85,6 +85,8 @@ namespace DotSpatial.Symbology.Forms
             this.ccDecorations = new DotSpatial.Symbology.Forms.DecorationCollectionControl();
             this.ttHelp = new System.Windows.Forms.ToolTip(this.components);
             this.ccStrokes = new DotSpatial.Symbology.Forms.StrokeCollectionControl();
+            this.btnImportSymbol = new System.Windows.Forms.Button();
+            this.btnSaveSymbol = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.tabStrokeProperties.SuspendLayout();
             this.tabSimple.SuspendLayout();
@@ -126,6 +128,8 @@ namespace DotSpatial.Symbology.Forms
             // groupBox1
             // 
             resources.ApplyResources(this.groupBox1, "groupBox1");
+            this.groupBox1.Controls.Add(this.btnImportSymbol);
+            this.groupBox1.Controls.Add(this.btnSaveSymbol);
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.lblPreview);
             this.groupBox1.Controls.Add(this.lblScaleMode);
@@ -631,6 +635,20 @@ namespace DotSpatial.Symbology.Forms
             this.ccStrokes.Name = "ccStrokes";
             this.ttHelp.SetToolTip(this.ccStrokes, resources.GetString("ccStrokes.ToolTip"));
             // 
+            // btnImportSymbol
+            // 
+            resources.ApplyResources(this.btnImportSymbol, "btnImportSymbol");
+            this.btnImportSymbol.Name = "btnImportSymbol";
+            this.ttHelp.SetToolTip(this.btnImportSymbol, resources.GetString("btnImportSymbol.ToolTip"));
+            this.btnImportSymbol.UseVisualStyleBackColor = true;
+            // 
+            // btnSaveSymbol
+            // 
+            resources.ApplyResources(this.btnSaveSymbol, "btnSaveSymbol");
+            this.btnSaveSymbol.Name = "btnSaveSymbol";
+            this.ttHelp.SetToolTip(this.btnSaveSymbol, resources.GetString("btnSaveSymbol.ToolTip"));
+            this.btnSaveSymbol.UseVisualStyleBackColor = true;
+            // 
             // DetailedLineSymbolControl
             // 
             resources.ApplyResources(this, "$this");
@@ -719,5 +737,7 @@ namespace DotSpatial.Symbology.Forms
         private NumericUpDown nudPercentualPosition;
         private TabPage tabMarker;
         private Button btnMarker;
+        private Button btnImportSymbol;
+        private Button btnSaveSymbol;
     }
 }

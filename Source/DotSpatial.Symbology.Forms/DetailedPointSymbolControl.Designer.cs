@@ -31,7 +31,7 @@ namespace DotSpatial.Symbology.Forms
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DetailedPointSymbolControl));
-            this.btnAddToCustom = new System.Windows.Forms.Button();
+            this.btnSaveSymbol = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.cmbUnits = new System.Windows.Forms.ComboBox();
             this.lblUnits = new System.Windows.Forms.Label();
@@ -91,6 +91,7 @@ namespace DotSpatial.Symbology.Forms
             this.tabSymbolProperties = new System.Windows.Forms.TabControl();
             this.ccSymbols = new DotSpatial.Symbology.Forms.SymbolCollectionControl();
             this.doubleBox9 = new DotSpatial.Symbology.Forms.DoubleBox();
+            this.btnImportSymbol = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox6.SuspendLayout();
             this.groupBox7.SuspendLayout();
@@ -104,12 +105,12 @@ namespace DotSpatial.Symbology.Forms
             this.tabSymbolProperties.SuspendLayout();
             this.SuspendLayout();
             // 
-            // btnAddToCustom
+            // btnSaveSymbol
             // 
-            resources.ApplyResources(this.btnAddToCustom, "btnAddToCustom");
-            this.btnAddToCustom.Name = "btnAddToCustom";
-            this.btnAddToCustom.UseVisualStyleBackColor = true;
-            this.btnAddToCustom.Click += new System.EventHandler(this.BtnAddToCustomClick);
+            resources.ApplyResources(this.btnSaveSymbol, "btnSaveSymbol");
+            this.btnSaveSymbol.Name = "btnSaveSymbol";
+            this.btnSaveSymbol.UseVisualStyleBackColor = true;
+            this.btnSaveSymbol.Click += new System.EventHandler(this.BtnSaveSymbolClick);
             // 
             // groupBox1
             // 
@@ -498,7 +499,7 @@ namespace DotSpatial.Symbology.Forms
             this.charCharacter.IsSelected = false;
             this.charCharacter.Name = "charCharacter";
             this.charCharacter.NumColumns = 9;
-            this.charCharacter.SelectedChar = ((byte)(0));
+            this.charCharacter.SelectedChar = 0;
             this.charCharacter.SelectionBackColor = System.Drawing.Color.CornflowerBlue;
             this.charCharacter.SelectionForeColor = System.Drawing.Color.White;
             this.charCharacter.TypeSet = ((byte)(0));
@@ -760,10 +761,18 @@ namespace DotSpatial.Symbology.Forms
             this.doubleBox9.RegularHelp = "Enter a double precision floating point value.";
             this.doubleBox9.Value = 0D;
             // 
+            // btnImportSymbol
+            // 
+            resources.ApplyResources(this.btnImportSymbol, "btnImportSymbol");
+            this.btnImportSymbol.Name = "btnImportSymbol";
+            this.btnImportSymbol.UseVisualStyleBackColor = true;
+            this.btnImportSymbol.Click += new System.EventHandler(this.BtnImportSymbolClick);
+            // 
             // DetailedPointSymbolControl
             // 
+            this.Controls.Add(this.btnImportSymbol);
             this.Controls.Add(this.grpPlacement);
-            this.Controls.Add(this.btnAddToCustom);
+            this.Controls.Add(this.btnSaveSymbol);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.tabSymbolProperties);
             this.Controls.Add(this.lblPreview);
@@ -799,7 +808,7 @@ namespace DotSpatial.Symbology.Forms
         #endregion
 
         private AngleControl angleControl;
-        private Button btnAddToCustom;
+        private Button btnSaveSymbol;
         private Button btnBrowseImage;
         private ColorButton cbColorCharacter;
         private ColorButton cbColorSimple;
@@ -858,5 +867,6 @@ namespace DotSpatial.Symbology.Forms
         private TabControl tabSymbolProperties;
         private TextBox txtImageFilename;
         private TextBox txtUnicode;
+        private Button btnImportSymbol;
     }
 }

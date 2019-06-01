@@ -194,6 +194,7 @@ namespace DotSpatial.Symbology.Forms
         {
             OnAdd();
             RefreshList();
+            lbxItems.SelectedIndex = 0;
         }
 
         private void BtnDownClick(object sender, EventArgs e)
@@ -219,7 +220,7 @@ namespace DotSpatial.Symbology.Forms
                 index -= 1;
             }
 
-            lbxItems.SelectedIndex = index;
+            lbxItems.SelectedIndex = _symbols.Count-index-1;
             OnRemoveClick();
         }
 

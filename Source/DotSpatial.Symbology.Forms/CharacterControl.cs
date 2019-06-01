@@ -145,6 +145,8 @@ namespace DotSpatial.Symbology.Forms
             set
             {
                 _numColumns = value;
+                DocumentRectangle = new Rectangle(0, 0, (_numColumns * _cellSize.Width) + 1, (NumRows * _cellSize.Height) + 1);
+                ResetScroll();
                 Invalidate();
             }
         }
@@ -168,6 +170,7 @@ namespace DotSpatial.Symbology.Forms
                 if (_numRows != value)
                 {
                     _numRows = value;
+                    DocumentRectangle = new Rectangle(0, 0, (_numColumns * _cellSize.Width) + 1, (NumRows * _cellSize.Height) + 1);
                     ResetScroll();
                     Invalidate();
                 }
@@ -210,14 +213,13 @@ namespace DotSpatial.Symbology.Forms
         /// <param name="e">The paint event args.</param>
         protected override void OnInitialize(PaintEventArgs e)
         {
-            DocumentRectangle = new Rectangle(0, 0, (_numColumns * _cellSize.Width) + 1, (NumRows * _cellSize.Height) + 1);
             if (DynamicColumns)
             {
                 int newColumns = (Width - 20) / _cellSize.Width;
                 if (newColumns != _numColumns)
                 {
                     e.Graphics.FillRectangle(Brushes.White, e.ClipRectangle);
-                    _numColumns = newColumns;
+                    NumColumns = newColumns;
                     Invalidate();
                     return;
                 }

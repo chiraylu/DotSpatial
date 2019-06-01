@@ -219,19 +219,16 @@ namespace DotSpatial.Data.Forms
             int ch = Height;
             if (dw == 0 || dh == 0) return; // prevent divide by 0
             if (cw == 0 || ch == 0) return;
-            _scrHorizontal.LargeChange = (cw * cw) / dw;
-            _scrVertical.LargeChange = (ch * ch) / dh;
+            _scrHorizontal.LargeChange = cw;
+            _scrHorizontal.SmallChange = (int)Math.Ceiling(cw / 10.0);
+            _scrVertical.LargeChange = ch;
+            _scrVertical.SmallChange = (int)Math.Ceiling(ch / 10.0);
             _scrHorizontal.Maximum = dw;
             _scrVertical.Maximum = dh;
-            if (dw <= cw)
-            {
-                _scrHorizontal.Visible = false;
-            }
-            else
-            {
-                if (_scrHorizontal.Enabled) _scrHorizontal.Visible = true;
-            }
-
+            _scrVertical.Value = 0;
+            _scrHorizontal.Value = 0;
+            _controlRectangle.Y = 0;
+            _controlRectangle.X = 0;
             if (dh <= ch)
             {
                 _scrVertical.Visible = false;
@@ -239,6 +236,15 @@ namespace DotSpatial.Data.Forms
             else
             {
                 if (_scrVertical.Enabled) _scrVertical.Visible = true;
+            }
+            int maxWidth = _scrVertical.Visible ? cw + _scrVertical.Width : cw;
+            if (dw <= cw)
+            {
+                _scrHorizontal.Visible = false;
+            }
+            else
+            {
+                if (_scrHorizontal.Enabled) _scrHorizontal.Visible = true;
             }
 
             _lblCorner.Visible = _scrVertical.Visible || _scrHorizontal.Visible;

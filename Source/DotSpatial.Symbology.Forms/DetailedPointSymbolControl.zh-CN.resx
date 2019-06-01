@@ -121,11 +121,12 @@
   <data name="btnAddToCustom.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
-  <data name="btnAddToCustom.Text" xml:space="preserve">
-    <value>&amp;加入到定制符号</value>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="btnAddToCustom.Size" type="System.Drawing.Size, System.Drawing">
+    <value>53, 23</value>
   </data>
-  <data name="groupBox1.Text" xml:space="preserve">
-    <value>符号器特征参数</value>
+  <data name="btnAddToCustom.Text" xml:space="preserve">
+    <value>&amp;保存</value>
   </data>
   <data name="cmbUnits.Items" xml:space="preserve">
     <value>世界</value>
@@ -151,7 +152,6 @@
   <data name="lblUnits.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="lblUnits.Size" type="System.Drawing.Size, System.Drawing">
     <value>35, 12</value>
   </data>
@@ -181,6 +181,9 @@
   </data>
   <data name="chkSmoothing.Text" xml:space="preserve">
     <value>平滑效果</value>
+  </data>
+  <data name="groupBox1.Text" xml:space="preserve">
+    <value>符号器特征参数</value>
   </data>
   <data name="label3.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -224,9 +227,6 @@
   <data name="groupBox6.Text" xml:space="preserve">
     <value>尺寸</value>
   </data>
-  <data name="tabPicture.Text" xml:space="preserve">
-    <value>图片</value>
-  </data>
   <data name="lblImageOpacity.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
@@ -260,8 +260,8 @@
   <data name="lblImage.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
-  <data name="tabCharacter.Text" xml:space="preserve">
-    <value>文字</value>
+  <data name="tabPicture.Text" xml:space="preserve">
+    <value>图片</value>
   </data>
   <data name="lblColorCharacter.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -284,11 +284,8 @@
   <data name="lblFontFamily.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
-  <data name="tabSimple.Text" xml:space="preserve">
-    <value>简单</value>
-  </data>
-  <data name="groupBox2.Text" xml:space="preserve">
-    <value>外廓</value>
+  <data name="tabCharacter.Text" xml:space="preserve">
+    <value>文字</value>
   </data>
   <data name="lblOutlineColor.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -307,6 +304,9 @@
   </data>
   <data name="chkUseOutline.Text" xml:space="preserve">
     <value>使用外扩线</value>
+  </data>
+  <data name="groupBox2.Text" xml:space="preserve">
+    <value>外廓</value>
   </data>
   <data name="cmbPointShape.Items" xml:space="preserve">
     <value>菱形</value>
@@ -347,10 +347,13 @@
   <data name="lblColorSimple.Text" xml:space="preserve">
     <value>颜色:</value>
   </data>
-  <data name="grpPlacement.Text" xml:space="preserve">
-    <value>布局</value>
+  <data name="tabSimple.Text" xml:space="preserve">
+    <value>简单</value>
   </data>
   <data name="grpOffset.Text" xml:space="preserve">
     <value>偏移量</value>
+  </data>
+  <data name="grpPlacement.Text" xml:space="preserve">
+    <value>布局</value>
   </data>
 </root>

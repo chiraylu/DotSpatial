@@ -1212,7 +1212,7 @@ namespace DotSpatial.Controls
         private Size SizeItem(int offset, ILegendItem item, Graphics g)
         {
             if (item == null) return new Size(0, 0);
-            int width = offset + 30 + (int)g.MeasureString(item.LegendText, Font).Width;
+            int width = offset + 30 + (int)Math.Ceiling(g.MeasureString(item.LegendText, Font).Width);
             int height = ItemHeight;
             if (item.LegendSymbolMode == SymbolMode.Symbol)
             {
@@ -1253,7 +1253,7 @@ namespace DotSpatial.Controls
                 }
             }
 
-            int h = totalHeight;
+            int h = totalHeight + 60;
             DocumentRectangle = new Rectangle(0, 0, w, h);
         }
 
