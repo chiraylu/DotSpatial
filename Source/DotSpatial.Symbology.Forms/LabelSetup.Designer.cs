@@ -232,6 +232,7 @@ namespace DotSpatial.Symbology.Forms
             // 
             // sqlExpression
             // 
+            this.sqlExpression.AllowEmptyExpression = false;
             this.sqlExpression.AttributeSource = null;
             resources.ApplyResources(this.sqlExpression, "sqlExpression");
             this.sqlExpression.ExpressionText = "";
@@ -529,7 +530,7 @@ namespace DotSpatial.Symbology.Forms
             resources.GetString("cmbSize.Items16")});
             resources.ApplyResources(this.cmbSize, "cmbSize");
             this.cmbSize.Name = "cmbSize";
-            this.cmbSize.SelectedIndexChanged += new System.EventHandler(this.CmbSizeSelectedIndexChanged);
+            this.cmbSize.TextChanged += new System.EventHandler(this.CmbSize_TextChanged);
             // 
             // label1
             // 

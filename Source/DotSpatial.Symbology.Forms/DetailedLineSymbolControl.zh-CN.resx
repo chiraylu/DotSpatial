@@ -149,39 +149,14 @@
   <data name="btnImportSymbol.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
-  <data name="btnImportSymbol.Location" type="System.Drawing.Point, System.Drawing">
-    <value>401, 73</value>
-  </data>
-  <data name="btnImportSymbol.Size" type="System.Drawing.Size, System.Drawing">
-    <value>75, 23</value>
-  </data>
-  <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="btnImportSymbol.TabIndex" type="System.Int32, mscorlib">
-    <value>11</value>
-  </data>
   <data name="btnImportSymbol.Text" xml:space="preserve">
-    <value>&amp;Import</value>
-  </data>
-  <data name="btnImportSymbol.ToolTip" xml:space="preserve">
-    <value />
+    <value>&amp;导入</value>
   </data>
   <data name="btnSaveSymbol.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
-  <data name="btnSaveSymbol.Location" type="System.Drawing.Point, System.Drawing">
-    <value>312, 73</value>
-  </data>
-  <data name="btnSaveSymbol.Size" type="System.Drawing.Size, System.Drawing">
-    <value>75, 23</value>
-  </data>
-  <data name="btnSaveSymbol.TabIndex" type="System.Int32, mscorlib">
-    <value>10</value>
-  </data>
   <data name="btnSaveSymbol.Text" xml:space="preserve">
-    <value>&amp;Save</value>
-  </data>
-  <data name="btnSaveSymbol.ToolTip" xml:space="preserve">
-    <value />
+    <value>&amp;保存</value>
   </data>
   <data name="label3.Size" type="System.Drawing.Size, System.Drawing">
     <value>35, 12</value>
@@ -205,7 +180,7 @@
     <value>符号化</value>
   </data>
   <data name="groupBox1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>482, 103</value>
+    <value>482, 102</value>
   </data>
   <data name="groupBox1.Text" xml:space="preserve">
     <value>符号器特征参数</value>
@@ -218,6 +193,18 @@
   </data>
   <data name="label1.Text" xml:space="preserve">
     <value>画笔:</value>
+  </data>
+  <data name="tabStrokeProperties.Location" type="System.Drawing.Point, System.Drawing">
+    <value>115, 144</value>
+  </data>
+  <data name="tabStrokeProperties.Size" type="System.Drawing.Size, System.Drawing">
+    <value>481, 280</value>
+  </data>
+  <data name="tabSimple.Size" type="System.Drawing.Size, System.Drawing">
+    <value>473, 254</value>
+  </data>
+  <data name="tabSimple.Text" xml:space="preserve">
+    <value>简单线</value>
   </data>
   <data name="label5.Size" type="System.Drawing.Size, System.Drawing">
     <value>47, 12</value>
@@ -237,20 +224,20 @@
   <data name="dblWidth.Caption" xml:space="preserve">
     <value>&amp;宽度:</value>
   </data>
-  <data name="tabSimple.Size" type="System.Drawing.Size, System.Drawing">
+  <data name="tabMarker.Size" type="System.Drawing.Size, System.Drawing">
     <value>473, 255</value>
   </data>
-  <data name="tabSimple.Text" xml:space="preserve">
-    <value>简单线</value>
+  <data name="tabMarker.Text" xml:space="preserve">
+    <value>标记线</value>
   </data>
   <data name="btnMarker.Text" xml:space="preserve">
     <value>符号...</value>
   </data>
-  <data name="tabMarker.Size" type="System.Drawing.Size, System.Drawing">
-    <value>473, 301</value>
+  <data name="tabCartographic.Size" type="System.Drawing.Size, System.Drawing">
+    <value>473, 255</value>
   </data>
-  <data name="tabMarker.Text" xml:space="preserve">
-    <value>标记线</value>
+  <data name="tabCartographic.Text" xml:space="preserve">
+    <value>符号化线</value>
   </data>
   <data name="lblColorCartographic.Size" type="System.Drawing.Size, System.Drawing">
     <value>35, 12</value>
@@ -264,6 +251,9 @@
   <data name="lblOpacityCartographic.Text" xml:space="preserve">
     <value>透明度:</value>
   </data>
+  <data name="grpCaps.Text" xml:space="preserve">
+    <value>线头形状</value>
+  </data>
   <data name="lblStartCap.Size" type="System.Drawing.Size, System.Drawing">
     <value>59, 12</value>
   </data>
@@ -276,23 +266,20 @@
   <data name="label4.Text" xml:space="preserve">
     <value>&amp;结束形状:</value>
   </data>
-  <data name="grpCaps.Text" xml:space="preserve">
-    <value>线头形状</value>
-  </data>
-  <data name="tabCartographic.Size" type="System.Drawing.Size, System.Drawing">
-    <value>473, 301</value>
-  </data>
-  <data name="tabCartographic.Text" xml:space="preserve">
-    <value>符号化线</value>
-  </data>
-  <data name="dashControl1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>467, 295</value>
-  </data>
   <data name="tabDash.Size" type="System.Drawing.Size, System.Drawing">
-    <value>473, 301</value>
+    <value>473, 255</value>
   </data>
   <data name="tabDash.Text" xml:space="preserve">
     <value>模板</value>
+  </data>
+  <data name="dashControl1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>467, 249</value>
+  </data>
+  <data name="tabDecoration.Size" type="System.Drawing.Size, System.Drawing">
+    <value>473, 255</value>
+  </data>
+  <data name="tabDecoration.Text" xml:space="preserve">
+    <value>修饰线</value>
   </data>
   <data name="btnEdit.Text" xml:space="preserve">
     <value>&amp;编辑</value>
@@ -309,6 +296,9 @@
   <data name="lblNumberOfPositions.Text" xml:space="preserve">
     <value>&amp;位置点个数:</value>
   </data>
+  <data name="grpRotation.Text" xml:space="preserve">
+    <value>旋转</value>
+  </data>
   <data name="radRotationFixed.Size" type="System.Drawing.Size, System.Drawing">
     <value>155, 16</value>
   </data>
@@ -321,8 +311,8 @@
   <data name="radRotationWithLine.Text" xml:space="preserve">
     <value>&amp;根据线角度旋转符号</value>
   </data>
-  <data name="grpRotation.Text" xml:space="preserve">
-    <value>旋转</value>
+  <data name="grpFlip.Text" xml:space="preserve">
+    <value>翻转</value>
   </data>
   <data name="chkFlipFirst.Size" type="System.Drawing.Size, System.Drawing">
     <value>72, 16</value>
@@ -333,19 +323,10 @@
   <data name="chkFlipAll.Text" xml:space="preserve">
     <value>全部翻转</value>
   </data>
-  <data name="grpFlip.Text" xml:space="preserve">
-    <value>翻转</value>
+  <data name="ccStrokes.Size" type="System.Drawing.Size, System.Drawing">
+    <value>105, 415</value>
   </data>
-  <data name="tabDecoration.Size" type="System.Drawing.Size, System.Drawing">
-    <value>473, 301</value>
-  </data>
-  <data name="tabDecoration.Text" xml:space="preserve">
-    <value>修饰线</value>
-  </data>
-  <data name="tabStrokeProperties.Location" type="System.Drawing.Point, System.Drawing">
-    <value>115, 144</value>
-  </data>
-  <data name="tabStrokeProperties.Size" type="System.Drawing.Size, System.Drawing">
-    <value>481, 281</value>
+  <data name="$this.Size" type="System.Drawing.Size, System.Drawing">
+    <value>599, 427</value>
   </data>
 </root>

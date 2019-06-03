@@ -114,12 +114,12 @@ namespace DotSpatial.Symbology.Forms
             // 
             // groupBox1
             // 
+            resources.ApplyResources(this.groupBox1, "groupBox1");
             this.groupBox1.Controls.Add(this.cmbUnits);
             this.groupBox1.Controls.Add(this.lblUnits);
             this.groupBox1.Controls.Add(this.lblScaleMode);
             this.groupBox1.Controls.Add(this.cmbScaleMode);
             this.groupBox1.Controls.Add(this.chkSmoothing);
-            resources.ApplyResources(this.groupBox1, "groupBox1");
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.TabStop = false;
             // 
@@ -175,9 +175,9 @@ namespace DotSpatial.Symbology.Forms
             // 
             // lblPreview
             // 
+            resources.ApplyResources(this.lblPreview, "lblPreview");
             this.lblPreview.BackColor = System.Drawing.Color.White;
             this.lblPreview.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            resources.ApplyResources(this.lblPreview, "lblPreview");
             this.lblPreview.Name = "lblPreview";
             // 
             // lblSymbolType
@@ -187,6 +187,7 @@ namespace DotSpatial.Symbology.Forms
             // 
             // cmbSymbolType
             // 
+            resources.ApplyResources(this.cmbSymbolType, "cmbSymbolType");
             this.cmbSymbolType.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbSymbolType.FormattingEnabled = true;
             this.cmbSymbolType.Items.AddRange(new object[] {
@@ -194,7 +195,6 @@ namespace DotSpatial.Symbology.Forms
             resources.GetString("cmbSymbolType.Items1"),
             resources.GetString("cmbSymbolType.Items2"),
             resources.GetString("cmbSymbolType.Items3")});
-            resources.ApplyResources(this.cmbSymbolType, "cmbSymbolType");
             this.cmbSymbolType.Name = "cmbSymbolType";
             this.cmbSymbolType.SelectedIndexChanged += new System.EventHandler(this.CmbSymbolTypeSelectedIndexChanged);
             // 
@@ -205,17 +205,17 @@ namespace DotSpatial.Symbology.Forms
             // 
             // groupBox6
             // 
+            resources.ApplyResources(this.groupBox6, "groupBox6");
             this.groupBox6.Controls.Add(this.doubleBox7);
             this.groupBox6.Controls.Add(this.doubleBox8);
-            resources.ApplyResources(this.groupBox6, "groupBox6");
             this.groupBox6.Name = "groupBox6";
             this.groupBox6.TabStop = false;
             // 
             // doubleBox7
             // 
+            resources.ApplyResources(this.doubleBox7, "doubleBox7");
             this.doubleBox7.BackColorInvalid = System.Drawing.Color.Salmon;
             this.doubleBox7.BackColorRegular = System.Drawing.Color.Empty;
-            resources.ApplyResources(this.doubleBox7, "doubleBox7");
             this.doubleBox7.InvalidHelp = "The value entered could not be correctly parsed into a valid double precision flo" +
     "ating point value.";
             this.doubleBox7.IsValid = true;
@@ -226,9 +226,9 @@ namespace DotSpatial.Symbology.Forms
             // 
             // doubleBox8
             // 
+            resources.ApplyResources(this.doubleBox8, "doubleBox8");
             this.doubleBox8.BackColorInvalid = System.Drawing.Color.Salmon;
             this.doubleBox8.BackColorRegular = System.Drawing.Color.Empty;
-            resources.ApplyResources(this.doubleBox8, "doubleBox8");
             this.doubleBox8.InvalidHelp = "The value entered could not be correctly parsed into a valid double precision flo" +
     "ating point value.";
             this.doubleBox8.IsValid = true;
@@ -239,17 +239,17 @@ namespace DotSpatial.Symbology.Forms
             // 
             // groupBox7
             // 
+            resources.ApplyResources(this.groupBox7, "groupBox7");
             this.groupBox7.Controls.Add(this.doubleBox10);
             this.groupBox7.Controls.Add(this.doubleBox11);
-            resources.ApplyResources(this.groupBox7, "groupBox7");
             this.groupBox7.Name = "groupBox7";
             this.groupBox7.TabStop = false;
             // 
             // doubleBox10
             // 
+            resources.ApplyResources(this.doubleBox10, "doubleBox10");
             this.doubleBox10.BackColorInvalid = System.Drawing.Color.Salmon;
             this.doubleBox10.BackColorRegular = System.Drawing.Color.Empty;
-            resources.ApplyResources(this.doubleBox10, "doubleBox10");
             this.doubleBox10.InvalidHelp = "The value entered could not be correctly parsed into a valid double precision flo" +
     "ating point value.";
             this.doubleBox10.IsValid = true;
@@ -260,9 +260,9 @@ namespace DotSpatial.Symbology.Forms
             // 
             // doubleBox11
             // 
+            resources.ApplyResources(this.doubleBox11, "doubleBox11");
             this.doubleBox11.BackColorInvalid = System.Drawing.Color.Salmon;
             this.doubleBox11.BackColorRegular = System.Drawing.Color.Empty;
-            resources.ApplyResources(this.doubleBox11, "doubleBox11");
             this.doubleBox11.InvalidHelp = "The value entered could not be correctly parsed into a valid double precision flo" +
     "ating point value.";
             this.doubleBox11.IsValid = true;
@@ -273,13 +273,13 @@ namespace DotSpatial.Symbology.Forms
             // 
             // tabPicture
             // 
+            resources.ApplyResources(this.tabPicture, "tabPicture");
             this.tabPicture.Controls.Add(this.lblImageOpacity);
             this.tabPicture.Controls.Add(this.grpOutlinePicture);
             this.tabPicture.Controls.Add(this.btnBrowseImage);
             this.tabPicture.Controls.Add(this.txtImageFilename);
             this.tabPicture.Controls.Add(this.lblImage);
             this.tabPicture.Controls.Add(this.sldImageOpacity);
-            resources.ApplyResources(this.tabPicture, "tabPicture");
             this.tabPicture.Name = "tabPicture";
             this.tabPicture.UseVisualStyleBackColor = true;
             // 
@@ -290,32 +290,32 @@ namespace DotSpatial.Symbology.Forms
             // 
             // grpOutlinePicture
             // 
+            resources.ApplyResources(this.grpOutlinePicture, "grpOutlinePicture");
             this.grpOutlinePicture.Controls.Add(this.cbOutlineColorPicture);
             this.grpOutlinePicture.Controls.Add(this.sldOutlineOpacityPicture);
             this.grpOutlinePicture.Controls.Add(this.lblOutlineColorPicture);
             this.grpOutlinePicture.Controls.Add(this.dbxOutlineWidthPicture);
             this.grpOutlinePicture.Controls.Add(this.chkUseOutlinePicture);
-            resources.ApplyResources(this.grpOutlinePicture, "grpOutlinePicture");
             this.grpOutlinePicture.Name = "grpOutlinePicture";
             this.grpOutlinePicture.TabStop = false;
             // 
             // cbOutlineColorPicture
             // 
+            resources.ApplyResources(this.cbOutlineColorPicture, "cbOutlineColorPicture");
             this.cbOutlineColorPicture.BevelRadius = 4;
             this.cbOutlineColorPicture.Color = System.Drawing.Color.Blue;
             this.cbOutlineColorPicture.LaunchDialogOnClick = true;
-            resources.ApplyResources(this.cbOutlineColorPicture, "cbOutlineColorPicture");
             this.cbOutlineColorPicture.Name = "cbOutlineColorPicture";
             this.cbOutlineColorPicture.RoundingRadius = 10;
             this.cbOutlineColorPicture.ColorChanged += new System.EventHandler(this.CbOutlineColorPictureColorChanged);
             // 
             // sldOutlineOpacityPicture
             // 
+            resources.ApplyResources(this.sldOutlineOpacityPicture, "sldOutlineOpacityPicture");
             this.sldOutlineOpacityPicture.ColorButton = null;
             this.sldOutlineOpacityPicture.FlipRamp = false;
             this.sldOutlineOpacityPicture.FlipText = false;
             this.sldOutlineOpacityPicture.InvertRamp = false;
-            resources.ApplyResources(this.sldOutlineOpacityPicture, "sldOutlineOpacityPicture");
             this.sldOutlineOpacityPicture.Maximum = 1D;
             this.sldOutlineOpacityPicture.MaximumColor = System.Drawing.Color.CornflowerBlue;
             this.sldOutlineOpacityPicture.Minimum = 0D;
@@ -347,9 +347,9 @@ namespace DotSpatial.Symbology.Forms
             // 
             // dbxOutlineWidthPicture
             // 
+            resources.ApplyResources(this.dbxOutlineWidthPicture, "dbxOutlineWidthPicture");
             this.dbxOutlineWidthPicture.BackColorInvalid = System.Drawing.Color.Salmon;
             this.dbxOutlineWidthPicture.BackColorRegular = System.Drawing.Color.Empty;
-            resources.ApplyResources(this.dbxOutlineWidthPicture, "dbxOutlineWidthPicture");
             this.dbxOutlineWidthPicture.InvalidHelp = "The value entered could not be correctly parsed into a valid double precision flo" +
     "ating point value.";
             this.dbxOutlineWidthPicture.IsValid = true;
@@ -385,11 +385,11 @@ namespace DotSpatial.Symbology.Forms
             // 
             // sldImageOpacity
             // 
+            resources.ApplyResources(this.sldImageOpacity, "sldImageOpacity");
             this.sldImageOpacity.ColorButton = null;
             this.sldImageOpacity.FlipRamp = false;
             this.sldImageOpacity.FlipText = false;
             this.sldImageOpacity.InvertRamp = false;
-            resources.ApplyResources(this.sldImageOpacity, "sldImageOpacity");
             this.sldImageOpacity.Maximum = 1D;
             this.sldImageOpacity.MaximumColor = System.Drawing.Color.CornflowerBlue;
             this.sldImageOpacity.Minimum = 0D;
@@ -416,6 +416,7 @@ namespace DotSpatial.Symbology.Forms
             // 
             // tabCharacter
             // 
+            resources.ApplyResources(this.tabCharacter, "tabCharacter");
             this.tabCharacter.Controls.Add(this.lblColorCharacter);
             this.tabCharacter.Controls.Add(this.txtUnicode);
             this.tabCharacter.Controls.Add(this.lblUnicode);
@@ -424,7 +425,6 @@ namespace DotSpatial.Symbology.Forms
             this.tabCharacter.Controls.Add(this.sldOpacityCharacter);
             this.tabCharacter.Controls.Add(this.charCharacter);
             this.tabCharacter.Controls.Add(this.cmbFontFamilly);
-            resources.ApplyResources(this.tabCharacter, "tabCharacter");
             this.tabCharacter.Name = "tabCharacter";
             this.tabCharacter.UseVisualStyleBackColor = true;
             // 
@@ -450,21 +450,21 @@ namespace DotSpatial.Symbology.Forms
             // 
             // cbColorCharacter
             // 
+            resources.ApplyResources(this.cbColorCharacter, "cbColorCharacter");
             this.cbColorCharacter.BevelRadius = 4;
             this.cbColorCharacter.Color = System.Drawing.Color.Blue;
             this.cbColorCharacter.LaunchDialogOnClick = true;
-            resources.ApplyResources(this.cbColorCharacter, "cbColorCharacter");
             this.cbColorCharacter.Name = "cbColorCharacter";
             this.cbColorCharacter.RoundingRadius = 10;
             this.cbColorCharacter.ColorChanged += new System.EventHandler(this.CbColorCharacterColorChanged);
             // 
             // sldOpacityCharacter
             // 
+            resources.ApplyResources(this.sldOpacityCharacter, "sldOpacityCharacter");
             this.sldOpacityCharacter.ColorButton = null;
             this.sldOpacityCharacter.FlipRamp = false;
             this.sldOpacityCharacter.FlipText = false;
             this.sldOpacityCharacter.InvertRamp = false;
-            resources.ApplyResources(this.sldOpacityCharacter, "sldOpacityCharacter");
             this.sldOpacityCharacter.Maximum = 1D;
             this.sldOpacityCharacter.MaximumColor = System.Drawing.Color.CornflowerBlue;
             this.sldOpacityCharacter.Minimum = 0D;
@@ -491,10 +491,10 @@ namespace DotSpatial.Symbology.Forms
             // 
             // charCharacter
             // 
+            resources.ApplyResources(this.charCharacter, "charCharacter");
             this.charCharacter.CellSize = new System.Drawing.Size(22, 22);
             this.charCharacter.ControlRectangle = new System.Drawing.Rectangle(0, 0, 235, 149);
             this.charCharacter.DynamicColumns = true;
-            resources.ApplyResources(this.charCharacter, "charCharacter");
             this.charCharacter.IsInitialized = false;
             this.charCharacter.IsSelected = false;
             this.charCharacter.Name = "charCharacter";
@@ -514,44 +514,44 @@ namespace DotSpatial.Symbology.Forms
             // 
             // tabSimple
             // 
+            resources.ApplyResources(this.tabSimple, "tabSimple");
             this.tabSimple.Controls.Add(this.groupBox2);
             this.tabSimple.Controls.Add(this.cmbPointShape);
             this.tabSimple.Controls.Add(this.label2);
             this.tabSimple.Controls.Add(this.lblColorSimple);
             this.tabSimple.Controls.Add(this.cbColorSimple);
             this.tabSimple.Controls.Add(this.sldOpacitySimple);
-            resources.ApplyResources(this.tabSimple, "tabSimple");
             this.tabSimple.Name = "tabSimple";
             this.tabSimple.UseVisualStyleBackColor = true;
             // 
             // groupBox2
             // 
+            resources.ApplyResources(this.groupBox2, "groupBox2");
             this.groupBox2.Controls.Add(this.cbOutlineColor);
             this.groupBox2.Controls.Add(this.sldOutlineOpacity);
             this.groupBox2.Controls.Add(this.lblOutlineColor);
             this.groupBox2.Controls.Add(this.dbxOutlineWidth);
             this.groupBox2.Controls.Add(this.chkUseOutline);
-            resources.ApplyResources(this.groupBox2, "groupBox2");
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.TabStop = false;
             // 
             // cbOutlineColor
             // 
+            resources.ApplyResources(this.cbOutlineColor, "cbOutlineColor");
             this.cbOutlineColor.BevelRadius = 4;
             this.cbOutlineColor.Color = System.Drawing.Color.Blue;
             this.cbOutlineColor.LaunchDialogOnClick = true;
-            resources.ApplyResources(this.cbOutlineColor, "cbOutlineColor");
             this.cbOutlineColor.Name = "cbOutlineColor";
             this.cbOutlineColor.RoundingRadius = 10;
             this.cbOutlineColor.ColorChanged += new System.EventHandler(this.CbOutlineColorColorChanged);
             // 
             // sldOutlineOpacity
             // 
+            resources.ApplyResources(this.sldOutlineOpacity, "sldOutlineOpacity");
             this.sldOutlineOpacity.ColorButton = null;
             this.sldOutlineOpacity.FlipRamp = false;
             this.sldOutlineOpacity.FlipText = false;
             this.sldOutlineOpacity.InvertRamp = false;
-            resources.ApplyResources(this.sldOutlineOpacity, "sldOutlineOpacity");
             this.sldOutlineOpacity.Maximum = 1D;
             this.sldOutlineOpacity.MaximumColor = System.Drawing.Color.CornflowerBlue;
             this.sldOutlineOpacity.Minimum = 0D;
@@ -583,9 +583,9 @@ namespace DotSpatial.Symbology.Forms
             // 
             // dbxOutlineWidth
             // 
+            resources.ApplyResources(this.dbxOutlineWidth, "dbxOutlineWidth");
             this.dbxOutlineWidth.BackColorInvalid = System.Drawing.Color.Salmon;
             this.dbxOutlineWidth.BackColorRegular = System.Drawing.Color.Empty;
-            resources.ApplyResources(this.dbxOutlineWidth, "dbxOutlineWidth");
             this.dbxOutlineWidth.CausesValidation = false;
             this.dbxOutlineWidth.InvalidHelp = "The value entered could not be correctly parsed into a valid double precision flo" +
     "ating point value.";
@@ -605,6 +605,7 @@ namespace DotSpatial.Symbology.Forms
             // 
             // cmbPointShape
             // 
+            resources.ApplyResources(this.cmbPointShape, "cmbPointShape");
             this.cmbPointShape.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cmbPointShape.FormattingEnabled = true;
             this.cmbPointShape.Items.AddRange(new object[] {
@@ -615,7 +616,6 @@ namespace DotSpatial.Symbology.Forms
             resources.GetString("cmbPointShape.Items4"),
             resources.GetString("cmbPointShape.Items5"),
             resources.GetString("cmbPointShape.Items6")});
-            resources.ApplyResources(this.cmbPointShape, "cmbPointShape");
             this.cmbPointShape.Name = "cmbPointShape";
             this.cmbPointShape.SelectedIndexChanged += new System.EventHandler(this.CmbPointShapeSelectedIndexChanged);
             // 
@@ -631,21 +631,21 @@ namespace DotSpatial.Symbology.Forms
             // 
             // cbColorSimple
             // 
+            resources.ApplyResources(this.cbColorSimple, "cbColorSimple");
             this.cbColorSimple.BevelRadius = 4;
             this.cbColorSimple.Color = System.Drawing.Color.Blue;
             this.cbColorSimple.LaunchDialogOnClick = true;
-            resources.ApplyResources(this.cbColorSimple, "cbColorSimple");
             this.cbColorSimple.Name = "cbColorSimple";
             this.cbColorSimple.RoundingRadius = 10;
             this.cbColorSimple.ColorChanged += new System.EventHandler(this.CbColorSimpleColorChanged);
             // 
             // sldOpacitySimple
             // 
+            resources.ApplyResources(this.sldOpacitySimple, "sldOpacitySimple");
             this.sldOpacitySimple.ColorButton = null;
             this.sldOpacitySimple.FlipRamp = false;
             this.sldOpacitySimple.FlipText = false;
             this.sldOpacitySimple.InvertRamp = false;
-            resources.ApplyResources(this.sldOpacitySimple, "sldOpacitySimple");
             this.sldOpacitySimple.Maximum = 1D;
             this.sldOpacitySimple.MaximumColor = System.Drawing.Color.CornflowerBlue;
             this.sldOpacitySimple.Minimum = 0D;
@@ -717,9 +717,9 @@ namespace DotSpatial.Symbology.Forms
             // 
             // angleControl
             // 
+            resources.ApplyResources(this.angleControl, "angleControl");
             this.angleControl.Angle = 0;
             this.angleControl.BackColor = System.Drawing.SystemColors.Control;
-            resources.ApplyResources(this.angleControl, "angleControl");
             this.angleControl.Clockwise = false;
             this.angleControl.KnobColor = System.Drawing.Color.SteelBlue;
             this.angleControl.Name = "angleControl";
@@ -750,9 +750,9 @@ namespace DotSpatial.Symbology.Forms
             // 
             // doubleBox9
             // 
+            resources.ApplyResources(this.doubleBox9, "doubleBox9");
             this.doubleBox9.BackColorInvalid = System.Drawing.Color.Salmon;
             this.doubleBox9.BackColorRegular = System.Drawing.Color.Empty;
-            resources.ApplyResources(this.doubleBox9, "doubleBox9");
             this.doubleBox9.InvalidHelp = "The value entered could not be correctly parsed into a valid double precision flo" +
     "ating point value.";
             this.doubleBox9.IsValid = true;
@@ -770,6 +770,7 @@ namespace DotSpatial.Symbology.Forms
             // 
             // DetailedPointSymbolControl
             // 
+            resources.ApplyResources(this, "$this");
             this.Controls.Add(this.btnImportSymbol);
             this.Controls.Add(this.grpPlacement);
             this.Controls.Add(this.btnSaveSymbol);
@@ -781,7 +782,6 @@ namespace DotSpatial.Symbology.Forms
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.ccSymbols);
             this.Name = "DetailedPointSymbolControl";
-            resources.ApplyResources(this, "$this");
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             this.groupBox6.ResumeLayout(false);

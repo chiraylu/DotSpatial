@@ -41,7 +41,7 @@ namespace DotSpatial.Symbology
             {
                 return;
             }
-            if (DashButtons == null)
+            if (DashButtons == null|| DashButtons.Length<=1)
             {
                 return;
             }
@@ -71,20 +71,33 @@ namespace DotSpatial.Symbology
             while (myIterator.NextSubpath(out start, out end, out isClosed) > 0)
             {
                 double totalLength = GetLength(points, start, end);
-                float usedLength = 0;
                 PointF startPoint = points[start];
                 PointF endPoint = points[end];
-                while (usedLength < totalLength)
+                float usedLength = 0;
+                if (DashButtons.Length == 2)
                 {
-                    for (int i = 0; i < DashButtons.Length; i++)
+                    bool dash = DashButtons[0];
+                    if (!dash)
                     {
-                        bool dash = DashButtons[i];
-                        if (!dash)
+                        usedLength = (float)(totalLength / 2);
+                        PointF location = GetPoint(startPoint, endPoint, usedLength);
+                        DrawImage(g, startPoint, endPoint, location, symbol);
+                    }
+                }
+                else
+                {
+                    while (usedLength < totalLength)
+                    {
+                        for (int i = 0; i < DashButtons.Length; i++)
                         {
-                            PointF location = GetPoint(startPoint, endPoint, usedLength);
-                            DrawImage(g, startPoint, endPoint, location, symbol);
+                            bool dash = DashButtons[i];
+                            if (!dash)
+                            {
+                                PointF location = GetPoint(startPoint, endPoint, usedLength);
+                                DrawImage(g, startPoint, endPoint, location, symbol);
+                            }
+                            usedLength++;
                         }
-                        usedLength++;
                     }
                 }
             }

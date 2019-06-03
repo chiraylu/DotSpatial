@@ -120,10 +120,6 @@
   <data name="&gt;&gt;label4.ZOrder" xml:space="preserve">
     <value>2</value>
   </data>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="tabSimple.Location" type="System.Drawing.Point, System.Drawing">
-    <value>4, 22</value>
-  </data>
   <data name="&gt;&gt;lblColorCartographic.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
@@ -133,6 +129,7 @@
   <data name="&gt;&gt;groupBox1.ZOrder" xml:space="preserve">
     <value>3</value>
   </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="cmbEndCap.Size" type="System.Drawing.Size, System.Drawing">
     <value>121, 20</value>
   </data>
@@ -143,9 +140,6 @@
   <data name="lblDecorationPreview.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
-  <data name="lblPercentualPosition.Text" xml:space="preserve">
-    <value>Percentual position:</value>
-  </data>
   <data name="&gt;&gt;label3.Parent" xml:space="preserve">
     <value>groupBox1</value>
   </data>
@@ -155,6 +149,9 @@
   <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="lblOpacityCartographic.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
+  </data>
+  <data name="label2.TabIndex" type="System.Int32, mscorlib">
+    <value>5</value>
   </data>
   <data name="&gt;&gt;ccStrokes.Name" xml:space="preserve">
     <value>ccStrokes</value>
@@ -192,14 +189,11 @@
   <data name="lblOpacityCartographic.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="grpRotation.TabIndex" type="System.Int32, mscorlib">
-    <value>8</value>
-  </data>
   <data name="&gt;&gt;dashControl1.Name" xml:space="preserve">
     <value>dashControl1</value>
   </data>
-  <data name="radRotationFixed.Text" xml:space="preserve">
-    <value>&amp;Keep symbol at fixed angle to page</value>
+  <data name="btnSaveSymbol.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="ccDecorations.Size" type="System.Drawing.Size, System.Drawing">
     <value>103, 249</value>
@@ -231,20 +225,17 @@
   <data name="&gt;&gt;chkSmoothing.Parent" xml:space="preserve">
     <value>groupBox1</value>
   </data>
+  <data name="cmbStartCap.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
   <data name="&gt;&gt;radLineJoin.Parent" xml:space="preserve">
     <value>tabCartographic</value>
   </data>
   <data name="chkFlipFirst.ToolTip" xml:space="preserve">
     <value />
   </data>
-  <data name="&gt;&gt;lblPercentualPosition.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="&gt;&gt;btnImportSymbol.Parent" xml:space="preserve">
-    <value>groupBox1</value>
-  </data>
-  <data name="cmbStrokeStyle.Location" type="System.Drawing.Point, System.Drawing">
-    <value>205, 177</value>
+  <data name="&gt;&gt;tabCartographic.ZOrder" xml:space="preserve">
+    <value>2</value>
   </data>
   <data name="&gt;&gt;grpFlip.Type" xml:space="preserve">
     <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -294,6 +285,9 @@
   <data name="&gt;&gt;cmbStartCap.Parent" xml:space="preserve">
     <value>grpCaps</value>
   </data>
+  <data name="label3.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
   <data name="grpFlip.Size" type="System.Drawing.Size, System.Drawing">
     <value>164, 67</value>
   </data>
@@ -309,8 +303,8 @@
   <data name="chkSmoothing.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
-  <data name="label6.Location" type="System.Drawing.Point, System.Drawing">
-    <value>308, 9</value>
+  <data name="chkFlipFirst.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
   </data>
   <data name="&gt;&gt;cmbEndCap.Parent" xml:space="preserve">
     <value>grpCaps</value>
@@ -375,8 +369,8 @@
   <data name="&gt;&gt;btnEdit.Parent" xml:space="preserve">
     <value>tabDecoration</value>
   </data>
-  <data name="btnSaveSymbol.Size" type="System.Drawing.Size, System.Drawing">
-    <value>75, 23</value>
+  <data name="lblStartCap.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
   <data name="tabSimple.Text" xml:space="preserve">
     <value>Simple Line</value>
@@ -402,8 +396,8 @@
   <data name="btnImportSymbol.Size" type="System.Drawing.Size, System.Drawing">
     <value>75, 23</value>
   </data>
-  <data name="lblNumberOfPositions.TabIndex" type="System.Int32, mscorlib">
-    <value>2</value>
+  <data name="btnSaveSymbol.TabIndex" type="System.Int32, mscorlib">
+    <value>10</value>
   </data>
   <data name="&gt;&gt;cmbEndCap.Type" xml:space="preserve">
     <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -432,17 +426,11 @@
   <data name="lblStartCap.Size" type="System.Drawing.Size, System.Drawing">
     <value>65, 12</value>
   </data>
-  <data name="&gt;&gt;btnImportSymbol.ZOrder" xml:space="preserve">
-    <value>0</value>
-  </data>
   <data name="lblScaleMode.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
   <data name="label1.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
-  </data>
-  <data name="&gt;&gt;cmbStrokeType.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="resource.Position1" mimetype="application/x-microsoft.net.object.binary.base64">
     <value>
@@ -450,6 +438,9 @@
         dXJlPW5ldXRyYWwsIFB1YmxpY0tleVRva2VuPWIwM2Y1ZjdmMTFkNTBhM2EFAQAAABVTeXN0ZW0uRHJh
         d2luZy5Qb2ludEYCAAAAAXgBeQAACwsCAAAAAAAAAAAAAAAL
 </value>
+  </data>
+  <data name="btnSaveSymbol.Size" type="System.Drawing.Size, System.Drawing">
+    <value>75, 23</value>
   </data>
   <data name="&gt;&gt;lblScaleMode.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -556,6 +547,9 @@
   <data name="label2.Location" type="System.Drawing.Point, System.Drawing">
     <value>138, 180</value>
   </data>
+  <data name="&gt;&gt;nudDecorationCount.Type" xml:space="preserve">
+    <value>System.Windows.Forms.NumericUpDown, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="tabMarker.Text" xml:space="preserve">
     <value>Marker Line</value>
   </data>
@@ -570,9 +564,6 @@
   </data>
   <data name="label4.Size" type="System.Drawing.Size, System.Drawing">
     <value>53, 12</value>
-  </data>
-  <data name="&gt;&gt;dblStrokeOffset.Parent" xml:space="preserve">
-    <value>tabCartographic</value>
   </data>
   <data name="&gt;&gt;$this.Type" xml:space="preserve">
     <value>System.Windows.Forms.UserControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -598,20 +589,11 @@
   <data name="tabStrokeProperties.Anchor" type="System.Windows.Forms.AnchorStyles, System.Windows.Forms">
     <value>Top, Bottom, Left, Right</value>
   </data>
-  <data name="lblDecorationPreview.Location" type="System.Drawing.Point, System.Drawing">
-    <value>307, 27</value>
-  </data>
   <data name="&gt;&gt;lblScaleMode.Name" xml:space="preserve">
     <value>lblScaleMode</value>
   </data>
-  <data name="label4.ToolTip" xml:space="preserve">
-    <value />
-  </data>
   <data name="label9.Location" type="System.Drawing.Point, System.Drawing">
     <value>97, 18</value>
-  </data>
-  <data name="btnSaveSymbol.ToolTip" xml:space="preserve">
-    <value />
   </data>
   <data name="&gt;&gt;btnSaveSymbol.ZOrder" xml:space="preserve">
     <value>1</value>
@@ -634,6 +616,9 @@
   <data name="lblColorCartographic.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
   </data>
+  <data name="label6.Location" type="System.Drawing.Point, System.Drawing">
+    <value>308, 9</value>
+  </data>
   <data name="cbColorSimple.Text" xml:space="preserve">
     <value>colorButton1</value>
   </data>
@@ -649,11 +634,8 @@
   <data name="label9.ToolTip" xml:space="preserve">
     <value />
   </data>
-  <data name="cbColorCartographic.ToolTip" xml:space="preserve">
-    <value>Click to change color</value>
-  </data>
-  <data name="&gt;&gt;tabCartographic.ZOrder" xml:space="preserve">
-    <value>2</value>
+  <data name="cmbStrokeStyle.Location" type="System.Drawing.Point, System.Drawing">
+    <value>205, 177</value>
   </data>
   <data name="label2.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -667,14 +649,14 @@
   <data name="tabDash.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>3, 3, 3, 3</value>
   </data>
-  <data name="&gt;&gt;tabCartographic.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="cmbStrokeType.Location" type="System.Drawing.Point, System.Drawing">
+    <value>187, 101</value>
   </data>
   <data name="&gt;&gt;nudDecorationCount.ZOrder" xml:space="preserve">
     <value>6</value>
   </data>
-  <data name="&gt;&gt;lblColorCartographic.ZOrder" xml:space="preserve">
-    <value>0</value>
+  <data name="&gt;&gt;btnImportSymbol.Parent" xml:space="preserve">
+    <value>groupBox1</value>
   </data>
   <data name="&gt;&gt;label1.Parent" xml:space="preserve">
     <value>$this</value>
@@ -688,8 +670,8 @@
   <data name="&gt;&gt;sldOpacitySimple.ZOrder" xml:space="preserve">
     <value>3</value>
   </data>
-  <data name="&gt;&gt;nudDecorationCount.Type" xml:space="preserve">
-    <value>System.Windows.Forms.NumericUpDown, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="lblNumberOfPositions.Text" xml:space="preserve">
+    <value>&amp;Number of Positions:</value>
   </data>
   <data name="&gt;&gt;groupBox1.Parent" xml:space="preserve">
     <value>$this</value>
@@ -697,8 +679,11 @@
   <data name="&gt;&gt;groupBox1.Type" xml:space="preserve">
     <value>System.Windows.Forms.GroupBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;btnSaveSymbol.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;nudPercentualPosition.Type" xml:space="preserve">
+    <value>System.Windows.Forms.NumericUpDown, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="chkFlipAll.Text" xml:space="preserve">
+    <value>Flip &amp;All</value>
   </data>
   <data name="&gt;&gt;dblStrokeOffset.Type" xml:space="preserve">
     <value>DotSpatial.Symbology.Forms.DoubleBox, DotSpatial.Symbology.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0544cdeefb662382</value>
@@ -724,6 +709,9 @@
   <data name="lblOpacityCartographic.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
+  <data name="label9.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
   <data name="dblWidthCartographic.TabIndex" type="System.Int32, mscorlib">
     <value>5</value>
   </data>
@@ -742,8 +730,8 @@
   <data name="&gt;&gt;radRotationFixed.Type" xml:space="preserve">
     <value>System.Windows.Forms.RadioButton, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;lblOpacityCartographic.ZOrder" xml:space="preserve">
-    <value>1</value>
+  <data name="cbColorCartographic.ToolTip" xml:space="preserve">
+    <value>Click to change color</value>
   </data>
   <data name="&gt;&gt;radRotationWithLine.ZOrder" xml:space="preserve">
     <value>1</value>
@@ -759,6 +747,9 @@
   </data>
   <data name="&gt;&gt;tabDecoration.Name" xml:space="preserve">
     <value>tabDecoration</value>
+  </data>
+  <data name="lblPercentualPosition.Visible" type="System.Boolean, mscorlib">
+    <value>False</value>
   </data>
   <data name="&gt;&gt;chkSmoothing.ZOrder" xml:space="preserve">
     <value>6</value>
@@ -786,9 +777,6 @@
   </data>
   <data name="tabCartographic.Text" xml:space="preserve">
     <value>Cartographic Line</value>
-  </data>
-  <data name="&gt;&gt;label2.ZOrder" xml:space="preserve">
-    <value>5</value>
   </data>
   <data name="dblStrokeOffset.Location" type="System.Drawing.Point, System.Drawing">
     <value>68, 93</value>
@@ -874,8 +862,8 @@
   <data name="chkFlipAll.Location" type="System.Drawing.Point, System.Drawing">
     <value>16, 19</value>
   </data>
-  <data name="lblStartCap.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
+  <data name="&gt;&gt;btnImportSymbol.ZOrder" xml:space="preserve">
+    <value>0</value>
   </data>
   <data name="lblScaleMode.Text" xml:space="preserve">
     <value>&amp;Scale Mode:</value>
@@ -892,8 +880,11 @@
   <data name="lblPercentualPosition.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
   </data>
-  <data name="radLineJoin.TabIndex" type="System.Int32, mscorlib">
-    <value>7</value>
+  <data name="label4.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="chkSmoothing.TabIndex" type="System.Int32, mscorlib">
+    <value>3</value>
   </data>
   <data name="chkFlipFirst.Size" type="System.Drawing.Size, System.Drawing">
     <value>84, 16</value>
@@ -940,9 +931,6 @@
   <data name="dblWidth.Location" type="System.Drawing.Point, System.Drawing">
     <value>132, 135</value>
   </data>
-  <data name="btnSaveSymbol.TabIndex" type="System.Int32, mscorlib">
-    <value>10</value>
-  </data>
   <data name="&gt;&gt;tabSimple.Type" xml:space="preserve">
     <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
@@ -967,6 +955,9 @@
   <data name="chkFlipAll.ToolTip" xml:space="preserve">
     <value />
   </data>
+  <data name="&gt;&gt;chkSmoothing.Name" xml:space="preserve">
+    <value>chkSmoothing</value>
+  </data>
   <data name="&gt;&gt;sldOpacityCartographic.ZOrder" xml:space="preserve">
     <value>4</value>
   </data>
@@ -978,6 +969,9 @@
   </data>
   <data name="label2.Text" xml:space="preserve">
     <value>&amp;Dash Style:</value>
+  </data>
+  <data name="tabDecoration.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>3, 3, 3, 3</value>
   </data>
   <data name="resource.Position" mimetype="application/x-microsoft.net.object.binary.base64">
     <value>
@@ -1007,20 +1001,14 @@
   <data name="&gt;&gt;tabDash.Parent" xml:space="preserve">
     <value>tabStrokeProperties</value>
   </data>
-  <data name="chkFlipFirst.TabIndex" type="System.Int32, mscorlib">
-    <value>1</value>
-  </data>
-  <data name="label3.TabIndex" type="System.Int32, mscorlib">
-    <value>0</value>
+  <data name="lblPercentualPosition.Text" xml:space="preserve">
+    <value>Percentual position:</value>
   </data>
   <data name="tabCartographic.Location" type="System.Drawing.Point, System.Drawing">
     <value>4, 22</value>
   </data>
   <data name="&gt;&gt;tabSimple.Parent" xml:space="preserve">
     <value>tabStrokeProperties</value>
-  </data>
-  <data name="lblNumberOfPositions.Text" xml:space="preserve">
-    <value>&amp;Number of Positions:</value>
   </data>
   <data name="dblWidthCartographic.Location" type="System.Drawing.Point, System.Drawing">
     <value>68, 126</value>
@@ -1033,6 +1021,9 @@
   </data>
   <data name="&gt;&gt;ttHelp.Type" xml:space="preserve">
     <value>System.Windows.Forms.ToolTip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="radRotationFixed.Text" xml:space="preserve">
+    <value>&amp;Keep symbol at fixed angle to page</value>
   </data>
   <data name="&gt;&gt;ccStrokes.Type" xml:space="preserve">
     <value>DotSpatial.Symbology.Forms.StrokeCollectionControl, DotSpatial.Symbology.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0544cdeefb662382</value>
@@ -1061,14 +1052,14 @@
   <data name="sldOpacitySimple.ToolTip" xml:space="preserve">
     <value>Use the slider to adjust the opacity, with 0 being fully transparent and 1 being fully opaque</value>
   </data>
-  <data name="&gt;&gt;label1.Name" xml:space="preserve">
-    <value>label1</value>
+  <data name="&gt;&gt;tabCartographic.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="cmbStrokeStyle.ToolTip" xml:space="preserve">
     <value>Allows some simpler dash styles. For more complicated styles, select Cartographic strokes.</value>
   </data>
-  <data name="&gt;&gt;label2.Type" xml:space="preserve">
-    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;btnSaveSymbol.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="cmbScaleMode.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
@@ -1106,8 +1097,8 @@
   <data name="cmbStrokeStyle.Items1" xml:space="preserve">
     <value>Dash</value>
   </data>
-  <data name="label9.AutoSize" type="System.Boolean, mscorlib">
-    <value>True</value>
+  <data name="lblDecorationPreview.Location" type="System.Drawing.Point, System.Drawing">
+    <value>307, 27</value>
   </data>
   <data name="cmbStrokeStyle.Items3" xml:space="preserve">
     <value>Dash Dot</value>
@@ -1141,6 +1132,9 @@
   </data>
   <data name="lblNumberOfPositions.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
+  </data>
+  <data name="&gt;&gt;label2.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="lblStartCap.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
@@ -1180,6 +1174,9 @@
   </data>
   <data name="&gt;&gt;lblDecorationPreview.Parent" xml:space="preserve">
     <value>tabDecoration</value>
+  </data>
+  <data name="grpFlip.Text" xml:space="preserve">
+    <value>Flip</value>
   </data>
   <data name="lblScaleMode.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -1229,6 +1226,9 @@
   <data name="label5.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
   </data>
+  <data name="&gt;&gt;label9.Parent" xml:space="preserve">
+    <value>tabSimple</value>
+  </data>
   <data name="lblNumberOfPositions.Location" type="System.Drawing.Point, System.Drawing">
     <value>121, 29</value>
   </data>
@@ -1247,14 +1247,11 @@
   <data name="&gt;&gt;label9.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;lblDecorationPreview.Name" xml:space="preserve">
-    <value>lblDecorationPreview</value>
-  </data>
   <data name="&gt;&gt;cmbStartCap.Type" xml:space="preserve">
     <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="chkSmoothing.TabIndex" type="System.Int32, mscorlib">
-    <value>3</value>
+  <data name="&gt;&gt;dblStrokeOffset.Parent" xml:space="preserve">
+    <value>tabCartographic</value>
   </data>
   <data name="radRotationWithLine.Location" type="System.Drawing.Point, System.Drawing">
     <value>16, 19</value>
@@ -1276,9 +1273,6 @@
   </data>
   <data name="groupBox1.ToolTip" xml:space="preserve">
     <value />
-  </data>
-  <data name="&gt;&gt;tabDecoration.Type" xml:space="preserve">
-    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="ccDecorations.ToolTip" xml:space="preserve">
     <value>Lists the decorations, where the top decoration is drawn last.</value>
@@ -1349,9 +1343,6 @@
   <data name="tabSimple.ToolTip" xml:space="preserve">
     <value />
   </data>
-  <data name="btnEdit.Text" xml:space="preserve">
-    <value>&amp;Edit</value>
-  </data>
   <data name="radRotationFixed.Location" type="System.Drawing.Point, System.Drawing">
     <value>16, 42</value>
   </data>
@@ -1361,8 +1352,8 @@
   <data name="btnEdit.Size" type="System.Drawing.Size, System.Drawing">
     <value>46, 23</value>
   </data>
-  <data name="cmbStartCap.TabIndex" type="System.Int32, mscorlib">
-    <value>1</value>
+  <data name="&gt;&gt;lblPercentualPosition.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="&gt;&gt;grpRotation.Parent" xml:space="preserve">
     <value>tabDecoration</value>
@@ -1445,8 +1436,8 @@
   <data name="label9.Size" type="System.Drawing.Size, System.Drawing">
     <value>41, 12</value>
   </data>
-  <data name="tabDecoration.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
-    <value>3, 3, 3, 3</value>
+  <data name="&gt;&gt;label2.ZOrder" xml:space="preserve">
+    <value>5</value>
   </data>
   <data name="grpCaps.ToolTip" xml:space="preserve">
     <value>Controls how the end caps are drawn.</value>
@@ -1475,8 +1466,8 @@
   <data name="&gt;&gt;lblPreview.Parent" xml:space="preserve">
     <value>groupBox1</value>
   </data>
-  <data name="lblScaleMode.Location" type="System.Drawing.Point, System.Drawing">
-    <value>14, 28</value>
+  <data name="lblNumberOfPositions.TabIndex" type="System.Int32, mscorlib">
+    <value>2</value>
   </data>
   <data name="radRotationFixed.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
@@ -1499,14 +1490,14 @@
   <data name="lblColorCartographic.Size" type="System.Drawing.Size, System.Drawing">
     <value>41, 12</value>
   </data>
-  <data name="label2.TabIndex" type="System.Int32, mscorlib">
-    <value>5</value>
+  <data name="btnEdit.Text" xml:space="preserve">
+    <value>&amp;Edit</value>
   </data>
   <data name="cbColorSimple.Location" type="System.Drawing.Point, System.Drawing">
     <value>123, 44</value>
   </data>
-  <data name="chkFlipAll.Text" xml:space="preserve">
-    <value>Flip &amp;All</value>
+  <data name="&gt;&gt;tabDecoration.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="lblNumberOfPositions.Size" type="System.Drawing.Size, System.Drawing">
     <value>125, 12</value>
@@ -1519,6 +1510,9 @@
   </data>
   <data name="dblStrokeOffset.ToolTip" xml:space="preserve">
     <value />
+  </data>
+  <data name="&gt;&gt;lblOpacityCartographic.ZOrder" xml:space="preserve">
+    <value>1</value>
   </data>
   <data name="&gt;&gt;label1.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -1559,14 +1553,14 @@
   <data name="tabStrokeProperties.ToolTip" xml:space="preserve">
     <value />
   </data>
-  <data name="grpFlip.Text" xml:space="preserve">
-    <value>Flip</value>
+  <data name="&gt;&gt;lblDecorationPreview.Name" xml:space="preserve">
+    <value>lblDecorationPreview</value>
   </data>
   <data name="tabCartographic.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>3, 3, 3, 3</value>
   </data>
-  <data name="cmbStrokeType.Location" type="System.Drawing.Point, System.Drawing">
-    <value>187, 101</value>
+  <data name="tabSimple.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 22</value>
   </data>
   <data name="&gt;&gt;label5.Name" xml:space="preserve">
     <value>label5</value>
@@ -1581,11 +1575,11 @@ If only one decoration is added its position can be set percentually.</value>
   <data name="ccStrokes.Location" type="System.Drawing.Point, System.Drawing">
     <value>3, 9</value>
   </data>
-  <data name="&gt;&gt;nudPercentualPosition.Type" xml:space="preserve">
-    <value>System.Windows.Forms.NumericUpDown, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;lblStartCap.Name" xml:space="preserve">
+    <value>lblStartCap</value>
   </data>
-  <data name="lblPercentualPosition.Visible" type="System.Boolean, mscorlib">
-    <value>False</value>
+  <data name="lblScaleMode.Location" type="System.Drawing.Point, System.Drawing">
+    <value>14, 28</value>
   </data>
   <data name="chkSmoothing.Location" type="System.Drawing.Point, System.Drawing">
     <value>17, 53</value>
@@ -1596,14 +1590,17 @@ If only one decoration is added its position can be set percentually.</value>
   <data name="tabSimple.Size" type="System.Drawing.Size, System.Drawing">
     <value>473, 268</value>
   </data>
-  <data name="&gt;&gt;label9.Parent" xml:space="preserve">
-    <value>tabSimple</value>
+  <data name="&gt;&gt;cmbStrokeType.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="sldOpacityCartographic.Location" type="System.Drawing.Point, System.Drawing">
     <value>283, 20</value>
   </data>
   <data name="radLineJoin.Location" type="System.Drawing.Point, System.Drawing">
     <value>328, 151</value>
+  </data>
+  <data name="&gt;&gt;lblColorCartographic.ZOrder" xml:space="preserve">
+    <value>0</value>
   </data>
   <data name="cbColorCartographic.TabIndex" type="System.Int32, mscorlib">
     <value>3</value>
@@ -1614,8 +1611,8 @@ If only one decoration is added its position can be set percentually.</value>
   <data name="ccStrokes.ToolTip" xml:space="preserve">
     <value>Lists the strokes, where the top stroke is drawn last.</value>
   </data>
-  <data name="&gt;&gt;lblStartCap.Name" xml:space="preserve">
-    <value>lblStartCap</value>
+  <data name="radLineJoin.TabIndex" type="System.Int32, mscorlib">
+    <value>7</value>
   </data>
   <data name="nudPercentualPosition.Location" type="System.Drawing.Point, System.Drawing">
     <value>231, 159</value>
@@ -1625,6 +1622,9 @@ If only one decoration is added its position can be set percentually.</value>
   </data>
   <data name="&gt;&gt;chkFlipFirst.Name" xml:space="preserve">
     <value>chkFlipFirst</value>
+  </data>
+  <data name="lblDecorationPreview.Size" type="System.Drawing.Size, System.Drawing">
+    <value>164, 130</value>
   </data>
   <data name="cmbScaleMode.Items1" xml:space="preserve">
     <value>Geographic</value>
@@ -1638,8 +1638,8 @@ If only one decoration is added its position can be set percentually.</value>
   <data name="&gt;&gt;chkFlipAll.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
-  <data name="lblDecorationPreview.Size" type="System.Drawing.Size, System.Drawing">
-    <value>164, 130</value>
+  <data name="&gt;&gt;label1.Name" xml:space="preserve">
+    <value>label1</value>
   </data>
   <data name="cmbStartCap.Size" type="System.Drawing.Size, System.Drawing">
     <value>121, 20</value>
@@ -1665,8 +1665,8 @@ If only one decoration is added its position can be set percentually.</value>
   <data name="tabDash.Text" xml:space="preserve">
     <value>Template</value>
   </data>
-  <data name="&gt;&gt;chkSmoothing.Name" xml:space="preserve">
-    <value>chkSmoothing</value>
+  <data name="grpRotation.TabIndex" type="System.Int32, mscorlib">
+    <value>8</value>
   </data>
   <data name="&gt;&gt;dblOffset.Type" xml:space="preserve">
     <value>DotSpatial.Symbology.Forms.DoubleBox, DotSpatial.Symbology.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0544cdeefb662382</value>

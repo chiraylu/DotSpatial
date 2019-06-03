@@ -889,30 +889,31 @@ namespace DotSpatial.Controls
             Matrix origTransform = g.Transform;
 
             // Only draw features that are currently visible.
-            if (FastDrawnStates == null)
-            {
-                CreateIndexedLabels();
-            }
+            //if (FastDrawnStates == null)
+            //{
+            //    CreateIndexedLabels();
+            //}
 
-            FastLabelDrawnState[] drawStates = FastDrawnStates;
-            if (drawStates == null) return;
+            //FastLabelDrawnState[] drawStates = FastDrawnStates;
+            //if (drawStates == null) return;
 
             // Sets the graphics objects smoothing modes
             g.TextRenderingHint = TextRenderingHint.AntiAlias;
             g.SmoothingMode = SmoothingMode.AntiAlias;
 
-            Action<int, IFeature> drawFeature;
+            Action<ILabelCategory, IFeature> drawFeature;
+            bool selected = false;
             switch (FeatureSet.FeatureType)
             {
                 case FeatureType.Polygon:
-                    drawFeature = (fid, feature) => DrawPolygonFeature(e, g, feature, drawStates[fid].Category, drawStates[fid].Selected, ExistingLabels);
+                    drawFeature = (category, feature) => DrawPolygonFeature(e, g, feature, category, selected, ExistingLabels);
                     break;
                 case FeatureType.Line:
-                    drawFeature = (fid, feature) => DrawLineFeature(e, g, feature, drawStates[fid].Category, drawStates[fid].Selected, ExistingLabels);
+                    drawFeature = (category, feature) => DrawLineFeature(e, g, feature, category, selected, ExistingLabels);
                     break;
                 case FeatureType.Point:
                 case FeatureType.MultiPoint:
-                    drawFeature = (fid, feature) => DrawPointFeature(e, g, feature, drawStates[fid].Category, drawStates[fid].Selected, ExistingLabels);
+                    drawFeature = (category, feature) => DrawPointFeature(e, g, feature, category, selected, ExistingLabels);
                     break;
                 default:
                     return; // Can't draw something else
@@ -920,15 +921,16 @@ namespace DotSpatial.Controls
 
             foreach (var category in Symbology.Categories)
             {
-                category.UpdateExpressionColumns(FeatureSet.DataTable.Columns);
-                var catFeatures = new List<int>();
+                category.UpdateExpressionColumns(FeatureSet.DataTable.Columns); 
+                 var catFeatures = new List<int>();
                 foreach (int fid in features)
                 {
-                    if (drawStates[fid] == null || drawStates[fid].Category == null) continue;
-                    if (drawStates[fid].Category == category)
-                    {
-                        catFeatures.Add(fid);
-                    }
+                    //if (drawStates[fid] == null || drawStates[fid].Category == null) continue;
+                    //if (drawStates[fid].Category == category)
+                    //{
+                    //    catFeatures.Add(fid);
+                    //}
+                    catFeatures.Add(fid);
                 }
 
                 // Now that we are restricted to a certain category, we can look at priority
@@ -959,7 +961,7 @@ namespace DotSpatial.Controls
                 {
                     if (!FeatureLayer.DrawnStates[fid].Visible) continue;
                     var feature = FeatureSet.GetFeature(fid);
-                    drawFeature(fid, feature);
+                    drawFeature(category, feature);
                 }
             }
 

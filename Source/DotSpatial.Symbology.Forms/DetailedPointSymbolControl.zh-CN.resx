@@ -117,15 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="btnAddToCustom.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
-  </data>
-  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="btnAddToCustom.Size" type="System.Drawing.Size, System.Drawing">
-    <value>53, 23</value>
-  </data>
-  <data name="btnAddToCustom.Text" xml:space="preserve">
+  <data name="btnSaveSymbol.Text" xml:space="preserve">
     <value>&amp;保存</value>
   </data>
   <data name="cmbUnits.Items" xml:space="preserve">
@@ -149,9 +141,11 @@
   <data name="cmbUnits.Items6" xml:space="preserve">
     <value>毫米</value>
   </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="lblUnits.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="lblUnits.Size" type="System.Drawing.Size, System.Drawing">
     <value>35, 12</value>
   </data>
@@ -355,5 +349,8 @@
   </data>
   <data name="grpPlacement.Text" xml:space="preserve">
     <value>布局</value>
+  </data>
+  <data name="btnImportSymbol.Text" xml:space="preserve">
+    <value>&amp;导入</value>
   </data>
 </root>

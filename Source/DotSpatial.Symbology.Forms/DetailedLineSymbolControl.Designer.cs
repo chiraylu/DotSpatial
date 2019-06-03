@@ -36,6 +36,8 @@ namespace DotSpatial.Symbology.Forms
             this.cmbStrokeType = new System.Windows.Forms.ComboBox();
             this.chkSmoothing = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.btnImportSymbol = new System.Windows.Forms.Button();
+            this.btnSaveSymbol = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
             this.lblPreview = new System.Windows.Forms.Label();
             this.lblScaleMode = new System.Windows.Forms.Label();
@@ -85,8 +87,6 @@ namespace DotSpatial.Symbology.Forms
             this.ccDecorations = new DotSpatial.Symbology.Forms.DecorationCollectionControl();
             this.ttHelp = new System.Windows.Forms.ToolTip(this.components);
             this.ccStrokes = new DotSpatial.Symbology.Forms.StrokeCollectionControl();
-            this.btnImportSymbol = new System.Windows.Forms.Button();
-            this.btnSaveSymbol = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.tabStrokeProperties.SuspendLayout();
             this.tabSimple.SuspendLayout();
@@ -138,6 +138,22 @@ namespace DotSpatial.Symbology.Forms
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.TabStop = false;
             this.ttHelp.SetToolTip(this.groupBox1, resources.GetString("groupBox1.ToolTip"));
+            // 
+            // btnImportSymbol
+            // 
+            resources.ApplyResources(this.btnImportSymbol, "btnImportSymbol");
+            this.btnImportSymbol.Name = "btnImportSymbol";
+            this.ttHelp.SetToolTip(this.btnImportSymbol, resources.GetString("btnImportSymbol.ToolTip"));
+            this.btnImportSymbol.UseVisualStyleBackColor = true;
+            this.btnImportSymbol.Click += new System.EventHandler(this.BtnImportSymbolClick);
+            // 
+            // btnSaveSymbol
+            // 
+            resources.ApplyResources(this.btnSaveSymbol, "btnSaveSymbol");
+            this.btnSaveSymbol.Name = "btnSaveSymbol";
+            this.ttHelp.SetToolTip(this.btnSaveSymbol, resources.GetString("btnSaveSymbol.ToolTip"));
+            this.btnSaveSymbol.UseVisualStyleBackColor = true;
+            this.btnSaveSymbol.Click += new System.EventHandler(this.BtnSaveSymbolClick);
             // 
             // label3
             // 
@@ -634,20 +650,6 @@ namespace DotSpatial.Symbology.Forms
             resources.ApplyResources(this.ccStrokes, "ccStrokes");
             this.ccStrokes.Name = "ccStrokes";
             this.ttHelp.SetToolTip(this.ccStrokes, resources.GetString("ccStrokes.ToolTip"));
-            // 
-            // btnImportSymbol
-            // 
-            resources.ApplyResources(this.btnImportSymbol, "btnImportSymbol");
-            this.btnImportSymbol.Name = "btnImportSymbol";
-            this.ttHelp.SetToolTip(this.btnImportSymbol, resources.GetString("btnImportSymbol.ToolTip"));
-            this.btnImportSymbol.UseVisualStyleBackColor = true;
-            // 
-            // btnSaveSymbol
-            // 
-            resources.ApplyResources(this.btnSaveSymbol, "btnSaveSymbol");
-            this.btnSaveSymbol.Name = "btnSaveSymbol";
-            this.ttHelp.SetToolTip(this.btnSaveSymbol, resources.GetString("btnSaveSymbol.ToolTip"));
-            this.btnSaveSymbol.UseVisualStyleBackColor = true;
             // 
             // DetailedLineSymbolControl
             // 
