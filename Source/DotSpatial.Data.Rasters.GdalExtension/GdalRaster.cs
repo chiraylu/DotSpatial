@@ -414,6 +414,10 @@ namespace DotSpatial.Data.Rasters.GdalExtension
         }
         private unsafe Bitmap GetBitmap(int width, int height, byte[] rBuffer, byte[] gBuffer, byte[] bBuffer, byte[] aBuffer = null)
         {
+            if (width <= 0 || height <= 0)
+            {
+                return null;
+            }
             Bitmap result = new Bitmap(width, height, PixelFormat.Format32bppArgb);
             BitmapData bData = result.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
             byte* scan0 = (byte*)bData.Scan0;
