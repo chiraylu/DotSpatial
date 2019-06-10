@@ -79,6 +79,8 @@ namespace DotSpatial.Symbology.Forms
             this.featureSizeRangeControl1 = new DotSpatial.Symbology.Forms.FeatureSizeRangeControl();
             this.tccColorRange = new DotSpatial.Symbology.Forms.TabColorControl();
             this.dataGridViewImageColumn1 = new System.Windows.Forms.DataGridViewImageColumn();
+            this.btnImport = new System.Windows.Forms.Button();
+            this.btnSave = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.nudSigFig)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvStatistics)).BeginInit();
             this.tabScheme.SuspendLayout();
@@ -91,15 +93,17 @@ namespace DotSpatial.Symbology.Forms
             // 
             // _cmbField
             // 
-            this._cmbField.FormattingEnabled = true;
             resources.ApplyResources(this._cmbField, "_cmbField");
+            this._cmbField.FormattingEnabled = true;
             this._cmbField.Name = "_cmbField";
+            this.ttHelp.SetToolTip(this._cmbField, resources.GetString("_cmbField.ToolTip"));
             this._cmbField.SelectedIndexChanged += new System.EventHandler(this.CmbFieldSelectedIndexChanged);
             // 
             // _lblFieldName
             // 
             resources.ApplyResources(this._lblFieldName, "_lblFieldName");
             this._lblFieldName.Name = "_lblFieldName";
+            this.ttHelp.SetToolTip(this._lblFieldName, resources.GetString("_lblFieldName.ToolTip"));
             // 
             // btnRamp
             // 
@@ -145,8 +149,8 @@ namespace DotSpatial.Symbology.Forms
             // 
             // btnAdd
             // 
-            this.btnAdd.Image = global::DotSpatial.Symbology.Forms.SymbologyFormsImages.add;
             resources.ApplyResources(this.btnAdd, "btnAdd");
+            this.btnAdd.Image = global::DotSpatial.Symbology.Forms.SymbologyFormsImages.add;
             this.btnAdd.Name = "btnAdd";
             this.ttHelp.SetToolTip(this.btnAdd, resources.GetString("btnAdd.ToolTip"));
             this.btnAdd.UseVisualStyleBackColor = true;
@@ -154,8 +158,8 @@ namespace DotSpatial.Symbology.Forms
             // 
             // btnDelete
             // 
-            this.btnDelete.Image = global::DotSpatial.Symbology.Forms.SymbologyFormsImages.delete;
             resources.ApplyResources(this.btnDelete, "btnDelete");
+            this.btnDelete.Image = global::DotSpatial.Symbology.Forms.SymbologyFormsImages.delete;
             this.btnDelete.Name = "btnDelete";
             this.ttHelp.SetToolTip(this.btnDelete, resources.GetString("btnDelete.ToolTip"));
             this.btnDelete.UseVisualStyleBackColor = true;
@@ -163,8 +167,8 @@ namespace DotSpatial.Symbology.Forms
             // 
             // btnUp
             // 
-            this.btnUp.Image = global::DotSpatial.Symbology.Forms.SymbologyFormsImages.up;
             resources.ApplyResources(this.btnUp, "btnUp");
+            this.btnUp.Image = global::DotSpatial.Symbology.Forms.SymbologyFormsImages.up;
             this.btnUp.Name = "btnUp";
             this.ttHelp.SetToolTip(this.btnUp, resources.GetString("btnUp.ToolTip"));
             this.btnUp.UseVisualStyleBackColor = true;
@@ -172,9 +176,9 @@ namespace DotSpatial.Symbology.Forms
             // 
             // btnDown
             // 
+            resources.ApplyResources(this.btnDown, "btnDown");
             this.btnDown.BackColor = System.Drawing.SystemColors.Control;
             this.btnDown.Image = global::DotSpatial.Symbology.Forms.SymbologyFormsImages.down;
-            resources.ApplyResources(this.btnDown, "btnDown");
             this.btnDown.Name = "btnDown";
             this.ttHelp.SetToolTip(this.btnDown, resources.GetString("btnDown.ToolTip"));
             this.btnDown.UseVisualStyleBackColor = false;
@@ -182,8 +186,8 @@ namespace DotSpatial.Symbology.Forms
             // 
             // cmbNormField
             // 
-            this.cmbNormField.FormattingEnabled = true;
             resources.ApplyResources(this.cmbNormField, "cmbNormField");
+            this.cmbNormField.FormattingEnabled = true;
             this.cmbNormField.Name = "cmbNormField";
             this.ttHelp.SetToolTip(this.cmbNormField, resources.GetString("cmbNormField.ToolTip"));
             this.cmbNormField.SelectedIndexChanged += new System.EventHandler(this.CmbNormFieldSelectedIndexChanged);
@@ -202,14 +206,15 @@ namespace DotSpatial.Symbology.Forms
             // 
             // cmbIntervalSnapping
             // 
-            this.cmbIntervalSnapping.FormattingEnabled = true;
             resources.ApplyResources(this.cmbIntervalSnapping, "cmbIntervalSnapping");
+            this.cmbIntervalSnapping.FormattingEnabled = true;
             this.cmbIntervalSnapping.Name = "cmbIntervalSnapping";
             this.ttHelp.SetToolTip(this.cmbIntervalSnapping, resources.GetString("cmbIntervalSnapping.ToolTip"));
             this.cmbIntervalSnapping.SelectedIndexChanged += new System.EventHandler(this.CmbIntervalSnappingSelectedIndexChanged);
             // 
             // dgvStatistics
             // 
+            resources.ApplyResources(this.dgvStatistics, "dgvStatistics");
             this.dgvStatistics.AllowUserToAddRows = false;
             this.dgvStatistics.AllowUserToDeleteRows = false;
             dataGridViewCellStyle1.BackColor = System.Drawing.Color.AntiqueWhite;
@@ -228,7 +233,6 @@ namespace DotSpatial.Symbology.Forms
             this.dgvStatistics.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.Stat,
             this.Value});
-            resources.ApplyResources(this.dgvStatistics, "dgvStatistics");
             this.dgvStatistics.Name = "dgvStatistics";
             this.dgvStatistics.RowHeadersVisible = false;
             this.dgvStatistics.ShowCellErrors = false;
@@ -247,14 +251,16 @@ namespace DotSpatial.Symbology.Forms
             // 
             // tabScheme
             // 
+            resources.ApplyResources(this.tabScheme, "tabScheme");
             this.tabScheme.Controls.Add(this.tabStatistics);
             this.tabScheme.Controls.Add(this.tabGraph);
-            resources.ApplyResources(this.tabScheme, "tabScheme");
             this.tabScheme.Name = "tabScheme";
             this.tabScheme.SelectedIndex = 0;
+            this.ttHelp.SetToolTip(this.tabScheme, resources.GetString("tabScheme.ToolTip"));
             // 
             // tabStatistics
             // 
+            resources.ApplyResources(this.tabStatistics, "tabStatistics");
             this.tabStatistics.Controls.Add(this.label3);
             this.tabStatistics.Controls.Add(this.cmbNormField);
             this.tabStatistics.Controls.Add(this.btnExclude);
@@ -267,35 +273,40 @@ namespace DotSpatial.Symbology.Forms
             this.tabStatistics.Controls.Add(this.cmbInterval);
             this.tabStatistics.Controls.Add(this.nudCategoryCount);
             this.tabStatistics.Controls.Add(this.lblBreaks);
-            resources.ApplyResources(this.tabStatistics, "tabStatistics");
             this.tabStatistics.Name = "tabStatistics";
+            this.ttHelp.SetToolTip(this.tabStatistics, resources.GetString("tabStatistics.ToolTip"));
             this.tabStatistics.UseVisualStyleBackColor = true;
             // 
             // label3
             // 
             resources.ApplyResources(this.label3, "label3");
             this.label3.Name = "label3";
+            this.ttHelp.SetToolTip(this.label3, resources.GetString("label3.ToolTip"));
             // 
             // lblSigFig
             // 
             resources.ApplyResources(this.lblSigFig, "lblSigFig");
             this.lblSigFig.Name = "lblSigFig";
+            this.ttHelp.SetToolTip(this.lblSigFig, resources.GetString("lblSigFig.ToolTip"));
             // 
             // label1
             // 
             resources.ApplyResources(this.label1, "label1");
             this.label1.Name = "label1";
+            this.ttHelp.SetToolTip(this.label1, resources.GetString("label1.ToolTip"));
             // 
             // label2
             // 
             resources.ApplyResources(this.label2, "label2");
             this.label2.Name = "label2";
+            this.ttHelp.SetToolTip(this.label2, resources.GetString("label2.ToolTip"));
             // 
             // cmbInterval
             // 
-            this.cmbInterval.FormattingEnabled = true;
             resources.ApplyResources(this.cmbInterval, "cmbInterval");
+            this.cmbInterval.FormattingEnabled = true;
             this.cmbInterval.Name = "cmbInterval";
+            this.ttHelp.SetToolTip(this.cmbInterval, resources.GetString("cmbInterval.ToolTip"));
             this.cmbInterval.SelectedIndexChanged += new System.EventHandler(this.CmbIntervalSelectedIndexChanged);
             // 
             // nudCategoryCount
@@ -307,6 +318,7 @@ namespace DotSpatial.Symbology.Forms
             0,
             0});
             this.nudCategoryCount.Name = "nudCategoryCount";
+            this.ttHelp.SetToolTip(this.nudCategoryCount, resources.GetString("nudCategoryCount.ToolTip"));
             this.nudCategoryCount.Value = new decimal(new int[] {
             5,
             0,
@@ -318,32 +330,35 @@ namespace DotSpatial.Symbology.Forms
             // 
             resources.ApplyResources(this.lblBreaks, "lblBreaks");
             this.lblBreaks.Name = "lblBreaks";
+            this.ttHelp.SetToolTip(this.lblBreaks, resources.GetString("lblBreaks.ToolTip"));
             // 
             // tabGraph
             // 
+            resources.ApplyResources(this.tabGraph, "tabGraph");
             this.tabGraph.Controls.Add(this.lblColumns);
             this.tabGraph.Controls.Add(this.nudColumns);
             this.tabGraph.Controls.Add(this.chkLog);
             this.tabGraph.Controls.Add(this.chkShowStd);
             this.tabGraph.Controls.Add(this.chkShowMean);
             this.tabGraph.Controls.Add(this.breakSliderGraph1);
-            resources.ApplyResources(this.tabGraph, "tabGraph");
             this.tabGraph.Name = "tabGraph";
+            this.ttHelp.SetToolTip(this.tabGraph, resources.GetString("tabGraph.ToolTip"));
             this.tabGraph.UseVisualStyleBackColor = true;
             // 
             // lblColumns
             // 
             resources.ApplyResources(this.lblColumns, "lblColumns");
             this.lblColumns.Name = "lblColumns";
+            this.ttHelp.SetToolTip(this.lblColumns, resources.GetString("lblColumns.ToolTip"));
             // 
             // nudColumns
             // 
+            resources.ApplyResources(this.nudColumns, "nudColumns");
             this.nudColumns.Increment = new decimal(new int[] {
             10,
             0,
             0,
             0});
-            resources.ApplyResources(this.nudColumns, "nudColumns");
             this.nudColumns.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -355,6 +370,7 @@ namespace DotSpatial.Symbology.Forms
             0,
             0});
             this.nudColumns.Name = "nudColumns";
+            this.ttHelp.SetToolTip(this.nudColumns, resources.GetString("nudColumns.ToolTip"));
             this.nudColumns.Value = new decimal(new int[] {
             40,
             0,
@@ -366,6 +382,7 @@ namespace DotSpatial.Symbology.Forms
             // 
             resources.ApplyResources(this.chkLog, "chkLog");
             this.chkLog.Name = "chkLog";
+            this.ttHelp.SetToolTip(this.chkLog, resources.GetString("chkLog.ToolTip"));
             this.chkLog.UseVisualStyleBackColor = true;
             this.chkLog.CheckedChanged += new System.EventHandler(this.ChkLogCheckedChanged);
             // 
@@ -373,6 +390,7 @@ namespace DotSpatial.Symbology.Forms
             // 
             resources.ApplyResources(this.chkShowStd, "chkShowStd");
             this.chkShowStd.Name = "chkShowStd";
+            this.ttHelp.SetToolTip(this.chkShowStd, resources.GetString("chkShowStd.ToolTip"));
             this.chkShowStd.UseVisualStyleBackColor = true;
             this.chkShowStd.CheckedChanged += new System.EventHandler(this.ChkShowStdCheckedChanged);
             // 
@@ -380,11 +398,13 @@ namespace DotSpatial.Symbology.Forms
             // 
             resources.ApplyResources(this.chkShowMean, "chkShowMean");
             this.chkShowMean.Name = "chkShowMean";
+            this.ttHelp.SetToolTip(this.chkShowMean, resources.GetString("chkShowMean.ToolTip"));
             this.chkShowMean.UseVisualStyleBackColor = true;
             this.chkShowMean.CheckedChanged += new System.EventHandler(this.ChkShowMeanCheckedChanged);
             // 
             // breakSliderGraph1
             // 
+            resources.ApplyResources(this.breakSliderGraph1, "breakSliderGraph1");
             this.breakSliderGraph1.AttributeSource = null;
             this.breakSliderGraph1.BackColor = System.Drawing.Color.White;
             this.breakSliderGraph1.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
@@ -392,7 +412,6 @@ namespace DotSpatial.Symbology.Forms
             this.breakSliderGraph1.BreakSelectedColor = System.Drawing.Color.Red;
             this.breakSliderGraph1.FontColor = System.Drawing.Color.Black;
             this.breakSliderGraph1.IntervalMethod = DotSpatial.Symbology.IntervalMethod.EqualInterval;
-            resources.ApplyResources(this.breakSliderGraph1, "breakSliderGraph1");
             this.breakSliderGraph1.LogY = false;
             this.breakSliderGraph1.MaximumSampleSize = 10000;
             this.breakSliderGraph1.MinHeight = 20;
@@ -405,17 +424,20 @@ namespace DotSpatial.Symbology.Forms
             this.breakSliderGraph1.Title = "Statistical Breaks:";
             this.breakSliderGraph1.TitleColor = System.Drawing.Color.Black;
             this.breakSliderGraph1.TitleFont = new System.Drawing.Font("Arial", 20F, System.Drawing.FontStyle.Bold);
+            this.ttHelp.SetToolTip(this.breakSliderGraph1, resources.GetString("breakSliderGraph1.ToolTip"));
             this.breakSliderGraph1.SliderMoved += new System.EventHandler<DotSpatial.Symbology.Forms.BreakSliderEventArgs>(this.BreakSliderGraph1SliderMoved);
             // 
             // chkUseGradients
             // 
             resources.ApplyResources(this.chkUseGradients, "chkUseGradients");
             this.chkUseGradients.Name = "chkUseGradients";
+            this.ttHelp.SetToolTip(this.chkUseGradients, resources.GetString("chkUseGradients.ToolTip"));
             this.chkUseGradients.UseVisualStyleBackColor = true;
             this.chkUseGradients.CheckedChanged += new System.EventHandler(this.ChkUseGradientsCheckedChanged);
             // 
             // dgvCategories
             // 
+            resources.ApplyResources(this.dgvCategories, "dgvCategories");
             this.dgvCategories.AllowUserToAddRows = false;
             this.dgvCategories.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvCategories.BackgroundColor = System.Drawing.SystemColors.Window;
@@ -425,11 +447,11 @@ namespace DotSpatial.Symbology.Forms
             this.colValues,
             this.colLegendText,
             this.colCount});
-            resources.ApplyResources(this.dgvCategories, "dgvCategories");
             this.dgvCategories.MultiSelect = false;
             this.dgvCategories.Name = "dgvCategories";
             this.dgvCategories.RowHeadersVisible = false;
             this.dgvCategories.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
+            this.ttHelp.SetToolTip(this.dgvCategories, resources.GetString("dgvCategories.ToolTip"));
             // 
             // colSymbol
             // 
@@ -464,18 +486,20 @@ namespace DotSpatial.Symbology.Forms
             resources.ApplyResources(this.radCustom, "radCustom");
             this.radCustom.Name = "radCustom";
             this.radCustom.TabStop = true;
+            this.ttHelp.SetToolTip(this.radCustom, resources.GetString("radCustom.ToolTip"));
             this.radCustom.UseVisualStyleBackColor = true;
             this.radCustom.CheckedChanged += new System.EventHandler(this.RadCustomCheckedChanged);
             // 
             // angGradientAngle
             // 
+            resources.ApplyResources(this.angGradientAngle, "angGradientAngle");
             this.angGradientAngle.Angle = 0;
             this.angGradientAngle.BackColor = System.Drawing.Color.Transparent;
-            resources.ApplyResources(this.angGradientAngle, "angGradientAngle");
             this.angGradientAngle.Clockwise = false;
             this.angGradientAngle.KnobColor = System.Drawing.Color.Green;
             this.angGradientAngle.Name = "angGradientAngle";
             this.angGradientAngle.StartAngle = 0;
+            this.ttHelp.SetToolTip(this.angGradientAngle, resources.GetString("angGradientAngle.ToolTip"));
             this.angGradientAngle.AngleChanged += new System.EventHandler(this.AngGradientAngleAngleChanged);
             // 
             // featureSizeRangeControl1
@@ -484,15 +508,17 @@ namespace DotSpatial.Symbology.Forms
             this.featureSizeRangeControl1.Name = "featureSizeRangeControl1";
             this.featureSizeRangeControl1.Scheme = null;
             this.featureSizeRangeControl1.SizeRange = null;
+            this.ttHelp.SetToolTip(this.featureSizeRangeControl1, resources.GetString("featureSizeRangeControl1.ToolTip"));
             this.featureSizeRangeControl1.SizeRangeChanged += new System.EventHandler<DotSpatial.Symbology.Forms.SizeRangeEventArgs>(this.PointSizeRangeControl1SizeRangeChanged);
             // 
             // tccColorRange
             // 
+            resources.ApplyResources(this.tccColorRange, "tccColorRange");
             this.tccColorRange.EndColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.tccColorRange.HueShift = 0;
-            resources.ApplyResources(this.tccColorRange, "tccColorRange");
             this.tccColorRange.Name = "tccColorRange";
             this.tccColorRange.StartColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
+            this.ttHelp.SetToolTip(this.tccColorRange, resources.GetString("tccColorRange.ToolTip"));
             this.tccColorRange.UseRangeChecked = true;
             this.tccColorRange.ColorChanged += new System.EventHandler<DotSpatial.Symbology.Forms.ColorRangeEventArgs>(this.TccColorRangeColorChanged);
             // 
@@ -504,8 +530,27 @@ namespace DotSpatial.Symbology.Forms
             this.dataGridViewImageColumn1.Resizable = System.Windows.Forms.DataGridViewTriState.True;
             this.dataGridViewImageColumn1.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             // 
+            // btnImport
+            // 
+            resources.ApplyResources(this.btnImport, "btnImport");
+            this.btnImport.Name = "btnImport";
+            this.ttHelp.SetToolTip(this.btnImport, resources.GetString("btnImport.ToolTip"));
+            this.btnImport.UseVisualStyleBackColor = true;
+            this.btnImport.Click += new System.EventHandler(this.BtnImportClick);
+            // 
+            // btnSave
+            // 
+            resources.ApplyResources(this.btnSave, "btnSave");
+            this.btnSave.Name = "btnSave";
+            this.ttHelp.SetToolTip(this.btnSave, resources.GetString("btnSave.ToolTip"));
+            this.btnSave.UseVisualStyleBackColor = true;
+            this.btnSave.Click += new System.EventHandler(this.BtnSaveClick);
+            // 
             // FeatureCategoryControl
             // 
+            resources.ApplyResources(this, "$this");
+            this.Controls.Add(this.btnImport);
+            this.Controls.Add(this.btnSave);
             this.Controls.Add(this.chkUseGradients);
             this.Controls.Add(this.angGradientAngle);
             this.Controls.Add(this.featureSizeRangeControl1);
@@ -524,7 +569,7 @@ namespace DotSpatial.Symbology.Forms
             this.Controls.Add(this._lblFieldName);
             this.Controls.Add(this._cmbField);
             this.Name = "FeatureCategoryControl";
-            resources.ApplyResources(this, "$this");
+            this.ttHelp.SetToolTip(this, resources.GetString("$this.ToolTip"));
             ((System.ComponentModel.ISupportInitialize)(this.nudSigFig)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvStatistics)).EndInit();
             this.tabScheme.ResumeLayout(false);
@@ -589,5 +634,7 @@ namespace DotSpatial.Symbology.Forms
         private ComboBox _cmbField;
         private DataGridViewTextBoxColumn Stat;
         private DataGridViewTextBoxColumn Value;
+        private Button btnImport;
+        private Button btnSave;
     }
 }
