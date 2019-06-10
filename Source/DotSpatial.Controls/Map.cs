@@ -24,7 +24,7 @@ namespace DotSpatial.Controls
     /// <summary>
     /// The Map Control for 2D applications.
     /// </summary>
-    public partial class Map : UserControl, IMap, IMessageFilter
+    public partial class Map : UserControl, IMap/*, IMessageFilter*/
     {
         #region Fields
 
@@ -54,7 +54,7 @@ namespace DotSpatial.Controls
         {
             InitializeComponent();
             Configure();
-            Application.AddMessageFilter(this);
+            //Application.AddMessageFilter(this);
         }
 
         #endregion
@@ -559,7 +559,7 @@ namespace DotSpatial.Controls
                 if (test > 0) f.Deactivate(); // any overlap of behavior leads to deactivation
             }
 
-            function.Activate();
+            function.Activate(); 
         }
 
         /// <summary>
@@ -876,21 +876,28 @@ namespace DotSpatial.Controls
         }
 
         /// <inheritdoc />
-        public bool PreFilterMessage(ref Message m)
-        {
-            if (m.Msg == 0x0100)
-            {
-                if (ContainsFocus)
-                    OnKeyDown(new KeyEventArgs((Keys)m.WParam.ToInt32()));
-            }
-            else if (m.Msg == 0x0101)
-            {
-                if (ContainsFocus)
-                    OnKeyUp(new KeyEventArgs((Keys)m.WParam.ToInt32()));
-            }
+        //public bool PreFilterMessage(ref Message m)
+        //{
+        //    if (m.Msg == 0x0100)
+        //    {
+        //        if (ContainsFocus)
+        //        {
+        //            OnKeyDown(new KeyEventArgs((Keys)m.WParam.ToInt32()));
+        //            return true;
+        //        }
+        //    }
+        //    else if (m.Msg == 0x0101)
+        //    {
+        //        if (ContainsFocus)
+        //        {
+        //            OnKeyUp(new KeyEventArgs((Keys)m.WParam.ToInt32()));
+        //            return true;
+        //        }
+        //    }
 
-            return false;
-        }
+        //    //return false;//导致调用两次keydown
+        //    return false;
+        //}
 
         /// <summary>
         /// Instead of using the usual buffers, this bypasses any buffering and instructs the layers
@@ -1534,7 +1541,7 @@ namespace DotSpatial.Controls
             // changed by Jiri Kadlec - default function mode is none
             FunctionMode = FunctionMode.None;
         }
-
+       
         private void MapKeyDown(object sender, KeyEventArgs e)
         {
             foreach (var tool in MapFunctions.Where(_ => _.Enabled))
