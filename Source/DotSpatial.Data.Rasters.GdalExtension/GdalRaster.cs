@@ -1,6 +1,8 @@
 // Copyright (c) DotSpatial Team. All rights reserved.
 // Licensed under the MIT license. See License.txt file in the project root for full license information.
 
+using DotSpatial.Projections;
+using OSGeo.GDAL;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,8 +11,6 @@ using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
-using DotSpatial.Projections;
-using OSGeo.GDAL;
 
 namespace DotSpatial.Data.Rasters.GdalExtension
 {
@@ -1062,7 +1062,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
             // Todo: look for prj file if GetProjection returns null.
             // Do we need to read this as an Esri string if we don't get a proj4 string?
             string projString = _dataset.GetProjection();
-            Projection = ProjectionInfo.FromProj4String(projString);
+            Projection = ProjectionInfo.FromEsriString(projString);
             if (_band != null)
             {
                 double val;

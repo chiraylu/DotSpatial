@@ -705,7 +705,7 @@ namespace DotSpatial.Projections
 
             return ToEsriString().Equals(other.ToEsriString()) || ToProj4String().Equals(other.ToProj4String());
         }
-        
+
         /// <summary>
         /// If this is a geographic coordinate system, this will show decimal degrees.  Otherwise,
         ///   this will show the linear unit units.
@@ -1202,7 +1202,41 @@ namespace DotSpatial.Projections
                 Transform.Init(this);
             }
         }
-
+        public bool GetAuthority(string esriString, out string authority, out int authorityCode)
+        {
+            bool ret = false;
+            authority = null;
+            authorityCode = 0;
+            if (esriString?.Contains("AUTHORITY") == true)
+            {
+                int index = esriString.IndexOf("AUTHORITY");
+                string tempAuthority = null;
+                int tempAuthorityCode = 0;
+                int beginIndex = 0;
+                int endIndex = 0;
+                string authorityStr = null;
+                string[] array = null;
+                while (index >= 0)
+                {
+                    beginIndex = esriString.IndexOf("[", index);
+                    endIndex = esriString.IndexOf("]", index);
+                    authorityStr = esriString.Substring(beginIndex + 1, endIndex - beginIndex-1).Replace("\"","");
+                    array = authorityStr.Split(',');
+                    tempAuthority = array[0];
+                    tempAuthorityCode = Convert.ToInt32(array[1]);
+                    ProjectionInfo projection = AuthorityCodeHandler.Instance[$"{tempAuthority}:{tempAuthorityCode}"];
+                    if (projection != null)
+                    {
+                        authority = tempAuthority;
+                        authorityCode = tempAuthorityCode;
+                        ret = true;
+                        break;
+                    }
+                    index = esriString.IndexOf("AUTHORITY", endIndex);
+                }
+            }
+            return ret;
+        }
         /// <summary>
         /// This will try to read the string, but if the validation fails, then it will return false,
         ///   rather than throwing an exception.
@@ -1224,7 +1258,11 @@ namespace DotSpatial.Projections
             {
                 return false;
             }
-
+            if (GetAuthority(esriString, out string authority, out int authorityCode))
+            {
+                Authority = authority;
+                AuthorityCode = authorityCode;
+            }
             if (esriString.Contains("PROJCS") == false)
             {
                 GeographicInfo.ParseEsriString(esriString);
@@ -1336,6 +1374,6 @@ namespace DotSpatial.Projections
         }
 
         #endregion
-        
+
     }
 }
