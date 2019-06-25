@@ -259,7 +259,7 @@ namespace DotSpatial.Data
         /// <param name="startIndex">The zero-based starting index of the search.</param>
         /// <param name="count">The number of elements in the section to search.</param>
         /// <param name="match"> The System.Predicate&lt;IFeature&gt; delegate that defines the conditions of the element to search for.</param>
-        /// <returns>The zero-based index of the first occurrence of an element that matches the conditions defined by match, if found; otherwise, –1</returns>
+        /// <returns>The zero-based index of the first occurrence of an element that matches the conditions defined by match, if found; otherwise, ?</returns>
         /// <exception cref="System.ArgumentOutOfRangeException">startIndex is outside the range of valid indexes for the EventList&lt;IFeature&gt;.-or-count is less than 0.-or-startIndex and count do not specify a valid section in the EventList&lt;IFeature&gt;.</exception>
         /// <exception cref="System.ArgumentNullException">match is null</exception>
         public virtual int FindIndex(int startIndex, int count, Predicate<IFeature> match)
@@ -272,7 +272,7 @@ namespace DotSpatial.Data
         /// </summary>
         /// <param name="startIndex">The zero-based starting index of the search.</param>
         /// <param name="match">The System.Predicate&lt;IFeature&gt; delegate that defines the conditions of the element to search for.</param>
-        /// <returns>The zero-based index of the first occurrence of an element that matches the conditions defined by match, if found; otherwise, –1.</returns>
+        /// <returns>The zero-based index of the first occurrence of an element that matches the conditions defined by match, if found; otherwise, ?.</returns>
         /// <exception cref="System.ArgumentOutOfRangeException">startIndex is outside the range of valid indexes for the EventList&lt;IFeature&gt;.</exception>
         /// <exception cref="System.ArgumentNullException">match is null.</exception>
         public virtual int FindIndex(int startIndex, Predicate<IFeature> match)
@@ -284,7 +284,7 @@ namespace DotSpatial.Data
         /// Searches for an element that matches the conditions defined by the specified predicate, and returns the zero-based index of the first occurrence within the entire EventList&lt;IFeature&gt;.
         /// </summary>
         /// <param name="match">The System.Predicate&lt;IFeature&gt; delegate that defines the conditions of the element to search for.</param>
-        /// <returns>The zero-based index of the first occurrence of an element that matches the conditions defined by match, if found; otherwise, –1.</returns>
+        /// <returns>The zero-based index of the first occurrence of an element that matches the conditions defined by match, if found; otherwise, ?.</returns>
         /// <exception cref="System.ArgumentNullException">match is null.</exception>
         public virtual int FindIndex(Predicate<IFeature> match)
         {
@@ -321,7 +321,7 @@ namespace DotSpatial.Data
         /// </summary>
         /// <param name="startIndex"> The zero-based starting index of the backward search.</param>
         /// <param name="match">The System.Predicate&lt;IFeature&gt; delegate that defines the conditions of the element to search for.</param>
-        /// <returns>The zero-based index of the last occurrence of an element that matches the conditions defined by match, if found; otherwise, –1.</returns>
+        /// <returns>The zero-based index of the last occurrence of an element that matches the conditions defined by match, if found; otherwise, ?.</returns>
         /// <exception cref="System.ArgumentOutOfRangeException">: startIndex is outside the range of valid indexes for the EventList&lt;IFeature&gt;.</exception>
         public virtual int FindLastIndex(int startIndex, Predicate<IFeature> match)
         {
@@ -332,7 +332,7 @@ namespace DotSpatial.Data
         /// Searches for an element that matches the conditions defined by the specified predicate, and returns the zero-based index of the last occurrence within the entire EventList&lt;IFeature&gt;.
         /// </summary>
         /// <param name="match">The System.Predicate&lt;IFeature&gt; delegate that defines the conditions of the element to search for.</param>
-        /// <returns>The zero-based index of the last occurrence of an element that matches the conditions defined by match, if found; otherwise, –1.</returns>
+        /// <returns>The zero-based index of the last occurrence of an element that matches the conditions defined by match, if found; otherwise, ?.</returns>
         /// <exception cref="System.ArgumentNullException">match is null.</exception>
         public virtual int FindLastIndex(Predicate<IFeature> match)
         {
@@ -365,7 +365,7 @@ namespace DotSpatial.Data
         /// Searches for the specified object and returns the zero-based index of the first occurrence within the entire System.Collections.Generic.List&lt;IFeature&gt;.
         /// </summary>
         /// <param name="item">The object to locate in the System.Collections.Generic.List&lt;IFeature&gt;. The value can be null for reference types.</param>
-        /// <returns>The zero-based index of the first occurrence of item within the entire System.Collections.Generic.List&lt;IFeature&gt;, if found; otherwise, –1.</returns>
+        /// <returns>The zero-based index of the first occurrence of item within the entire System.Collections.Generic.List&lt;IFeature&gt;, if found; otherwise, ?.</returns>
         public virtual int IndexOf(IFeature item)
         {
             return _list.IndexOf(item);
@@ -377,7 +377,7 @@ namespace DotSpatial.Data
         /// <param name="item">The object to locate in the EventList&lt;IFeature&gt;. The value can be null for reference types.</param>
         /// <param name="index"> The zero-based starting index of the search.</param>
         /// <param name="count">The number of elements in the section to search.</param>
-        /// <returns>The zero-based index of the first occurrence of item within the range of elements in the EventList&lt;IFeature&gt; that starts at index and contains count number of elements, if found; otherwise, –1.</returns>
+        /// <returns>The zero-based index of the first occurrence of item within the range of elements in the EventList&lt;IFeature&gt; that starts at index and contains count number of elements, if found; otherwise, ?.</returns>
         /// <exception cref="System.ArgumentOutOfRangeException"> index is outside the range of valid indexes for the EventList&lt;IFeature&gt;.-or-count is less than 0.-or-index and count do not specify a valid section in the EventList&lt;IFeature&gt;.</exception>
         public virtual int IndexOf(IFeature item, int index, int count)
         {
@@ -389,7 +389,7 @@ namespace DotSpatial.Data
         /// </summary>
         /// <param name="item">The object to locate in the EventList&lt;IFeature&gt;. The value can be null for reference types.</param>
         /// <param name="index"> The zero-based starting index of the search.</param>
-        /// <returns>The zero-based index of the first occurrence of item within the range of elements in the EventList&lt;IFeature&gt; that extends from index to the last element, if found; otherwise, –1.</returns>
+        /// <returns>The zero-based index of the first occurrence of item within the range of elements in the EventList&lt;IFeature&gt; that extends from index to the last element, if found; otherwise, ?.</returns>
         /// <exception cref="System.ArgumentOutOfRangeException">index is outside the range of valid indexes for the EventList&lt;IFeature&gt;.</exception>
         public virtual int IndexOf(IFeature item, int index)
         {
@@ -434,7 +434,7 @@ namespace DotSpatial.Data
         /// <param name="item">The object to locate in the EventList&lt;IFeature&gt;. The value can be null for reference types.</param>
         /// <param name="index">The zero-based starting index of the backward search.</param>
         /// <param name="count">The number of elements in the section to search.</param>
-        /// <returns>The zero-based index of the last occurrence of item within the range of elements in the EventList&lt;IFeature&gt; that contains count number of elements and ends at index, if found; otherwise, –1.</returns>
+        /// <returns>The zero-based index of the last occurrence of item within the range of elements in the EventList&lt;IFeature&gt; that contains count number of elements and ends at index, if found; otherwise, ?.</returns>
         /// <exception cref="System.ArgumentOutOfRangeException">index is outside the range of valid indexes for the EventList&lt;IFeature&gt;.-or-count is less than 0.-or-index and count do not specify a valid section in the EventList&lt;IFeature&gt;.</exception>
         public virtual int LastIndexOf(IFeature item, int index, int count)
         {
@@ -446,7 +446,7 @@ namespace DotSpatial.Data
         /// </summary>
         /// <param name="item">The object to locate in the EventList&lt;IFeature&gt;. The value can be null for reference types.</param>
         /// <param name="index">The zero-based starting index of the backward search.</param>
-        /// <returns>The zero-based index of the last occurrence of item within the range of elements in the EventList&lt;IFeature&gt; that extends from the first element to index, if found; otherwise, –1.</returns>
+        /// <returns>The zero-based index of the last occurrence of item within the range of elements in the EventList&lt;IFeature&gt; that extends from the first element to index, if found; otherwise, ?.</returns>
         /// <exception cref="System.ArgumentOutOfRangeException">index is outside the range of valid indexes for the EventList&lt;IFeature&gt;.</exception>
         public virtual int LastIndexOf(IFeature item, int index)
         {
@@ -457,7 +457,7 @@ namespace DotSpatial.Data
         /// Searches for the specified object and returns the zero-based index of the last occurrence within the entire EventList&lt;IFeature&gt;.
         /// </summary>
         /// <param name="item">The object to locate in the EventList&lt;IFeature&gt;. The value can be null for reference types.</param>
-        /// <returns>The zero-based index of the last occurrence of item within the entire the EventList&lt;IFeature&gt;, if found; otherwise, –1.</returns>
+        /// <returns>The zero-based index of the last occurrence of item within the entire the EventList&lt;IFeature&gt;, if found; otherwise, ?.</returns>
         public virtual int LastIndexOf(IFeature item)
         {
             return _list.LastIndexOf(item);

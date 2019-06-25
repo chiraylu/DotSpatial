@@ -11,7 +11,7 @@ namespace DotSpatial.Symbology
         /// <summary>
         /// The most complex form, containing a linear pattern that can have a hash as well as decorations
         /// </summary>
-        Catographic,
+        Cartographic,
 
         /// <summary>
         /// This is not directly supported by DotSpatial, but is in fact, some new type that

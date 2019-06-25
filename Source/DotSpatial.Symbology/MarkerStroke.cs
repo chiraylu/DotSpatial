@@ -1,10 +1,8 @@
-﻿using DotSpatial.Serialization;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Xml.Serialization;
+using DotSpatial.Serialization;
 
 namespace DotSpatial.Symbology
 {
@@ -14,9 +12,8 @@ namespace DotSpatial.Symbology
     {
         [Serialize("Marker")]
         public IPointSymbolizer Marker { get; set; }
-        public MarkerStroke()
+        public MarkerStroke() : base(StrokeStyle.Marker)
         {
-            StrokeStyle = StrokeStyle.Marker;
             Marker = new PointSymbolizer(SymbologyGlobal.RandomColor(), PointShape.Triangle, 10);
         }
         public override void DrawLegendPath(Graphics g, GraphicsPath path, double scaleWidth)
@@ -41,7 +38,7 @@ namespace DotSpatial.Symbology
             {
                 return;
             }
-            if (DashButtons == null|| DashButtons.Length<=1)
+            if (DashButtons == null || DashButtons.Length <= 1)
             {
                 return;
             }

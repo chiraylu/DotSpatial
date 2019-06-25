@@ -375,22 +375,30 @@ namespace DotSpatial.Data.Rasters.GdalExtension
             // limit the block size to the viewable image.
             if (w < blockXsize)
             {
-                blockXsize = (int)w;
+                blockXsize = (int)Math.Ceiling(w);
+                nbX = 1;
+            }
+            else if (w == blockXsize)
+            {
                 nbX = 1;
             }
             else
             {
-                nbX = (int)(w / blockXsize) + 1;
+                nbX = (int)Math.Ceiling(w / blockXsize);
             }
 
             if (h < blockYsize)
             {
-                blockYsize = (int)h;
+                blockYsize = (int)Math.Ceiling(h);
+                nbY = 1;
+            }
+            else if (h == blockYsize)
+            {
                 nbY = 1;
             }
             else
             {
-                nbY = (int)(h / blockYsize) + 1;
+                nbY = (int)Math.Ceiling(h / blockYsize);
             }
 
             for (var i = 0; i < nbX; i++)
@@ -398,15 +406,17 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                 for (var j = 0; j < nbY; j++)
                 {
                     // The +1 is to remove the white stripes artifacts
-                    int xOffset = (int)(tLx / overviewPow) + (i * blockXsize);
-                    int yOffset = (int)(tLy / overviewPow) + (j * blockYsize);
+                    double xOffsetD = (tLx / overviewPow) + (i * blockXsize);
+                    double yOffsetD = (tLy / overviewPow) + (j * blockYsize);
+                    int xOffsetI = (int)Math.Floor(xOffsetD);
+                    int yOffsetI = (int)Math.Floor(yOffsetD);
                     int xSize = blockXsize + 1;
                     int ySize = blockYsize + 1;
-                    using (var bitmap = GetBitmap(xOffset, yOffset, xSize, ySize))
+                    using (var bitmap = GetBitmap(xOffsetI, yOffsetI, xSize, ySize))
                     {
                         if (bitmap != null)
                         {
-                            g.DrawImage(bitmap, xOffset, yOffset);
+                            g.DrawImage(bitmap, xOffsetI, yOffsetI);
                         }
                     }
                 }

@@ -43,16 +43,15 @@ namespace DotSpatial.Symbology
             {
                 return _strokeStyle;
             }
-            set
-            {
-                _strokeStyle = value;
-            }
         }
 
         #endregion
-
+        public Stroke(StrokeStyle strokeStyle)
+        {
+            _strokeStyle = strokeStyle;
+        }
         #region Methods
-        
+
         /// <summary>
         /// This is an optional expression that allows drawing to the specified GraphicsPath.
         /// Overriding this allows for unconventional behavior to be included, such as

@@ -29,32 +29,23 @@ namespace DotSpatial.Symbology
         /// <summary>
         /// Initializes a new instance of the <see cref="SimpleStroke"/> class.
         /// </summary>
-        public SimpleStroke()
+        public SimpleStroke() : this(1)
         {
-            _color = SymbologyGlobal.RandomDarkColor(1);
-            _width = 1;
-            StrokeStyle = StrokeStyle.Simple;
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SimpleStroke"/> class.
         /// </summary>
         /// <param name="width">The double width of the line to set</param>
-        public SimpleStroke(double width)
+        public SimpleStroke(double width) : this(width, SymbologyGlobal.RandomDarkColor(1))
         {
-            Width = width;
-            StrokeStyle = StrokeStyle.Simple;
         }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="SimpleStroke"/> class.
         /// </summary>
         /// <param name="color">The color to use for the stroke</param>
-        public SimpleStroke(Color color)
+        public SimpleStroke(Color color):this(1, color)
         {
-            Color = color;
-            _width = 1;
-            StrokeStyle = StrokeStyle.Simple;
         }
 
         /// <summary>
@@ -62,13 +53,17 @@ namespace DotSpatial.Symbology
         /// </summary>
         /// <param name="width">The double width of the line to set</param>
         /// <param name="color">The color to use for the stroke</param>
-        public SimpleStroke(double width, Color color)
+        public SimpleStroke(double width, Color color) : this(width, color, StrokeStyle.Simple)
         {
-            Width = width;
-            Color = color;
-            StrokeStyle = StrokeStyle.Simple;
         }
-
+        public SimpleStroke(StrokeStyle strokeStyle) : this(1, SymbologyGlobal.RandomDarkColor(1), strokeStyle)
+        {
+        }
+        public SimpleStroke(double width, Color color, StrokeStyle strokeStyle) : base(strokeStyle)
+        {
+            _color = color;
+            _width = width;
+        }
         #endregion
 
         #region Properties

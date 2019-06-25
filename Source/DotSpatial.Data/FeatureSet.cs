@@ -1143,7 +1143,6 @@ namespace DotSpatial.Data
                     part.Vertices = _vertices;
                 }
             }
-
             if (AttributesPopulated)
             {
                 DataTable.Rows.RemoveAt(index);

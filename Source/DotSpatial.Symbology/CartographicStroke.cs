@@ -38,22 +38,25 @@ namespace DotSpatial.Symbology
         /// <summary>
         /// Initializes a new instance of the <see cref="CartographicStroke"/> class.
         /// </summary>
-        public CartographicStroke()
+        public CartographicStroke():this(SymbologyGlobal.RandomDarkColor(1))
         {
-            Color = SymbologyGlobal.RandomDarkColor(1);
-            Configure();
         }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CartographicStroke"/> class of the specified color.
         /// </summary>
         /// <param name="color">The color that should be used.</param>
-        public CartographicStroke(Color color)
+        public CartographicStroke(Color color):this( color, StrokeStyle.Cartographic)
         {
-            Color = color;
+        }
+        public CartographicStroke(StrokeStyle strokeStyle):this(SymbologyGlobal.RandomDarkColor(1),strokeStyle)
+        {
+
+        }
+        public CartographicStroke(Color color, StrokeStyle strokeStyle) : base(1, color, strokeStyle)
+        {
             Configure();
         }
-
         #endregion
 
         #region Properties
@@ -404,7 +407,6 @@ namespace DotSpatial.Symbology
 
         private void Configure()
         {
-            StrokeStyle = StrokeStyle.Catographic;
             _joinType = LineJoinType.Round;
             _startCap = LineCap.Round;
             _endCap = LineCap.Round;

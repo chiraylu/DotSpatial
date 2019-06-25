@@ -191,7 +191,7 @@ namespace DotSpatial.Plugins.ShapeEditor
                 _addShapeFunction = new AddShapeFunction(_geoMap)
                 {
                     Name = "AddShape"
-                };
+                }; 
             }
 
             if (_geoMap.MapFunctions.Contains(_addShapeFunction) == false)
