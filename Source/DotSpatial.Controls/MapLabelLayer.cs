@@ -30,7 +30,7 @@ namespace DotSpatial.Controls
         /// <summary>
         /// The existing labels, accessed for all map label layers, not just this instance
         /// </summary>
-        private static readonly List<RectangleF> ExistingLabels = new List<RectangleF>(); // for collision prevention, tracks existing labels.
+        private static readonly List<IPolygon> ExistingLabels = new List<IPolygon>(); // for collision prevention, tracks existing labels.
 
         #endregion
 
@@ -165,13 +165,13 @@ namespace DotSpatial.Controls
         /// <param name="category">The label category the feature belongs to.</param>
         /// <param name="selected">Indicates whether the feature is selected.</param>
         /// <param name="existingLabels">List with the already existing labels.</param>
-        public static void DrawLineFeature(MapArgs e, Graphics g, IFeature f, ILabelCategory category, bool selected, List<RectangleF> existingLabels)
+        public static void DrawLineFeature(MapArgs e, Graphics g, IFeature f, ILabelCategory category, bool selected, List<IPolygon> existingLabels)
         {
             var symb = selected ? category.SelectionSymbolizer : category.Symbolizer;
 
             // Gets the features text and calculate the label size
             string txt = category.CalculateExpression(f.DataRow, selected, f.Fid);
-            if (txt == null) return;
+            if (string.IsNullOrWhiteSpace(txt)) return;
 
             Func<SizeF> labelSize = () => g.MeasureString(txt, CacheList.GetFont(symb));
 
@@ -227,7 +227,7 @@ namespace DotSpatial.Controls
         /// <param name="category">The label category the feature belongs to.</param>
         /// <param name="selected">Indicates whether the feature is selected.</param>
         /// <param name="existingLabels">List with the already existing labels.</param>
-        public static void DrawPointFeature(MapArgs e, Graphics g, IFeature f, ILabelCategory category, bool selected, List<RectangleF> existingLabels)
+        public static void DrawPointFeature(MapArgs e, Graphics g, IFeature f, ILabelCategory category, bool selected, List<IPolygon> existingLabels)
         {
             var symb = selected ? category.SelectionSymbolizer : category.Symbolizer;
 
@@ -262,7 +262,7 @@ namespace DotSpatial.Controls
         /// <param name="category">The label category the feature belongs to.</param>
         /// <param name="selected">Indicates whether the feature is selected.</param>
         /// <param name="existingLabels">List with the already existing labels.</param>
-        public static void DrawPolygonFeature(MapArgs e, Graphics g, IFeature f, ILabelCategory category, bool selected, List<RectangleF> existingLabels)
+        public static void DrawPolygonFeature(MapArgs e, Graphics g, IFeature f, ILabelCategory category, bool selected, List<IPolygon> existingLabels)
         {
             var symb = selected ? category.SelectionSymbolizer : category.Symbolizer;
 
@@ -517,15 +517,61 @@ namespace DotSpatial.Controls
         {
         }
 
+        private static void RotateCoordinateRad(PointF rotationPoint, ref PointF point, double radAngle)
+        {
+            double x = rotationPoint.X + ((Math.Cos(radAngle) * (point.X - rotationPoint.X)) - (Math.Sin(radAngle) * (point.Y - rotationPoint.Y)));
+            double y = rotationPoint.Y + ((Math.Sin(radAngle) * (point.X - rotationPoint.X)) + (Math.Cos(radAngle) * (point.Y - rotationPoint.Y)));
+            point.X = (float)x;
+            point.Y = (float)y;
+        }
+
+        private static IPolygon GetPolygon(RectangleF rectangleF, double angle)
+        {
+            IPolygon polygon = null;
+            float xMin = rectangleF.X;
+            float yMax = rectangleF.Y;
+            float xMax = xMin + rectangleF.Width;
+            float yMin = yMax - rectangleF.Height;
+            PointF p0 = new PointF(xMin, yMin);
+            PointF p1 = new PointF(xMax, yMin);
+            PointF p2 = new PointF(xMax, yMax);
+            PointF p3 = new PointF(xMin, yMax);
+            //angle = angle * Math.PI / 180;
+            RotateCoordinateRad(rectangleF.Location, ref p0, angle);
+            RotateCoordinateRad(rectangleF.Location, ref p1, angle);
+            RotateCoordinateRad(rectangleF.Location, ref p2, angle);
+            RotateCoordinateRad(rectangleF.Location, ref p3, angle);
+            Coordinate[] coordinates = new Coordinate[]
+            {
+                new Coordinate(p0.X,p0.Y),
+                new Coordinate(p1.X,p1.Y),
+                new Coordinate(p2.X,p2.Y),
+                new Coordinate(p3.X,p3.Y),
+                new Coordinate(p0.X,p0.Y)
+            };
+            ILinearRing shell = new LinearRing(coordinates);
+            polygon = new Polygon(shell);
+            return polygon;
+        }
+
         /// <summary>
         /// Checks whether the given rectangle collides with the drawnRectangles.
         /// </summary>
-        /// <param name="rectangle">Rectangle that we want to draw next.</param>
-        /// <param name="drawnRectangles">Rectangle that were already drawn.</param>
-        /// <returns>True, if the rectangle collides with a rectancle that was already drawn.</returns>
-        private static bool Collides(RectangleF rectangle, IEnumerable<RectangleF> drawnRectangles)
+        /// <param name="polygon">Rectangle that we want to draw next</param>
+        /// <param name="drawnRectangles">Rectangle that were already drawn</param>
+        /// <returns>True, if the rectangle collides with a rectancle that was already drawn</returns>
+        private static bool Collides(IPolygon polygon, List<IPolygon> drawnRectangles)
         {
-            return drawnRectangles.Any(rectangle.IntersectsWith);
+            bool ret = false;
+            foreach (IPolygon tmpPolygon in drawnRectangles)
+            {
+                if (polygon.Intersects(tmpPolygon))
+                {
+                    ret = true;
+                    break;
+                }
+            }
+            return ret;
         }
 
         /// <summary>
@@ -539,15 +585,16 @@ namespace DotSpatial.Controls
         /// <param name="labelBounds">The bounds of the label.</param>
         /// <param name="existingLabels">List with labels that were already drawn.</param>
         /// <param name="angle">Angle in degree the label gets rotated by.</param>
-        private static void CollisionDraw(string txt, Graphics g, ILabelSymbolizer symb, IFeature f, MapArgs e, RectangleF labelBounds, List<RectangleF> existingLabels, float angle)
+        private static void CollisionDraw(string txt, Graphics g, ILabelSymbolizer symb, IFeature f, MapArgs e, RectangleF labelBounds, List<IPolygon> existingLabels, float angle)
         {
             if (labelBounds.IsEmpty || !e.ImageRectangle.IntersectsWith(labelBounds)) return;
             if (symb.PreventCollisions)
             {
-                if (!Collides(labelBounds, existingLabels))
+                IPolygon polygon = GetPolygon(labelBounds, angle);
+                if (!Collides(polygon, existingLabels))
                 {
                     DrawLabel(g, txt, labelBounds, symb, f, angle);
-                    existingLabels.Add(labelBounds);
+                    existingLabels.Add(polygon);
                 }
             }
             else
@@ -921,8 +968,8 @@ namespace DotSpatial.Controls
 
             foreach (var category in Symbology.Categories)
             {
-                category.UpdateExpressionColumns(FeatureSet.DataTable.Columns); 
-                 var catFeatures = new List<int>();
+                category.UpdateExpressionColumns(FeatureSet.DataTable.Columns);
+                var catFeatures = new List<int>();
                 foreach (int fid in features)
                 {
                     //if (drawStates[fid] == null || drawStates[fid].Category == null) continue;
