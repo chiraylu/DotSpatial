@@ -610,7 +610,7 @@ namespace DotSpatial.Projections
         /// <exception cref="ArgumentOutOfRangeException">Throws when there is no projection for given authority and code</exception>
         public static ProjectionInfo FromAuthorityCode(string authority, int code)
         {
-            var pi = AuthorityCodeHandler.Instance[string.Format("{0}:{1}", authority, code)];
+            var pi = AuthorityCodeHandler.Instance[string.Format("{0}:{1}", authority, code)]; 
             if (pi != null)
             {
                 // we need to copy the projection information because the Authority Codes implementation returns its one and only

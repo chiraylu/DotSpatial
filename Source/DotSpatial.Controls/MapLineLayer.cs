@@ -527,7 +527,10 @@ namespace DotSpatial.Controls
                     // Define the symbology based on the category and selection state
                     ILineSymbolizer ls = selected ? category.SelectionSymbolizer : category.Symbolizer;
                     var features = GetFeatures(indiceList, states, category, selected);
-                    DrawPath(g, ls, e, drawFeature, features);
+                    if (features.Count > 0)
+                    {
+                        DrawPath(g, ls, e, drawFeature, features);
+                    }
                 }
             }
             else
