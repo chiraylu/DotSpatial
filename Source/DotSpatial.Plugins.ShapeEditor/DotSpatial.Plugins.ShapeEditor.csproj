@@ -177,6 +177,7 @@
       <LastGenOutput>ShapeEditorResources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="ShapeEditorResources.zh-CN.resx" />
     <EmbeddedResource Include="SnapSettingsDialog.resx">
       <DependentUpon>SnapSettingsDialog.cs</DependentUpon>
     </EmbeddedResource>

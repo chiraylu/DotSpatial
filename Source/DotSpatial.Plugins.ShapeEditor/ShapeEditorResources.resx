@@ -142,4 +142,13 @@
   <data name="SnappingIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>Resources\SnappingIcon.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="FinishPart" xml:space="preserve">
+    <value>Finish Part</value>
+  </data>
+  <data name="FinishShape" xml:space="preserve">
+    <value>Finish Shape</value>
+  </data>
 </root>

@@ -805,7 +805,6 @@ namespace DotSpatial.Projections
             //enforce invariant culture
             CultureInfo originalCulture = Thread.CurrentThread.CurrentCulture;
             Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
-
             var result = new StringBuilder();
 
             Append(result, "x_0", FalseEasting);

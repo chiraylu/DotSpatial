@@ -3,6 +3,7 @@
 
 using System;
 using DotSpatial.Data;
+using GeoAPI.Geometries;
 
 namespace DotSpatial.Plugins.ShapeEditor
 {
@@ -11,15 +12,18 @@ namespace DotSpatial.Plugins.ShapeEditor
     /// </summary>
     public class VertexMovedEventArgs : EventArgs
     {
+
         #region  Constructors
 
         /// <summary>
         /// Initializes a new instance of the <see cref="VertexMovedEventArgs"/> class.
         /// </summary>
         /// <param name="affectedFeature">The feature affected by the vertex move.</param>
-        public VertexMovedEventArgs(IFeature affectedFeature)
+        public VertexMovedEventArgs(IFeature affectedFeature, Coordinate srcCoord, Coordinate destCoord)
         {
             AffectedFeature = affectedFeature;
+            SrcCoord = srcCoord;
+            DestCoord = destCoord;
         }
 
         #endregion
@@ -30,6 +34,8 @@ namespace DotSpatial.Plugins.ShapeEditor
         /// Gets or sets the affected feature.
         /// </summary>
         public IFeature AffectedFeature { get; set; }
+        public Coordinate SrcCoord { get; set; }
+        public Coordinate DestCoord { get; set; }
 
         #endregion
     }

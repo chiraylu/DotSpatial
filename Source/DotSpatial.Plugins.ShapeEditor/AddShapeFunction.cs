@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
+using System.Resources;
 using System.Windows.Forms;
 using DotSpatial.Controls;
 using DotSpatial.Data;
@@ -34,7 +35,6 @@ namespace DotSpatial.Plugins.ShapeEditor
         private List<List<Coordinate>> _parts;
         private bool _standBy;
         private IMapLineLayer _tempLayer;
-
         #endregion
 
         #region  Constructors
@@ -225,7 +225,6 @@ namespace DotSpatial.Plugins.ShapeEditor
             {
                 _context.MenuItems.Add(1, _finishPart);
             }
-
             _coordinateDialog.Show();
             _coordinateDialog.FormClosing += CoordinateDialogFormClosing;
             if (!_standBy) _coordinates = new List<Coordinate>();
@@ -278,7 +277,22 @@ namespace DotSpatial.Plugins.ShapeEditor
 
             Deactivate();
         }
-
+        protected override void OnMouseWheel(GeoMouseArgs e)
+        {
+            if (_standBy)
+            {
+                return;
+            }
+            base.OnMouseWheel(e);
+        }
+        protected override void OnMouseDown(GeoMouseArgs e)
+        {
+            if (_standBy)
+            {
+                return;
+            }
+            base.OnMouseDown(e);
+        }
         /// <summary>
         /// Handles drawing of editing features.
         /// </summary>
@@ -465,7 +479,6 @@ namespace DotSpatial.Plugins.ShapeEditor
                     }
                 }
             }
-
             base.OnMouseUp(e);
         }
 
@@ -495,10 +508,14 @@ namespace DotSpatial.Plugins.ShapeEditor
         {
             YieldStyle = YieldStyles.LeftButton | YieldStyles.RightButton;
             _context = new ContextMenu();
-            _context.MenuItems.Add("Delete", DeleteShape);
-            _finishPart = new MenuItem("Finish Part", FinishPart);
+            ResourceManager resourceManager = new ResourceManager("DotSpatial.Plugins.ShapeEditor.ShapeEditorResources", typeof(ShapeEditorResources).Assembly);
+            string deletStr = resourceManager.GetString("Delete");
+            _context.MenuItems.Add(deletStr, DeleteShape);
+            string finishPartStr = resourceManager.GetString("FinishPart");
+            _finishPart = new MenuItem(finishPartStr, FinishPart);
             _context.MenuItems.Add(_finishPart);
-            _context.MenuItems.Add("Finish Shape", FinishShape);
+            string finishShapeStr = resourceManager.GetString("FinishShape");
+            _context.MenuItems.Add(finishShapeStr, FinishShape);
             _parts = new List<List<Coordinate>>();
         }
 

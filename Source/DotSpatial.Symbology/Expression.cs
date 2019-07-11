@@ -1470,8 +1470,12 @@ namespace DotSpatial.Symbology
                 }
                 else if (Value.Type == TkValueType.VtDouble)
                 {
-                    if (value is short || value is ushort || value is int || value is uint || value is long || value is ulong || value is float || value is double || value is decimal) Value.Dbl = Convert.ToDouble(value);
-                    else return false;
+                    if (value is short || value is ushort || value is int || value is uint || value is long || value is ulong || value is float || value is double || value is decimal) { Value.Dbl = Convert.ToDouble(value); }
+                    else if (value is DBNull)
+                    {
+                        Value.Dbl = 0;
+                    }
+                    else { return false; }
                 }
                 else if (Value.Type == TkValueType.VtObject)
                 {

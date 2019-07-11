@@ -35,6 +35,7 @@ namespace DotSpatial.Plugins.ShapeEditor
         private Coordinate _activeVertex;
         private Coordinate _closedCircleCoord;
         private Coordinate _dragCoord;
+        private Coordinate _originCoord;
         private bool _dragging;
         private IFeatureSet _featureSet;
         private Rectangle _imageRect;
@@ -219,6 +220,7 @@ namespace DotSpatial.Plugins.ShapeEditor
 
                         if (CheckForVertexDrag(e))
                         {
+                            _originCoord = new Coordinate(_dragCoord);
                             return;
                         }
 
@@ -270,6 +272,7 @@ namespace DotSpatial.Plugins.ShapeEditor
                             _dragging = true;
                             Map.IsBusy = true;
                             _dragCoord = _activeFeature.Geometry.Coordinates[0];
+                            _originCoord = new Coordinate(_dragCoord);
                             MapPointLayer mpl = _layer as MapPointLayer;
                             mpl?.SetVisible(_activeFeature, false);
 
@@ -366,7 +369,7 @@ namespace DotSpatial.Plugins.ShapeEditor
                         return;
                     }
 
-                    OnVertexMoved(new VertexMovedEventArgs(_activeFeature));
+                    OnVertexMoved(new VertexMovedEventArgs(_activeFeature, _originCoord, _dragCoord));
                     if (_layer.GetCategory(_activeFeature) != _selectedCategory)
                     {
                         _layer.SetCategory(_activeFeature, _selectedCategory);
@@ -380,7 +383,7 @@ namespace DotSpatial.Plugins.ShapeEditor
                         return;
                     }
 
-                    OnVertexMoved(new VertexMovedEventArgs(_selectedFeature));
+                    OnVertexMoved(new VertexMovedEventArgs(_activeFeature, _originCoord, _dragCoord));
                     if (_layer.GetCategory(_selectedFeature) != _selectedCategory)
                     {
                         _layer.SetCategory(_selectedFeature, _selectedCategory);
