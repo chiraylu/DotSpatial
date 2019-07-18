@@ -160,12 +160,19 @@ namespace DotSpatial.Symbology
         /// <inheritdoc />
         public void Clear()
         {
+            bool hasChanged = false;
             foreach (FastDrawnState state in _layer.DrawnStates)
             {
-                state.Selected = !SelectionState;
+                if (state.Selected != !SelectionState)
+                {
+                    state.Selected = !SelectionState;
+                    hasChanged = true;
+                }
             }
-
-            OnChanged();
+            if (hasChanged)
+            {
+                OnChanged();
+            }
         }
 
         /// <inheritdoc />

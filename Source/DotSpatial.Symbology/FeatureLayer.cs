@@ -1801,7 +1801,10 @@ namespace DotSpatial.Symbology
 
             if (clear != ClearStates.False)
             {
-                Selection.Clear();
+                if (Selection.Count > 0)
+                {
+                    Selection.Clear();
+                }
             }
 
             Envelope region = DataSet.FeatureType == FeatureType.Polygon ? strict : tolerant;
