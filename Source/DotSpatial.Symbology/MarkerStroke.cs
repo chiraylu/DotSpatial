@@ -70,30 +70,42 @@ namespace DotSpatial.Symbology
                 double totalLength = GetLength(points, start, end);
                 PointF startPoint = points[start];
                 PointF endPoint = points[end];
-                float usedLength = 0;
+                double totalUsedLength = 0;
                 if (DashButtons.Length == 2)
                 {
                     bool dash = DashButtons[0];
                     if (!dash)
                     {
-                        usedLength = (float)(totalLength / 2);
-                        PointF location = GetPoint(startPoint, endPoint, usedLength);
+                        totalUsedLength = (float)(totalLength / 2);
+                        PointF location = GetPoint(startPoint, endPoint, totalUsedLength);
                         DrawImage(g, startPoint, endPoint, location, symbol);
                     }
                 }
                 else
                 {
-                    while (usedLength < totalLength)
+                    int k = 0;
+                    PointF beginPoint = points[start];
+                    for (int i = start; i < end; i++)
                     {
-                        for (int i = 0; i < DashButtons.Length; i++)
+                        startPoint = points[i];
+                        endPoint = points[i + 1];
+                        double segmentLength = Math.Sqrt(Math.Pow(endPoint.X - startPoint.X, 2) + Math.Pow(endPoint.Y - startPoint.Y, 2));
+                        double usedLength = 0;
+                        while (totalUsedLength < totalLength && usedLength < segmentLength)
                         {
-                            bool dash = DashButtons[i];
+                            if (k == DashButtons.Length)
+                            {
+                                k = 0;
+                            }
+                            bool dash = DashButtons[k];
                             if (!dash)
                             {
                                 PointF location = GetPoint(startPoint, endPoint, usedLength);
                                 DrawImage(g, startPoint, endPoint, location, symbol);
                             }
+                            totalUsedLength++;
                             usedLength++;
+                            k++;
                         }
                     }
                 }
