@@ -261,7 +261,8 @@ namespace DotSpatial.Controls
             {
                 using (Bitmap bmp = DataSet.GetBitmap(regions[i], clipRectangles[i]))
                 {
-                    if (bmp != null) g.DrawImage(bmp, new Rectangle(0, 0, clipRectangles[i].Width, clipRectangles[i].Height));
+                    if (bmp != null) g.DrawImage(bmp, clipRectangles[i]);
+                    //g.DrawImage(bmp, new Rectangle(0, 0, clipRectangles[i].Width, clipRectangles[i].Height));
                 }
             }
 

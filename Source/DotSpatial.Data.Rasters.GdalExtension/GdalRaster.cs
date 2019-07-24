@@ -309,7 +309,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                 using (Band firstOverview = _band.GetOverview(0))
                 {
                     xRatio = (float)firstOverview.XSize / _band.XSize;
-                    yRatio = (float)firstOverview.YSize / _band.XSize;
+                    yRatio = (float)firstOverview.YSize / _band.YSize;
                 }
             }
             if (m11 > xRatio || m22 > yRatio)
