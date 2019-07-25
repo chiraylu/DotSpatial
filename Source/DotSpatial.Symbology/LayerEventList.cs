@@ -209,7 +209,7 @@ namespace DotSpatial.Symbology
             item.ZoomToLayer -= LayerZoomToLayer;
             item.VisibleChanged -= OnLayerVisibleChanged;
             item.FinishedLoading -= ItemFinishedLoading;
-            item.SelectionChanged -= SelectableSelectionChanged;
+            // item.SelectionChanged -= SelectableSelectionChanged; // todo 每个子项的SelectionChanged都会触发容器的SelectionChanged事件，导致触发次数过多
             item.LayerSelected -= ItemLayerSelected;
 
             // if the layer being removed is selected, ensure that the SelectedLayer property is cleared
@@ -237,7 +237,7 @@ namespace DotSpatial.Symbology
             item.ZoomToLayer += LayerZoomToLayer;
             item.VisibleChanged += OnLayerVisibleChanged;
             item.FinishedLoading += ItemFinishedLoading;
-            item.SelectionChanged += SelectableSelectionChanged;
+            // item.SelectionChanged += SelectableSelectionChanged;// todo 每个子项的SelectionChanged都会触发容器的SelectionChanged事件，导致触发次数过多
             item.LayerSelected += ItemLayerSelected;
             base.OnInclude(item);
             OnListChanged();
