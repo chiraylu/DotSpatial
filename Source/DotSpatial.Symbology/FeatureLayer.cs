@@ -823,7 +823,7 @@ namespace DotSpatial.Symbology
         /// <param name="indexValues">The list or array of integer index values.</param>
         public void RemoveFeaturesAt(IEnumerable<int> indexValues)
         {
-            DataSet.RemoveShapesAt(indexValues);
+            DataSet.RemoveShapesAt(indexValues); 
 
             // Since the indexing has changed, we need to update the drawn states too.
             AssignFastDrawnStates();

@@ -250,6 +250,8 @@ namespace DotSpatial.Symbology
             }
         }
 
+        protected bool IgnoreSelectionChanged { get; set; }
+
         #endregion
 
         #region Indexers
@@ -296,11 +298,19 @@ namespace DotSpatial.Symbology
             _layers.Clear();
         }
 
+        protected override void OnSelectionChanged()
+        {
+            if (!IgnoreSelectionChanged)
+            {
+                base.OnSelectionChanged();
+            }
+        }
         /// <inheritdoc />
         public override bool ClearSelection(out Envelope affectedAreas, bool force = false)
         {
             affectedAreas = new Envelope();
             bool changed = false;
+            IgnoreSelectionChanged = true;
             MapFrame.SuspendEvents();
             foreach (ILayer layer in GetAllLayers())
             {
@@ -311,7 +321,7 @@ namespace DotSpatial.Symbology
                     affectedAreas.ExpandToInclude(layerArea);
                 }
             }
-
+            IgnoreSelectionChanged = false;
             MapFrame.ResumeEvents();
             OnSelectionChanged(); // fires only AFTER the individual layers have fired their events.
             return changed;
@@ -544,6 +554,7 @@ namespace DotSpatial.Symbology
         {
             affectedArea = new Envelope();
             bool somethingChanged = false;
+            IgnoreSelectionChanged = true;
             MapFrame.SuspendEvents();
 
             foreach (var s in GetAllLayers().Where(_ => _.SelectionEnabled && _.IsVisible))
@@ -556,6 +567,7 @@ namespace DotSpatial.Symbology
                 }
             }
 
+            IgnoreSelectionChanged = false;
             MapFrame.ResumeEvents();
             OnSelectionChanged(); // fires only AFTER the individual layers have fired their events.
             return somethingChanged;
