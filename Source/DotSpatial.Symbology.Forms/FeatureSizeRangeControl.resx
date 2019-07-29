@@ -122,7 +122,7 @@
     <value>172, 94</value>
   </data>
   <data name="nudStart.Size" type="System.Drawing.Size, System.Drawing">
-    <value>41, 22</value>
+    <value>41, 21</value>
   </data>
   <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="nudStart.TabIndex" type="System.Int32, mscorlib">
@@ -144,7 +144,7 @@
     <value>9, 189</value>
   </data>
   <data name="nudEnd.Size" type="System.Drawing.Size, System.Drawing">
-    <value>45, 22</value>
+    <value>45, 21</value>
   </data>
   <data name="nudEnd.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
@@ -168,7 +168,7 @@
     <value>163, 74</value>
   </data>
   <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>44, 17</value>
+    <value>35, 12</value>
   </data>
   <data name="label1.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
@@ -195,7 +195,7 @@
     <value>9, 0</value>
   </data>
   <data name="chkSizeRange.Size" type="System.Drawing.Size, System.Drawing">
-    <value>103, 21</value>
+    <value>84, 16</value>
   </data>
   <data name="chkSizeRange.TabIndex" type="System.Int32, mscorlib">
     <value>3</value>
@@ -231,7 +231,7 @@
     <value>lsvStart</value>
   </data>
   <data name="&gt;&gt;lsvStart.Type" xml:space="preserve">
-    <value>DotSpatial.Symbology.Forms.LineSymbolView, DotSpatial.Symbology.Forms, Version=1.7.0.0, Culture=neutral, PublicKeyToken=0544cdeefb662382</value>
+    <value>DotSpatial.Symbology.Forms.LineSymbolView, DotSpatial.Symbology.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0544cdeefb662382</value>
   </data>
   <data name="&gt;&gt;lsvStart.Parent" xml:space="preserve">
     <value>grpSizeRange</value>
@@ -255,7 +255,7 @@
     <value>psvStart</value>
   </data>
   <data name="&gt;&gt;psvStart.Type" xml:space="preserve">
-    <value>DotSpatial.Symbology.Forms.PointSymbolView, DotSpatial.Symbology.Forms, Version=1.7.0.0, Culture=neutral, PublicKeyToken=0544cdeefb662382</value>
+    <value>DotSpatial.Symbology.Forms.PointSymbolView, DotSpatial.Symbology.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0544cdeefb662382</value>
   </data>
   <data name="&gt;&gt;psvStart.Parent" xml:space="preserve">
     <value>grpSizeRange</value>
@@ -279,7 +279,7 @@
     <value>lsvEnd</value>
   </data>
   <data name="&gt;&gt;lsvEnd.Type" xml:space="preserve">
-    <value>DotSpatial.Symbology.Forms.LineSymbolView, DotSpatial.Symbology.Forms, Version=1.7.0.0, Culture=neutral, PublicKeyToken=0544cdeefb662382</value>
+    <value>DotSpatial.Symbology.Forms.LineSymbolView, DotSpatial.Symbology.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0544cdeefb662382</value>
   </data>
   <data name="&gt;&gt;lsvEnd.Parent" xml:space="preserve">
     <value>grpSizeRange</value>
@@ -301,7 +301,7 @@
     <value>True</value>
   </data>
   <data name="trkEnd.Size" type="System.Drawing.Size, System.Drawing">
-    <value>56, 100</value>
+    <value>45, 100</value>
   </data>
   <data name="trkEnd.TabIndex" type="System.Int32, mscorlib">
     <value>9</value>
@@ -355,7 +355,7 @@
     <value>No</value>
   </data>
   <data name="trkStart.Size" type="System.Drawing.Size, System.Drawing">
-    <value>56, 100</value>
+    <value>45, 100</value>
   </data>
   <data name="trkStart.TabIndex" type="System.Int32, mscorlib">
     <value>8</value>
@@ -379,7 +379,7 @@
     <value>6, 169</value>
   </data>
   <data name="label2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>29, 17</value>
+    <value>23, 12</value>
   </data>
   <data name="label2.TabIndex" type="System.Int32, mscorlib">
     <value>4</value>
@@ -415,7 +415,7 @@
     <value>psvEnd</value>
   </data>
   <data name="&gt;&gt;psvEnd.Type" xml:space="preserve">
-    <value>DotSpatial.Symbology.Forms.PointSymbolView, DotSpatial.Symbology.Forms, Version=1.7.0.0, Culture=neutral, PublicKeyToken=0544cdeefb662382</value>
+    <value>DotSpatial.Symbology.Forms.PointSymbolView, DotSpatial.Symbology.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0544cdeefb662382</value>
   </data>
   <data name="&gt;&gt;psvEnd.Parent" xml:space="preserve">
     <value>grpSizeRange</value>

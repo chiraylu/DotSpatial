@@ -17,7 +17,6 @@ namespace DotSpatial.Symbology
         /// Gets or sets the list of symbols.
         /// </summary>
         IList<ISymbol> Symbols { get; set; }
-
         #endregion
 
         #region Methods

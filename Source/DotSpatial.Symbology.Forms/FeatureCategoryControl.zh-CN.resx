@@ -269,7 +269,7 @@
     <value />
   </data>
   <data name="chkShowStd.Location" type="System.Drawing.Point, System.Drawing">
-    <value>139, 216</value>
+    <value>139, 248</value>
   </data>
   <data name="chkShowStd.Size" type="System.Drawing.Size, System.Drawing">
     <value>72, 16</value>
@@ -281,7 +281,7 @@
     <value />
   </data>
   <data name="chkShowMean.Location" type="System.Drawing.Point, System.Drawing">
-    <value>397, 216</value>
+    <value>397, 248</value>
   </data>
   <data name="chkShowMean.Size" type="System.Drawing.Size, System.Drawing">
     <value>72, 16</value>
@@ -349,9 +349,6 @@
   <data name="tccColorRange.ToolTip" xml:space="preserve">
     <value />
   </data>
-  <data name="dataGridViewImageColumn1.HeaderText" xml:space="preserve">
-    <value>符号</value>
-  </data>
   <data name="btnImport.Text" xml:space="preserve">
     <value>导入</value>
   </data>
@@ -363,6 +360,33 @@
   </data>
   <data name="btnSave.ToolTip" xml:space="preserve">
     <value />
+  </data>
+  <data name="tabPage1.Text" xml:space="preserve">
+    <value>大小范围</value>
+  </data>
+  <data name="tabPage1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="btnRrotatePoint.Text" xml:space="preserve">
+    <value>旋转点</value>
+  </data>
+  <data name="btnRrotatePoint.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="tabPage2.Text" xml:space="preserve">
+    <value>高级</value>
+  </data>
+  <data name="tabPage2.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="tabControl1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="dataGridViewImageColumn1.HeaderText" xml:space="preserve">
+    <value>符号</value>
+  </data>
+  <data name="$this.Size" type="System.Drawing.Size, System.Drawing">
+    <value>814, 569</value>
   </data>
   <data name="$this.ToolTip" xml:space="preserve">
     <value />

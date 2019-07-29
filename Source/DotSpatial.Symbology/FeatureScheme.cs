@@ -87,6 +87,7 @@ namespace DotSpatial.Symbology
         /// </summary>
         [Browsable(false)]
         [DesignerSerializationVisibility(DesignerSerializationVisibility.Hidden)]
+        [Serialize("EditorSettings")]
         public new FeatureEditorSettings EditorSettings
         {
             get

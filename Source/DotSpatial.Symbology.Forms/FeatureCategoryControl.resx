@@ -118,13 +118,13 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="&gt;&gt;btnAdd.ZOrder" xml:space="preserve">
-    <value>12</value>
+    <value>11</value>
   </data>
   <data name="&gt;&gt;angGradientAngle.Name" xml:space="preserve">
     <value>angGradientAngle</value>
   </data>
   <data name="&gt;&gt;tccColorRange.ZOrder" xml:space="preserve">
-    <value>5</value>
+    <value>4</value>
   </data>
   <assembly alias="mscorlib" name="mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="lblColumns.AutoSize" type="System.Boolean, mscorlib">
@@ -169,7 +169,7 @@
     <value />
   </data>
   <data name="tabScheme.Size" type="System.Drawing.Size, System.Drawing">
-    <value>551, 260</value>
+    <value>551, 292</value>
   </data>
   <data name="Stat.HeaderText" xml:space="preserve">
     <value>Statistic</value>
@@ -179,6 +179,9 @@
   </data>
   <data name="chkUseGradients.Size" type="System.Drawing.Size, System.Drawing">
     <value>102, 16</value>
+  </data>
+  <data name="&gt;&gt;Stat.Type" xml:space="preserve">
+    <value>System.Windows.Forms.DataGridViewTextBoxColumn, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="angGradientAngle.ToolTip" xml:space="preserve">
     <value />
@@ -195,11 +198,17 @@
   <data name="&gt;&gt;dataGridViewImageColumn1.Name" xml:space="preserve">
     <value>dataGridViewImageColumn1</value>
   </data>
+  <data name="tabPage2.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="&gt;&gt;chkShowMean.Name" xml:space="preserve">
     <value>chkShowMean</value>
   </data>
   <data name="btnRamp.Location" type="System.Drawing.Point, System.Drawing">
     <value>747, 3</value>
+  </data>
+  <data name="&gt;&gt;tabPage1.Parent" xml:space="preserve">
+    <value>tabControl1</value>
   </data>
   <data name="&gt;&gt;btnRamp.Type" xml:space="preserve">
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -210,8 +219,14 @@
   <data name="dgvStatistics.Size" type="System.Drawing.Size, System.Drawing">
     <value>239, 206</value>
   </data>
+  <data name="&gt;&gt;tabPage1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="&gt;&gt;tccColorRange.Name" xml:space="preserve">
     <value>tccColorRange</value>
+  </data>
+  <data name="tabControl1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>20, 266</value>
   </data>
   <data name="&gt;&gt;cmbInterval.Parent" xml:space="preserve">
     <value>tabStatistics</value>
@@ -262,10 +277,10 @@
     <value>tabStatistics</value>
   </data>
   <data name="chkShowStd.Location" type="System.Drawing.Point, System.Drawing">
-    <value>139, 215</value>
+    <value>139, 247</value>
   </data>
   <data name="&gt;&gt;dgvCategories.ZOrder" xml:space="preserve">
-    <value>7</value>
+    <value>6</value>
   </data>
   <data name="label2.TabIndex" type="System.Int32, mscorlib">
     <value>11</value>
@@ -276,14 +291,17 @@
   <data name="nudCategoryCount.TabIndex" type="System.Int32, mscorlib">
     <value>6</value>
   </data>
-  <data name="&gt;&gt;Stat.Type" xml:space="preserve">
-    <value>System.Windows.Forms.DataGridViewTextBoxColumn, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="tabPage1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>226, 225</value>
   </data>
   <data name="chkLog.Location" type="System.Drawing.Point, System.Drawing">
-    <value>267, 215</value>
+    <value>267, 247</value>
   </data>
   <data name="label2.Text" xml:space="preserve">
     <value>Interval Method:</value>
+  </data>
+  <data name="&gt;&gt;tabPage2.ZOrder" xml:space="preserve">
+    <value>1</value>
   </data>
   <data name="&gt;&gt;nudSigFig.Parent" xml:space="preserve">
     <value>tabStatistics</value>
@@ -324,8 +342,11 @@
   <data name="btnRamp.TabIndex" type="System.Int32, mscorlib">
     <value>10</value>
   </data>
+  <data name="btnRrotatePoint.Size" type="System.Drawing.Size, System.Drawing">
+    <value>100, 23</value>
+  </data>
   <data name="&gt;&gt;btnUp.ZOrder" xml:space="preserve">
-    <value>10</value>
+    <value>9</value>
   </data>
   <data name="&gt;&gt;dgvCategories.Parent" xml:space="preserve">
     <value>$this</value>
@@ -333,8 +354,8 @@
   <data name="colSymbol.HeaderText" xml:space="preserve">
     <value>Symbol</value>
   </data>
-  <data name="&gt;&gt;colLegendText.Name" xml:space="preserve">
-    <value>colLegendText</value>
+  <data name="&gt;&gt;tabControl1.Parent" xml:space="preserve">
+    <value>$this</value>
   </data>
   <data name="nudSigFig.Location" type="System.Drawing.Point, System.Drawing">
     <value>171, 103</value>
@@ -367,10 +388,13 @@
     <value>101, 12</value>
   </data>
   <data name="tabGraph.Size" type="System.Drawing.Size, System.Drawing">
-    <value>543, 234</value>
+    <value>543, 266</value>
   </data>
   <data name="&gt;&gt;lblColumns.Name" xml:space="preserve">
     <value>lblColumns</value>
+  </data>
+  <data name="tabPage1.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
   </data>
   <data name="&gt;&gt;label2.ZOrder" xml:space="preserve">
     <value>8</value>
@@ -402,6 +426,9 @@
   <data name="_cmbField.TabIndex" type="System.Int32, mscorlib">
     <value>4</value>
   </data>
+  <data name="tabPage2.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>3, 3, 3, 3</value>
+  </data>
   <data name="btnImport.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
@@ -411,8 +438,14 @@
   <data name="&gt;&gt;cmbNormField.Type" xml:space="preserve">
     <value>System.Windows.Forms.ComboBox, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;colLegendText.Type" xml:space="preserve">
-    <value>System.Windows.Forms.DataGridViewTextBoxColumn, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;btnRrotatePoint.Parent" xml:space="preserve">
+    <value>tabPage2</value>
+  </data>
+  <data name="tabPage1.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
+    <value>3, 3, 3, 3</value>
+  </data>
+  <data name="tabControl1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>234, 251</value>
   </data>
   <data name="label2.Location" type="System.Drawing.Point, System.Drawing">
     <value>19, 41</value>
@@ -454,7 +487,7 @@
     <value>True</value>
   </data>
   <data name="&gt;&gt;radCustom.ZOrder" xml:space="preserve">
-    <value>8</value>
+    <value>7</value>
   </data>
   <data name="&gt;&gt;dgvCategories.Name" xml:space="preserve">
     <value>dgvCategories</value>
@@ -480,8 +513,11 @@
   <data name="nudColumns.Location" type="System.Drawing.Point, System.Drawing">
     <value>81, 192</value>
   </data>
+  <data name="&gt;&gt;colLegendText.Name" xml:space="preserve">
+    <value>colLegendText</value>
+  </data>
   <data name="&gt;&gt;featureSizeRangeControl1.ZOrder" xml:space="preserve">
-    <value>4</value>
+    <value>0</value>
   </data>
   <data name="chkLog.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -504,6 +540,9 @@
   <data name="radQuantities.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
   </data>
+  <data name="&gt;&gt;btnRrotatePoint.Type" xml:space="preserve">
+    <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="&gt;&gt;btnSave.Name" xml:space="preserve">
     <value>btnSave</value>
   </data>
@@ -514,7 +553,7 @@
     <value>btnRamp</value>
   </data>
   <data name="&gt;&gt;tabScheme.ZOrder" xml:space="preserve">
-    <value>6</value>
+    <value>5</value>
   </data>
   <data name="chkLog.TabIndex" type="System.Int32, mscorlib">
     <value>13</value>
@@ -525,14 +564,23 @@
   <data name="&gt;&gt;label1.Parent" xml:space="preserve">
     <value>tabStatistics</value>
   </data>
+  <data name="&gt;&gt;ttHelp.Type" xml:space="preserve">
+    <value>System.Windows.Forms.ToolTip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="&gt;&gt;tabPage2.Name" xml:space="preserve">
+    <value>tabPage2</value>
+  </data>
   <data name="&gt;&gt;lblBreaks.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="btnSave.Text" xml:space="preserve">
     <value>Save</value>
   </data>
+  <data name="&gt;&gt;Stat.Name" xml:space="preserve">
+    <value>Stat</value>
+  </data>
   <data name="tabScheme.Location" type="System.Drawing.Point, System.Drawing">
-    <value>260, 272</value>
+    <value>260, 266</value>
   </data>
   <data name="label3.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -623,13 +671,16 @@
     <value>NoControl</value>
   </data>
   <data name="&gt;&gt;_cmbField.ZOrder" xml:space="preserve">
-    <value>18</value>
+    <value>17</value>
   </data>
   <data name="&gt;&gt;lblColumns.ZOrder" xml:space="preserve">
     <value>0</value>
   </data>
   <data name="btnImport.ToolTip" xml:space="preserve">
     <value />
+  </data>
+  <data name="&gt;&gt;tabPage2.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabPage, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="label1.Text" xml:space="preserve">
     <value>Interval Snap:</value>
@@ -674,7 +725,7 @@
     <value>246, 8</value>
   </data>
   <data name="&gt;&gt;radUniqueValues.ZOrder" xml:space="preserve">
-    <value>14</value>
+    <value>13</value>
   </data>
   <data name="&gt;&gt;angGradientAngle.Type" xml:space="preserve">
     <value>DotSpatial.Symbology.Forms.AngleControl, DotSpatial.Symbology.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0544cdeefb662382</value>
@@ -684,6 +735,9 @@
   </data>
   <data name="dataGridViewImageColumn1.Width" type="System.Int32, mscorlib">
     <value>66</value>
+  </data>
+  <data name="featureSizeRangeControl1.Dock" type="System.Windows.Forms.DockStyle, System.Windows.Forms">
+    <value>Fill</value>
   </data>
   <data name="_cmbField.ToolTip" xml:space="preserve">
     <value />
@@ -718,6 +772,9 @@
   <data name="chkLog.ToolTip" xml:space="preserve">
     <value />
   </data>
+  <data name="&gt;&gt;btnRrotatePoint.ZOrder" xml:space="preserve">
+    <value>0</value>
+  </data>
   <data name="&gt;&gt;label2.Name" xml:space="preserve">
     <value>label2</value>
   </data>
@@ -733,8 +790,8 @@
   <data name="label1.ToolTip" xml:space="preserve">
     <value />
   </data>
-  <data name="&gt;&gt;Stat.Name" xml:space="preserve">
-    <value>Stat</value>
+  <data name="&gt;&gt;tabControl1.ZOrder" xml:space="preserve">
+    <value>18</value>
   </data>
   <data name="&gt;&gt;btnAdd.Type" xml:space="preserve">
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -743,7 +800,7 @@
     <value>Bottom, Left</value>
   </data>
   <data name="&gt;&gt;radQuantities.ZOrder" xml:space="preserve">
-    <value>13</value>
+    <value>12</value>
   </data>
   <data name="&gt;&gt;btnImport.Name" xml:space="preserve">
     <value>btnImport</value>
@@ -802,17 +859,23 @@
   <data name="&gt;&gt;chkUseGradients.Parent" xml:space="preserve">
     <value>$this</value>
   </data>
+  <data name="tabPage1.Text" xml:space="preserve">
+    <value>Size Range</value>
+  </data>
   <data name="btnImport.TabIndex" type="System.Int32, mscorlib">
     <value>20</value>
   </data>
   <data name="featureSizeRangeControl1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>232, 229</value>
+    <value>220, 219</value>
   </data>
   <data name="radCustom.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
   </data>
   <data name="btnImport.Location" type="System.Drawing.Point, System.Drawing">
-    <value>20, 507</value>
+    <value>20, 519</value>
+  </data>
+  <data name="&gt;&gt;tabPage2.Parent" xml:space="preserve">
+    <value>tabControl1</value>
   </data>
   <data name="radUniqueValues.Location" type="System.Drawing.Point, System.Drawing">
     <value>104, 8</value>
@@ -838,6 +901,9 @@
   <data name="&gt;&gt;btnDown.Type" xml:space="preserve">
     <value>System.Windows.Forms.Button, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="tabPage1.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 22</value>
+  </data>
   <data name="&gt;&gt;label1.Name" xml:space="preserve">
     <value>label1</value>
   </data>
@@ -850,8 +916,17 @@
   <data name="&gt;&gt;angGradientAngle.ZOrder" xml:space="preserve">
     <value>3</value>
   </data>
+  <data name="&gt;&gt;btnRrotatePoint.Name" xml:space="preserve">
+    <value>btnRrotatePoint</value>
+  </data>
   <data name="&gt;&gt;btnExclude.Name" xml:space="preserve">
     <value>btnExclude</value>
+  </data>
+  <data name="btnRrotatePoint.TabIndex" type="System.Int32, mscorlib">
+    <value>0</value>
+  </data>
+  <data name="&gt;&gt;tabControl1.Name" xml:space="preserve">
+    <value>tabControl1</value>
   </data>
   <data name="radUniqueValues.Size" type="System.Drawing.Size, System.Drawing">
     <value>101, 16</value>
@@ -860,10 +935,13 @@
     <value>5</value>
   </data>
   <data name="&gt;&gt;btnDown.ZOrder" xml:space="preserve">
-    <value>9</value>
+    <value>8</value>
   </data>
   <data name="cmdRefresh.Size" type="System.Drawing.Size, System.Drawing">
     <value>56, 40</value>
+  </data>
+  <data name="&gt;&gt;colLegendText.Type" xml:space="preserve">
+    <value>System.Windows.Forms.DataGridViewTextBoxColumn, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
   <data name="label1.Location" type="System.Drawing.Point, System.Drawing">
     <value>19, 75</value>
@@ -882,6 +960,9 @@
   </data>
   <data name="dgvCategories.Location" type="System.Drawing.Point, System.Drawing">
     <value>260, 49</value>
+  </data>
+  <data name="&gt;&gt;tabPage1.Name" xml:space="preserve">
+    <value>tabPage1</value>
   </data>
   <data name="label3.ToolTip" xml:space="preserve">
     <value />
@@ -958,6 +1039,9 @@
   <data name="&gt;&gt;_lblFieldName.Name" xml:space="preserve">
     <value>_lblFieldName</value>
   </data>
+  <data name="featureSizeRangeControl1.AutoSize" type="System.Boolean, mscorlib">
+    <value>True</value>
+  </data>
   <data name="lblBreaks.Text" xml:space="preserve">
     <value>Num Breaks:</value>
   </data>
@@ -968,7 +1052,7 @@
     <value>$this</value>
   </data>
   <data name="&gt;&gt;_lblFieldName.ZOrder" xml:space="preserve">
-    <value>17</value>
+    <value>16</value>
   </data>
   <data name="&gt;&gt;angGradientAngle.Parent" xml:space="preserve">
     <value>$this</value>
@@ -994,6 +1078,9 @@
   <data name="&gt;&gt;tabScheme.Type" xml:space="preserve">
     <value>System.Windows.Forms.TabControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="&gt;&gt;tabControl1.Type" xml:space="preserve">
+    <value>System.Windows.Forms.TabControl, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="colCount.HeaderText" xml:space="preserve">
     <value>Count</value>
   </data>
@@ -1004,7 +1091,7 @@
     <value>15</value>
   </data>
   <data name="tccColorRange.Size" type="System.Drawing.Size, System.Drawing">
-    <value>232, 225</value>
+    <value>232, 219</value>
   </data>
   <data name="tabStatistics.Padding" type="System.Windows.Forms.Padding, System.Windows.Forms">
     <value>3, 3, 3, 3</value>
@@ -1020,6 +1107,9 @@
   </data>
   <data name="&gt;&gt;featureSizeRangeControl1.Type" xml:space="preserve">
     <value>DotSpatial.Symbology.Forms.FeatureSizeRangeControl, DotSpatial.Symbology.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=0544cdeefb662382</value>
+  </data>
+  <data name="tabControl1.TabIndex" type="System.Int32, mscorlib">
+    <value>21</value>
   </data>
   <data name="_lblFieldName.Location" type="System.Drawing.Point, System.Drawing">
     <value>351, 10</value>
@@ -1048,11 +1138,14 @@
   <data name="lblSigFig.ToolTip" xml:space="preserve">
     <value />
   </data>
+  <data name="btnRrotatePoint.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="lblColumns.Text" xml:space="preserve">
     <value>Columns:</value>
   </data>
   <data name="&gt;&gt;btnDelete.ZOrder" xml:space="preserve">
-    <value>11</value>
+    <value>10</value>
   </data>
   <data name="label3.Size" type="System.Drawing.Size, System.Drawing">
     <value>125, 12</value>
@@ -1070,7 +1163,7 @@
     <value>34, 23</value>
   </data>
   <data name="&gt;&gt;featureSizeRangeControl1.Parent" xml:space="preserve">
-    <value>$this</value>
+    <value>tabPage1</value>
   </data>
   <data name="chkShowStd.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -1090,11 +1183,14 @@
   <data name="btnRamp.Size" type="System.Drawing.Size, System.Drawing">
     <value>60, 40</value>
   </data>
+  <data name="tabPage2.Location" type="System.Drawing.Point, System.Drawing">
+    <value>4, 22</value>
+  </data>
   <data name="lblColumns.ToolTip" xml:space="preserve">
     <value />
   </data>
   <data name="$this.Size" type="System.Drawing.Size, System.Drawing">
-    <value>814, 535</value>
+    <value>814, 563</value>
   </data>
   <data name="btnImport.Text" xml:space="preserve">
     <value>Import</value>
@@ -1159,11 +1255,17 @@
   <data name="&gt;&gt;nudCategoryCount.ZOrder" xml:space="preserve">
     <value>10</value>
   </data>
+  <data name="tabPage2.Text" xml:space="preserve">
+    <value>Advanced</value>
+  </data>
   <data name="dgvCategories.Size" type="System.Drawing.Size, System.Drawing">
-    <value>547, 217</value>
+    <value>547, 211</value>
   </data>
   <data name="$this.ToolTip" xml:space="preserve">
     <value />
+  </data>
+  <data name="btnRrotatePoint.Text" xml:space="preserve">
+    <value>Rotate Point</value>
   </data>
   <data name="&gt;&gt;tabGraph.ZOrder" xml:space="preserve">
     <value>1</value>
@@ -1186,11 +1288,14 @@
   <data name="&gt;&gt;nudColumns.ZOrder" xml:space="preserve">
     <value>1</value>
   </data>
+  <data name="tabPage2.TabIndex" type="System.Int32, mscorlib">
+    <value>1</value>
+  </data>
   <data name="&gt;&gt;cmbIntervalSnapping.Name" xml:space="preserve">
     <value>cmbIntervalSnapping</value>
   </data>
   <data name="chkShowMean.Location" type="System.Drawing.Point, System.Drawing">
-    <value>397, 215</value>
+    <value>397, 247</value>
   </data>
   <data name="&gt;&gt;label1.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -1208,7 +1313,7 @@
     <value />
   </data>
   <data name="&gt;&gt;btnRamp.ZOrder" xml:space="preserve">
-    <value>15</value>
+    <value>14</value>
   </data>
   <data name="&gt;&gt;dgvStatistics.Type" xml:space="preserve">
     <value>System.Windows.Forms.DataGridView, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
@@ -1240,8 +1345,14 @@
   <data name="angGradientAngle.Size" type="System.Drawing.Size, System.Drawing">
     <value>218, 97</value>
   </data>
+  <data name="tabControl1.ToolTip" xml:space="preserve">
+    <value />
+  </data>
   <data name="btnSave.Location" type="System.Drawing.Point, System.Drawing">
-    <value>101, 507</value>
+    <value>101, 519</value>
+  </data>
+  <data name="tabPage1.ToolTip" xml:space="preserve">
+    <value />
   </data>
   <data name="nudCategoryCount.ToolTip" xml:space="preserve">
     <value />
@@ -1260,6 +1371,9 @@
   </data>
   <data name="&gt;&gt;btnUp.Parent" xml:space="preserve">
     <value>$this</value>
+  </data>
+  <data name="btnRrotatePoint.Location" type="System.Drawing.Point, System.Drawing">
+    <value>52, 22</value>
   </data>
   <data name="lblBreaks.AutoSize" type="System.Boolean, mscorlib">
     <value>True</value>
@@ -1286,10 +1400,10 @@
     <value>41, 12</value>
   </data>
   <data name="tabStatistics.Size" type="System.Drawing.Size, System.Drawing">
-    <value>543, 234</value>
+    <value>543, 266</value>
   </data>
   <data name="&gt;&gt;cmdRefresh.ZOrder" xml:space="preserve">
-    <value>16</value>
+    <value>15</value>
   </data>
   <data name="colLegendText.HeaderText" xml:space="preserve">
     <value>Legend Text</value>
@@ -1300,8 +1414,8 @@
   <data name="&gt;&gt;label3.Type" xml:space="preserve">
     <value>System.Windows.Forms.Label, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
-  <data name="&gt;&gt;ttHelp.Type" xml:space="preserve">
-    <value>System.Windows.Forms.ToolTip, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  <data name="&gt;&gt;tabPage1.ZOrder" xml:space="preserve">
+    <value>0</value>
   </data>
   <data name="tabGraph.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
@@ -1314,6 +1428,9 @@
   </data>
   <data name="btnRamp.ToolTip" xml:space="preserve">
     <value>Builds a sequential ramp of colors instead of random colors</value>
+  </data>
+  <data name="tabPage2.Size" type="System.Drawing.Size, System.Drawing">
+    <value>226, 225</value>
   </data>
   <data name="_lblFieldName.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -1332,6 +1449,9 @@
   </data>
   <data name="tabGraph.Text" xml:space="preserve">
     <value>Graph</value>
+  </data>
+  <data name="btnRrotatePoint.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
+    <value>NoControl</value>
   </data>
   <data name="&gt;&gt;tabGraph.Parent" xml:space="preserve">
     <value>tabScheme</value>
@@ -1354,7 +1474,7 @@
 </value>
   </data>
   <data name="featureSizeRangeControl1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>20, 272</value>
+    <value>3, 3</value>
   </data>
   <data name="btnRamp.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
     <value>NoControl</value>
@@ -1379,9 +1499,6 @@
   </metadata>
   <metadata name="ttHelp.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
-  </metadata>
-  <metadata name="$this.Language" type="System.Globalization.CultureInfo, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
-    <value>zh-CN</value>
   </metadata>
   <metadata name="colLegendText.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>

@@ -186,10 +186,10 @@ namespace DotSpatial.Symbology
                 g.SmoothingMode = SmoothingMode.None;
                 g.TextRenderingHint = TextRenderingHint.SystemDefault;
             }
-
+            
             foreach (ISymbol symbol in Symbols)
             {
-                symbol.Draw(g, scaleSize);
+                symbol.Draw(g, scaleSize); 
             }
 
             g.Restore(s); // Changed by jany_ (2015-07-06) remove smoothing because we might not want to smooth whatever is drawn with g afterwards

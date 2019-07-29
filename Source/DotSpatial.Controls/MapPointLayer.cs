@@ -275,7 +275,7 @@ namespace DotSpatial.Controls
                 }
             }
         }
-
+        Expression _expression = null;
         /// <summary>
         /// This will draw any features that intersect this region. To specify the features
         /// directly, use OnDrawFeatures. This will not clear existing buffer content.
@@ -286,6 +286,11 @@ namespace DotSpatial.Controls
         /// <param name="selected">Indicates whether to draw the normal colored features or the selection colored features.</param>
         public virtual void DrawRegions(MapArgs args, List<Extent> regions, bool selected)
         {
+            if (_expression == null && !string.IsNullOrEmpty(Symbology.EditorSettings.RotateExpression))
+            {
+                _expression = new Expression();
+                bool rotateExpressionIsValid = _expression.ParseExpression(Symbology.EditorSettings.RotateExpression);
+            }
             // First determine the number of features we are talking about based on region.
             List<Rectangle> clipRects = args.ProjToPixel(regions);
             if (EditMode)
@@ -419,7 +424,6 @@ namespace DotSpatial.Controls
             Graphics g = e.Device ?? Graphics.FromImage(BackBuffer);
             Matrix origTransform = g.Transform;
             FeatureType featureType = DataSet.FeatureType;
-
             if (!DrawnStatesNeeded)
             {
                 if (Symbology == null || Symbology.Categories.Count == 0) return;
@@ -430,6 +434,7 @@ namespace DotSpatial.Controls
 
                 foreach (int index in indices)
                 {
+                    double rotate = AttachRotateExpression(index, ps);
                     if (featureType == FeatureType.Point)
                     {
                         DrawPoint(vertices[index * 2], vertices[(index * 2) + 1], e, ps, g, origTransform);
@@ -443,6 +448,7 @@ namespace DotSpatial.Controls
                             DrawPoint(vertices[i * 2], vertices[(i * 2) + 1], e, ps, g, origTransform);
                         }
                     }
+                    DetachRotateExpression(ps, rotate);
                 }
             }
             else
@@ -471,6 +477,7 @@ namespace DotSpatial.Controls
                     IPointSymbolizer ps = selected ? pc.SelectionSymbolizer : pc.Symbolizer;
                     if (ps == null) continue;
 
+                    double rotate = AttachRotateExpression(index, ps);
                     if (featureType == FeatureType.Point)
                     {
                         DrawPoint(vertices[index * 2], vertices[(index * 2) + 1], e, ps, g, origTransform);
@@ -483,11 +490,42 @@ namespace DotSpatial.Controls
                             DrawPoint(vertices[i * 2], vertices[(i * 2) + 1], e, ps, g, origTransform);
                         }
                     }
+                    DetachRotateExpression(ps, rotate);
                 }
             }
 
             if (e.Device == null) g.Dispose();
             else g.Transform = origTransform;
+        }
+        private double AttachRotateExpression(int fid, IPointSymbolizer ps)
+        {
+            double rotate = 0;
+            if (_expression == null || fid >= DataSet.DataTable.Rows.Count)
+            {
+                return rotate;
+            }
+            var row = DataSet.DataTable.Rows[fid];
+            string value = _expression.CalculateRowValue(row, fid);
+            bool convertRet = double.TryParse(value, out rotate);
+            if (convertRet)
+            {
+                foreach (var symbol in ps.Symbols)
+                {
+                    symbol.Angle -= rotate;
+                }
+            }
+            return rotate;
+        }
+        private void DetachRotateExpression(IPointSymbolizer ps, double rotate)
+        {
+            if (_expression == null)
+            {
+                return;
+            }
+            foreach (var symbol in ps.Symbols)
+            {
+                symbol.Angle += rotate;
+            }
         }
 
         // This draws the individual point features
@@ -499,6 +537,7 @@ namespace DotSpatial.Controls
 
             Graphics g = e.Device ?? Graphics.FromImage(BackBuffer);
             Matrix origTransform = g.Transform;
+
             foreach (IFeature feature in features)
             {
                 if (!states.ContainsKey(feature)) continue;
@@ -512,12 +551,14 @@ namespace DotSpatial.Controls
 
                 IPointSymbolizer ps = selected ? pc.SelectionSymbolizer : pc.Symbolizer;
                 if (ps == null) continue;
-
+                double rotate = AttachRotateExpression(feature.Fid, ps);
                 foreach (Coordinate c in feature.Geometry.Coordinates)
                 {
                     DrawPoint(c.X, c.Y, e, ps, g, origTransform);
                 }
+                DetachRotateExpression(ps, rotate);
             }
+
 
             if (e.Device == null) g.Dispose();
             else g.Transform = origTransform;
@@ -534,10 +575,10 @@ namespace DotSpatial.Controls
         /// <param name="origTransform">The original transformation that is used to position the point.</param>
         private void DrawPoint(double ptX, double ptY, MapArgs e, IPointSymbolizer ps, Graphics g, Matrix origTransform)
         {
-            var pt = new Point
+            var pt = new PointF
             {
-                X = Convert.ToInt32((ptX - e.MinX) * e.Dx),
-                Y = Convert.ToInt32((e.MaxY - ptY) * e.Dy)
+                X = Convert.ToSingle((ptX - e.MinX) * e.Dx),
+                Y = Convert.ToSingle((e.MaxY - ptY) * e.Dy)
             };
             double scaleSize = ps.GetScale(e);
             Matrix shift = origTransform.Clone();

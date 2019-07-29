@@ -30,7 +30,6 @@ namespace DotSpatial.Symbology.Forms
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(FeatureSizeRangeControl));
             this.nudStart = new System.Windows.Forms.NumericUpDown();
             this.nudEnd = new System.Windows.Forms.NumericUpDown();
@@ -55,19 +54,43 @@ namespace DotSpatial.Symbology.Forms
             // nudStart
             // 
             resources.ApplyResources(this.nudStart, "nudStart");
-            this.nudStart.Maximum = new decimal(new int[] { 128, 0, 0, 0 });
-            this.nudStart.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            this.nudStart.Maximum = new decimal(new int[] {
+            128,
+            0,
+            0,
+            0});
+            this.nudStart.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             this.nudStart.Name = "nudStart";
-            this.nudStart.Value = new decimal(new int[] { 5, 0, 0, 0 });
+            this.nudStart.Value = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
             this.nudStart.ValueChanged += new System.EventHandler(this.NudStartValueChanged);
             // 
             // nudEnd
             // 
             resources.ApplyResources(this.nudEnd, "nudEnd");
-            this.nudEnd.Maximum = new decimal(new int[] { 128, 0, 0, 0 });
-            this.nudEnd.Minimum = new decimal(new int[] { 1, 0, 0, 0 });
+            this.nudEnd.Maximum = new decimal(new int[] {
+            128,
+            0,
+            0,
+            0});
+            this.nudEnd.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
             this.nudEnd.Name = "nudEnd";
-            this.nudEnd.Value = new decimal(new int[] { 20, 0, 0, 0 });
+            this.nudEnd.Value = new decimal(new int[] {
+            20,
+            0,
+            0,
+            0});
             this.nudEnd.ValueChanged += new System.EventHandler(this.NudEndValueChanged);
             // 
             // label1
@@ -172,6 +195,7 @@ namespace DotSpatial.Symbology.Forms
             ((System.ComponentModel.ISupportInitialize)(this.trkEnd)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trkStart)).EndInit();
             this.ResumeLayout(false);
+
         }
 
         #endregion

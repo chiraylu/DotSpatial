@@ -78,9 +78,13 @@ namespace DotSpatial.Symbology.Forms
             this.angGradientAngle = new DotSpatial.Symbology.Forms.AngleControl();
             this.featureSizeRangeControl1 = new DotSpatial.Symbology.Forms.FeatureSizeRangeControl();
             this.tccColorRange = new DotSpatial.Symbology.Forms.TabColorControl();
-            this.dataGridViewImageColumn1 = new System.Windows.Forms.DataGridViewImageColumn();
             this.btnImport = new System.Windows.Forms.Button();
             this.btnSave = new System.Windows.Forms.Button();
+            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.btnRrotatePoint = new System.Windows.Forms.Button();
+            this.dataGridViewImageColumn1 = new System.Windows.Forms.DataGridViewImageColumn();
             ((System.ComponentModel.ISupportInitialize)(this.nudSigFig)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvStatistics)).BeginInit();
             this.tabScheme.SuspendLayout();
@@ -89,6 +93,9 @@ namespace DotSpatial.Symbology.Forms
             this.tabGraph.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudColumns)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvCategories)).BeginInit();
+            this.tabControl1.SuspendLayout();
+            this.tabPage1.SuspendLayout();
+            this.tabPage2.SuspendLayout();
             this.SuspendLayout();
             // 
             // _cmbField
@@ -132,9 +139,7 @@ namespace DotSpatial.Symbology.Forms
             // radUniqueValues
             // 
             resources.ApplyResources(this.radUniqueValues, "radUniqueValues");
-            this.radUniqueValues.Checked = true;
             this.radUniqueValues.Name = "radUniqueValues";
-            this.radUniqueValues.TabStop = true;
             this.ttHelp.SetToolTip(this.radUniqueValues, resources.GetString("radUniqueValues.ToolTip"));
             this.radUniqueValues.UseVisualStyleBackColor = true;
             this.radUniqueValues.CheckedChanged += new System.EventHandler(this.RadUniqueValuesCheckedChanged);
@@ -484,6 +489,7 @@ namespace DotSpatial.Symbology.Forms
             // radCustom
             // 
             resources.ApplyResources(this.radCustom, "radCustom");
+            this.radCustom.Checked = true;
             this.radCustom.Name = "radCustom";
             this.radCustom.TabStop = true;
             this.ttHelp.SetToolTip(this.radCustom, resources.GetString("radCustom.ToolTip"));
@@ -522,14 +528,6 @@ namespace DotSpatial.Symbology.Forms
             this.tccColorRange.UseRangeChecked = true;
             this.tccColorRange.ColorChanged += new System.EventHandler<DotSpatial.Symbology.Forms.ColorRangeEventArgs>(this.TccColorRangeColorChanged);
             // 
-            // dataGridViewImageColumn1
-            // 
-            this.dataGridViewImageColumn1.FillWeight = 76.14214F;
-            resources.ApplyResources(this.dataGridViewImageColumn1, "dataGridViewImageColumn1");
-            this.dataGridViewImageColumn1.Name = "dataGridViewImageColumn1";
-            this.dataGridViewImageColumn1.Resizable = System.Windows.Forms.DataGridViewTriState.True;
-            this.dataGridViewImageColumn1.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
-            // 
             // btnImport
             // 
             resources.ApplyResources(this.btnImport, "btnImport");
@@ -546,6 +544,47 @@ namespace DotSpatial.Symbology.Forms
             this.btnSave.UseVisualStyleBackColor = true;
             this.btnSave.Click += new System.EventHandler(this.BtnSaveClick);
             // 
+            // tabControl1
+            // 
+            resources.ApplyResources(this.tabControl1, "tabControl1");
+            this.tabControl1.Controls.Add(this.tabPage1);
+            this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Name = "tabControl1";
+            this.tabControl1.SelectedIndex = 0;
+            this.ttHelp.SetToolTip(this.tabControl1, resources.GetString("tabControl1.ToolTip"));
+            // 
+            // tabPage1
+            // 
+            resources.ApplyResources(this.tabPage1, "tabPage1");
+            this.tabPage1.Controls.Add(this.featureSizeRangeControl1);
+            this.tabPage1.Name = "tabPage1";
+            this.ttHelp.SetToolTip(this.tabPage1, resources.GetString("tabPage1.ToolTip"));
+            this.tabPage1.UseVisualStyleBackColor = true;
+            // 
+            // tabPage2
+            // 
+            resources.ApplyResources(this.tabPage2, "tabPage2");
+            this.tabPage2.Controls.Add(this.btnRrotatePoint);
+            this.tabPage2.Name = "tabPage2";
+            this.ttHelp.SetToolTip(this.tabPage2, resources.GetString("tabPage2.ToolTip"));
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // btnRrotatePoint
+            // 
+            resources.ApplyResources(this.btnRrotatePoint, "btnRrotatePoint");
+            this.btnRrotatePoint.Name = "btnRrotatePoint";
+            this.ttHelp.SetToolTip(this.btnRrotatePoint, resources.GetString("btnRrotatePoint.ToolTip"));
+            this.btnRrotatePoint.UseVisualStyleBackColor = true;
+            this.btnRrotatePoint.Click += new System.EventHandler(this.btnRrotatePoint_Click);
+            // 
+            // dataGridViewImageColumn1
+            // 
+            this.dataGridViewImageColumn1.FillWeight = 76.14214F;
+            resources.ApplyResources(this.dataGridViewImageColumn1, "dataGridViewImageColumn1");
+            this.dataGridViewImageColumn1.Name = "dataGridViewImageColumn1";
+            this.dataGridViewImageColumn1.Resizable = System.Windows.Forms.DataGridViewTriState.True;
+            this.dataGridViewImageColumn1.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
+            // 
             // FeatureCategoryControl
             // 
             resources.ApplyResources(this, "$this");
@@ -553,7 +592,6 @@ namespace DotSpatial.Symbology.Forms
             this.Controls.Add(this.btnSave);
             this.Controls.Add(this.chkUseGradients);
             this.Controls.Add(this.angGradientAngle);
-            this.Controls.Add(this.featureSizeRangeControl1);
             this.Controls.Add(this.tccColorRange);
             this.Controls.Add(this.tabScheme);
             this.Controls.Add(this.dgvCategories);
@@ -568,6 +606,7 @@ namespace DotSpatial.Symbology.Forms
             this.Controls.Add(this.cmdRefresh);
             this.Controls.Add(this._lblFieldName);
             this.Controls.Add(this._cmbField);
+            this.Controls.Add(this.tabControl1);
             this.Name = "FeatureCategoryControl";
             this.ttHelp.SetToolTip(this, resources.GetString("$this.ToolTip"));
             ((System.ComponentModel.ISupportInitialize)(this.nudSigFig)).EndInit();
@@ -580,6 +619,10 @@ namespace DotSpatial.Symbology.Forms
             this.tabGraph.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudColumns)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvCategories)).EndInit();
+            this.tabControl1.ResumeLayout(false);
+            this.tabPage1.ResumeLayout(false);
+            this.tabPage1.PerformLayout();
+            this.tabPage2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -636,5 +679,9 @@ namespace DotSpatial.Symbology.Forms
         private DataGridViewTextBoxColumn Value;
         private Button btnImport;
         private Button btnSave;
+        private TabControl tabControl1;
+        private TabPage tabPage1;
+        private TabPage tabPage2;
+        private Button btnRrotatePoint;
     }
 }

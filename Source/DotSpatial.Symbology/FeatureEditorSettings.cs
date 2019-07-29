@@ -94,6 +94,9 @@ namespace DotSpatial.Symbology
             }
         }
 
+        [Serialize("RotateExpression")]
+        public string RotateExpression { get; set; }
+
         /// <summary>
         /// Gets or sets the gradient angle if use gradient is true
         /// and the shape is a polygon shape.
