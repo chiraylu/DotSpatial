@@ -21,7 +21,7 @@ namespace DotSpatial.Data
         /// <summary>
         /// Gets the offset in bytes.
         /// </summary>
-        public int ByteOffset => Offset * 2;
+        public long ByteOffset => Offset * 2L;
 
         /// <summary>
         /// Gets the length in bytes.

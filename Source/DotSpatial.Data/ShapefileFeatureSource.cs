@@ -1,9 +1,11 @@
 ﻿// Copyright (c) DotSpatial Team. All rights reserved.
 // Licensed under the MIT license. See License.txt file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.IO;
+using System.Linq;
 using DotSpatial.NTSExtension;
 using GeoAPI.Geometries;
 using NetTopologySuite.Index;
@@ -497,7 +499,7 @@ namespace DotSpatial.Data
             {
                 foreach (var shape in page)
                 {
-                    Extent shapeExtent = shape.Value.Range.Extent;
+                    Extent shapeExtent = shape.Value.Range.Extent; 
                     if (env == null)
                     {
                         env = (Extent)shapeExtent.Clone();
@@ -632,6 +634,192 @@ namespace DotSpatial.Data
             while (returnedCount == 1000);
 
             Quadtree = qt;
+        }
+
+        public void EditGeometry(int fid, IGeometry geometry)
+        {
+            var hdr = new ShapefileHeader(Filename);
+            if (geometry == null)
+            {
+                return;
+            }
+            switch (hdr.ShapeType)
+            {
+                case ShapeType.Point:
+                case ShapeType.PointM:
+                case ShapeType.PointZ:
+                    if (geometry.OgcGeometryType != OgcGeometryType.Point)
+                    {
+                        return;
+                    }
+                    break;
+                case ShapeType.PolyLine:
+                case ShapeType.PolyLineM:
+                case ShapeType.PolyLineZ:
+                    if (geometry.OgcGeometryType != OgcGeometryType.LineString)
+                    {
+                        return;
+                    }
+                    break;
+                case ShapeType.Polygon:
+                case ShapeType.PolygonM:
+                case ShapeType.PolygonZ:
+                    if (geometry.OgcGeometryType != OgcGeometryType.Polygon)
+                    {
+                        return;
+                    }
+                    break;
+            }
+            EditGeometry(hdr, fid, geometry);
+            UpdateExtents();
+            if (Quadtree != null)
+            {
+                int startIndex = fid;
+                IFeatureSet ifs = Select(null, null, ref startIndex, 1);
+                Envelope srcEnvelope = ifs.GetFeature(0).Geometry.EnvelopeInternal;
+                Quadtree.Remove(srcEnvelope, fid);
+                Quadtree.Insert(geometry.EnvelopeInternal, fid);
+            }
+        }
+        public void EditGeometry(Dictionary<int, IGeometry> geoDic)
+        {
+            if (geoDic == null || geoDic.Count == 0)
+            {
+                return;
+            }
+            var hdr = new ShapefileHeader(Filename);
+            foreach (var item in geoDic)
+            {
+                int fid = item.Key;
+                IGeometry geometry = item.Value;
+                if (geometry == null)
+                {
+                    continue;
+                }
+                switch (hdr.ShapeType)
+                {
+                    case ShapeType.Point:
+                    case ShapeType.PointM:
+                    case ShapeType.PointZ:
+                        if (geometry.OgcGeometryType != OgcGeometryType.Point)
+                        {
+                            continue;
+                        }
+                        break;
+                    case ShapeType.PolyLine:
+                    case ShapeType.PolyLineM:
+                    case ShapeType.PolyLineZ:
+                        if (geometry.OgcGeometryType != OgcGeometryType.LineString)
+                        {
+                            continue;
+                        }
+                        break;
+                    case ShapeType.Polygon:
+                    case ShapeType.PolygonM:
+                    case ShapeType.PolygonZ:
+                        if (geometry.OgcGeometryType != OgcGeometryType.Polygon)
+                        {
+                            continue;
+                        }
+                        break;
+                }
+                EditGeometry(hdr, fid, geometry);
+                if (Quadtree != null)
+                {
+                    int startIndex = fid;
+                    IFeatureSet ifs = Select(null, null, ref startIndex, 1);
+                    Envelope srcEnvelope = ifs.GetFeature(0).Geometry.EnvelopeInternal;
+                    Quadtree.Remove(srcEnvelope, fid);
+                    Quadtree.Insert(geometry.EnvelopeInternal, fid);
+                }
+            }
+            UpdateExtents();
+        }
+        
+        protected abstract void EditGeometry(ShapefileHeader header, int fid, IGeometry geometry);
+
+        public static List<ShapeHeader> ReadIndexFile(string fileName)
+        {
+            string shxFilename = fileName;
+            string ext = Path.GetExtension(fileName);
+
+            if (ext != ".shx")
+            {
+                shxFilename = Path.ChangeExtension(fileName, ".shx");
+            }
+
+            if (shxFilename == null)
+            {
+                throw new NullReferenceException(string.Format(DataStrings.ArgumentNull_S, nameof(fileName)));
+            }
+
+            if (!File.Exists(shxFilename))
+            {
+                throw new FileNotFoundException(string.Format(DataStrings.File0NotFound, shxFilename));
+            }
+
+            var fileLen = new FileInfo(shxFilename).Length;
+            if (fileLen == 100)
+            {
+                // the file is empty so we are done reading
+                return Enumerable.Empty<ShapeHeader>().ToList();
+            }
+
+            // Use a the length of the file to dimension the byte array
+            using (var fs = new FileStream(shxFilename, FileMode.Open, FileAccess.Read, FileShare.Read, 65536))
+            {
+                // Skip the header and begin reading from the first record
+                fs.Seek(100, SeekOrigin.Begin);
+
+                //Header.ShxLength = (int)(fileLen / 2);
+                var length = (int)(fileLen - 100);
+                var numRecords = length / 8;
+
+                // Each record consists of 2 Big-endian integers for a total of 8 bytes.
+                // This will store the header elements that we read from the file.
+                var result = new List<ShapeHeader>(numRecords);
+                for (var i = 0; i < numRecords; i++)
+                {
+                    result.Add(new ShapeHeader { Offset = fs.ReadInt32(Endian.BigEndian), ContentLength = fs.ReadInt32(Endian.BigEndian) });
+                }
+
+                return result;
+            }
+        }
+        public static void CopyTo(Stream srcStream, Stream destStream, long index, long count)
+        {
+            if (srcStream == null || destStream == null || index < 0 || count < 1)
+            {
+                return;
+            }
+            long srcOriginIndex = srcStream.Position;
+            long destOriginIndex = destStream.Position;
+            //try
+            {
+                srcStream.Seek(index, SeekOrigin.Current);
+                int bufferCount = 64 * 1024;
+                byte[] buffer = new byte[bufferCount];
+                for (int totalReadCount = 0; totalReadCount < count;)
+                {
+                    int destCount = Math.Min(bufferCount, (int)(count - totalReadCount));
+                    int read = srcStream.Read(buffer, 0, destCount);
+                    if (read == 0)
+                    {
+                        break;
+                    }
+                    destStream.Write(buffer, 0, read);
+                    totalReadCount += read;
+                }
+            }
+            //catch (Exception e)
+            //{
+            //    Debug.WriteLine(e.Message);
+            //}
+            //finally
+            {
+                srcStream.Seek(srcOriginIndex, SeekOrigin.Begin);
+                destStream.Seek(destOriginIndex, SeekOrigin.Begin);
+            }
         }
 
         #endregion

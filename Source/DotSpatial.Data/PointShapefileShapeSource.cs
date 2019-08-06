@@ -118,7 +118,7 @@ namespace DotSpatial.Data
 
             return myShape;
         }
-
+        
         #endregion
     }
 }

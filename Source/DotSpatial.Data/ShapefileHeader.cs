@@ -360,7 +360,7 @@ namespace DotSpatial.Data
             var dir = Path.GetDirectoryName(Filename);
             if (dir != null && !Directory.Exists(dir)) Directory.CreateDirectory(dir);
 
-            using (var fs = new FileStream(destFilename, FileMode.Append, FileAccess.Write, FileShare.None))
+            using (var fs = new FileStream(destFilename, FileMode.OpenOrCreate, FileAccess.Write, FileShare.None))
             {
                 WriteToStream(destFileLength, fs);
                 fs.Close();
@@ -381,7 +381,7 @@ namespace DotSpatial.Data
             stream.Write(bt, 0, 20);        // Bytes 4 - 20 are unused
             stream.WriteBe(destFileLength); // Byte 24         File Length     File Length Integer     Big
             stream.WriteLe(Version);        // Byte 28         Version         1000        Integer     Little
-            stream.WriteLe((int)ShapeType); //  Byte 32         Shape Type      Shape Type  Integer     Little
+            stream.WriteLe((int)ShapeType); // Byte 32         Shape Type      Shape Type  Integer     Little
             stream.WriteLe(Xmin);           // Byte 36         Bounding Box    Xmin        Double      Little
             stream.WriteLe(Ymin);           // Byte 44         Bounding Box    Ymin        Double      Little
             stream.WriteLe(Xmax);           // Byte 52         Bounding Box    Xmax        Double      Little
