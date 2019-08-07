@@ -186,7 +186,7 @@ namespace DotSpatial.Data
 
             // We must add the dbf entry before changing the shx because if we already have one deleted record, the AttributeTable thinks we have none
             AttributeTable dbf = GetAttributeTable(Filename);
-            dbf.AddRow(feature.DataRow);
+            dbf.AddRow(feature.DataRow); 
 
             int numFeatures = 0;
             var header = new ShapefileHeader();
@@ -822,6 +822,70 @@ namespace DotSpatial.Data
             }
         }
 
+        public void Insert(int index, IFeature feature)
+        {
+            if (feature.FeatureType != FeatureType)
+            {
+                throw new FeatureTypeMismatchException();
+            }
+
+            string dir = Path.GetDirectoryName(Filename);
+            if (dir != null && !Directory.Exists(dir))
+            {
+                Directory.CreateDirectory(dir);
+            }
+
+            // We must add the dbf entry before changing the shx because if we already have one deleted record, the AttributeTable thinks we have none
+            AttributeTable dbf = GetAttributeTable(Filename);
+            if (index >= dbf.NumRecords)
+            {
+                throw new Exception();
+            }
+            dbf.InsertRow(index, feature.DataRow);
+
+            int numFeatures = 0;
+            var header = new ShapefileHeader();
+            if (File.Exists(Filename))
+            {
+                header.Open(Filename);
+                UpdateHeader(header, feature.Geometry);
+                numFeatures = (header.ShxLength - 50) / 4;
+            }
+            else
+            {
+                header.Xmin = feature.Geometry.EnvelopeInternal.MinX;
+                header.Xmax = feature.Geometry.EnvelopeInternal.MaxX;
+                header.Ymin = feature.Geometry.EnvelopeInternal.MinY;
+                header.Ymax = feature.Geometry.EnvelopeInternal.MaxY;
+                if (double.IsNaN(feature.Geometry.Coordinates[0].M))
+                {
+                    header.ShapeType = ShapeType;
+                }
+                else
+                {
+                    if (double.IsNaN(feature.Geometry.Coordinates[0].Z))
+                    {
+                        header.ShapeType = ShapeTypeM;
+                    }
+                    else
+                    {
+                        header.Zmin = feature.Geometry.EnvelopeInternal.Minimum.Z;
+                        header.Zmax = feature.Geometry.EnvelopeInternal.Maximum.Z;
+                        header.ShapeType = ShapeTypeZ;
+                    }
+
+                    header.Mmin = feature.Geometry.EnvelopeInternal.Minimum.M;
+                    header.Mmax = feature.Geometry.EnvelopeInternal.Maximum.M;
+                }
+
+                header.ShxLength = 4 + 50;
+                header.SaveAs(Filename);
+            }
+
+            InsertGeometry(header, index, feature.Geometry);
+            Quadtree?.Insert(feature.Geometry.EnvelopeInternal, index);
+        }
+        protected abstract void InsertGeometry(ShapefileHeader header,int fid, IGeometry geometry);
         #endregion
     }
 }

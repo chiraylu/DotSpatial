@@ -146,24 +146,24 @@ namespace DotSpatial.Data
             return contentLength;
         }
 
-        private  void EditGeometryContent(FileStream tmpShpStream,  ShapeType shapeType, IGeometry geometry)
+        private void WriteGeometryContent(FileStream shpStream, ShapeType shapeType, IGeometry geometry)
         {
             Coordinate point = geometry.Coordinates[0];
             ////                                            X Y Points
             //                                              ---------------------------------------------------------
             //                                              Position     Value               Type        Number      Byte Order
             //                                              ---------------------------------------------------------
-            tmpShpStream.WriteLe(point.X);                  // Byte 12      X                   Double      1           Little
-            tmpShpStream.WriteLe(point.Y);                  // Byte 20      Y                   Double      1           Little
+            shpStream.WriteLe(point.X);                  // Byte 12      X                   Double      1           Little
+            shpStream.WriteLe(point.Y);                  // Byte 20      Y                   Double      1           Little
 
             if (shapeType == ShapeType.PointM)
             {
-                tmpShpStream.WriteLe(point.M);              // Byte 28      M                   Double      1           Little
+                shpStream.WriteLe(point.M);              // Byte 28      M                   Double      1           Little
             }
             else if (shapeType == ShapeType.PointZ)
             {
-                tmpShpStream.WriteLe(point.Z);              // Byte 28      Z                   Double      1           Little
-                tmpShpStream.WriteLe(point.M);              // Byte 36      M                   Double      1           Little
+                shpStream.WriteLe(point.Z);              // Byte 28      Z                   Double      1           Little
+                shpStream.WriteLe(point.M);              // Byte 36      M                   Double      1           Little
             }
         }
 
@@ -173,15 +173,40 @@ namespace DotSpatial.Data
             if (fid < shapeHeaders.Count)
             {
                 var tmpShpPath = Path.GetTempFileName();
+                var tmpShxPath = Path.GetTempFileName();
                 FileStream tmpShpStream = new FileStream(tmpShpPath, FileMode.Create, FileAccess.ReadWrite);
                 FileStream shpStream = new FileStream(Filename, FileMode.Open, FileAccess.ReadWrite, FileShare.Read, 10000);
-                FileStream shxStream = new FileStream(header.ShxFilename, FileMode.Open, FileAccess.Write, FileShare.Read, 100);
+                FileStream tmpShxStream = new FileStream(tmpShxPath, FileMode.Create, FileAccess.ReadWrite);
+                FileStream shxStream = new FileStream(header.ShxFilename, FileMode.Open, FileAccess.ReadWrite, FileShare.Read, 100);
 
-                int shpOffset = shapeHeaders[fid].Offset;
-                long shpByteOffset = shapeHeaders[fid].ByteOffset;
-                CopyTo(shpStream, tmpShpStream, 0, shpByteOffset);
-                tmpShpStream.Seek(shpByteOffset, SeekOrigin.Begin);
-                shxStream.Seek(100 + fid * 8, SeekOrigin.Begin);
+                long shpOffset = shapeHeaders[fid].ByteOffset;
+                long shpRemainderOffset = -1;
+                long shpRemainderCount = 0;
+                if (fid < shapeHeaders.Count - 1)
+                {
+                    shpRemainderOffset = shapeHeaders[fid + 1].ByteOffset;
+                    shpRemainderCount = shpStream.Length - shpRemainderOffset;
+                }
+                if (shpRemainderCount > 0)
+                {
+                    CopyTo(shpStream, tmpShpStream, shpRemainderOffset, shpRemainderCount);
+                }
+
+                long shxOffset = 100 + fid * 8;
+                long shxRemainderOffset = -1;
+                long shxRemainderCount = 0;
+                if (fid < shapeHeaders.Count - 1)
+                {
+                    shxRemainderOffset = 100 + (fid + 1) * 8;
+                    shxRemainderCount = shxStream.Length - shxRemainderOffset;
+                }
+                if (shxRemainderCount > 0)
+                {
+                    CopyTo(shxStream, tmpShxStream, shxRemainderOffset, shxRemainderCount);
+                }
+
+                shpStream.Seek(shpOffset, SeekOrigin.Begin);
+                shxStream.Seek(shxOffset, SeekOrigin.Begin);
                 int recordNumber = fid + 1;
 
                 int contentLength = GetContentLength(header.ShapeType);
@@ -190,22 +215,26 @@ namespace DotSpatial.Data
                 //                                              ---------------------------------------------------------
                 //                                              Position     Value               Type        Number      Byte Order
                 //                                              ---------------------------------------------------------
-                shxStream.WriteBe(shpOffset);                   // Byte 0     Offset             Integer     1           Big
+                shxStream.WriteBe(shapeHeaders[fid].Offset);                   // Byte 0     Offset             Integer     1           Big
                 shxStream.WriteBe(contentLength);               // Byte 4    Content Length      Integer     1           Big
 
                 ////                                            X Y Points
                 //                                              ---------------------------------------------------------
                 //                                              Position     Value               Type        Number      Byte Order
                 //                                              ---------------------------------------------------------
-                tmpShpStream.WriteBe(recordNumber);             // Byte 0       Record Number       Integer     1           Big
-                tmpShpStream.WriteBe(contentLength);            // Byte 4       Content Length      Integer     1           Big
-                tmpShpStream.WriteLe((int)header.ShapeType);    // Byte 8       Shape Type 3        Integer     1           Little
+                shpStream.WriteBe(recordNumber);             // Byte 0       Record Number       Integer     1           Big
+                shpStream.WriteBe(contentLength);            // Byte 4       Content Length      Integer     1           Big
+                shpStream.WriteLe((int)header.ShapeType);    // Byte 8       Shape Type 3        Integer     1           Little
                 if (header.ShapeType != ShapeType.NullShape)
                 {
-                    EditGeometryContent(tmpShpStream, header.ShapeType, geometry);
+                    WriteGeometryContent(shpStream, header.ShapeType, geometry);
                 }
 
-                int dOffset = contentLength - shapeHeaders[fid].ContentLength;
+                if (shxRemainderCount > 0)
+                {
+                    CopyTo(tmpShxStream, shxStream, 0, shxRemainderCount);
+                }
+                int dOffset = (int)(contentLength - shapeHeaders[fid].ContentLength);
                 if (dOffset != 0)
                 {
                     for (int i = fid + 1; i < shapeHeaders.Count; i++)
@@ -215,28 +244,122 @@ namespace DotSpatial.Data
                     }
                 }
                 shxStream.Flush();
+                tmpShxStream.Dispose();
                 shxStream.Dispose();
+                File.Delete(tmpShxPath);
 
-                if (fid < shapeHeaders.Count - 1)
+                if (shpRemainderCount > 0)
                 {
-                    ShapeHeader nextShapeHeader = shapeHeaders[fid + 1];
-                    long afterByteOffset = nextShapeHeader.ByteOffset;
-                    ShapeHeader lastShapeHeader = shapeHeaders.LastOrDefault();
-                    long afterCount = lastShapeHeader.ByteOffset - nextShapeHeader.ByteOffset + 8 + lastShapeHeader.ByteLength;
-                    CopyTo(shpStream, tmpShpStream, afterByteOffset, afterCount);
+                    CopyTo(tmpShpStream, shpStream, 0, shpRemainderCount);
+                }
+                if (shpStream.Length != shpStream.Position + shpRemainderCount)
+                {
+                    shpStream.SetLength(shpStream.Position + shpRemainderCount);
                 }
 
-                shpStream.Seek(0, SeekOrigin.Begin);
-                tmpShpStream.Seek(0, SeekOrigin.Begin);
-                CopyTo(tmpShpStream, shpStream, 0, tmpShpStream.Length);
-                shpStream.SetLength(tmpShpStream.Length);
-
+                int shpLength = Convert.ToInt32(shpStream.Length / 2);
                 shpStream.Flush();
                 shpStream.Dispose();
-                int offset = Convert.ToInt32(tmpShpStream.Length / 2);
-                Shapefile.WriteFileLength(Filename, offset);
+                Shapefile.WriteFileLength(Filename, shpLength);
                 int numFeatures = shapeHeaders.Count;
                 Shapefile.WriteFileLength(header.ShxFilename, 50 + numFeatures * 4);
+                tmpShpStream.Dispose();
+                File.Delete(tmpShpPath);
+            }
+        }
+
+        protected override void InsertGeometry(ShapefileHeader header, int fid, IGeometry geometry)
+        {
+            var shapeHeaders = ReadIndexFile(header.ShxFilename);
+            if (fid < shapeHeaders.Count)
+            {
+                var tmpShpPath = Path.GetTempFileName();
+                var tmpShxPath = Path.GetTempFileName();
+                FileStream tmpShpStream = new FileStream(tmpShpPath, FileMode.Create, FileAccess.ReadWrite);
+                FileStream shpStream = new FileStream(Filename, FileMode.Open, FileAccess.ReadWrite, FileShare.Read, 10000);
+                FileStream tmpShxStream = new FileStream(tmpShxPath, FileMode.Create, FileAccess.ReadWrite);
+                FileStream shxStream = new FileStream(header.ShxFilename, FileMode.Open, FileAccess.ReadWrite, FileShare.Read, 100);
+
+                long shpOffset = shapeHeaders[fid].ByteOffset;
+                long shpRemainderOffset = shpOffset;
+                long shpRemainderCount = shpStream.Length - shpRemainderOffset;
+                if (shpRemainderCount > 0)
+                {
+                    CopyTo(shpStream, tmpShpStream, shpRemainderOffset, shpRemainderCount);
+                }
+
+                long shxOffset = 100 + fid * 8;
+                long shxRemainderOffset = shxOffset;
+                long shxRemainderCount = shxStream.Length - shxRemainderOffset;
+                if (shxRemainderCount > 0)
+                {
+                    CopyTo(shxStream, tmpShxStream, shxRemainderOffset, shxRemainderCount);
+                }
+
+                shpStream.Seek(shpOffset, SeekOrigin.Begin);
+                shxStream.Seek(shxOffset, SeekOrigin.Begin);
+                int recordNumber = fid + 1;
+
+                int contentLength = GetContentLength(header.ShapeType);
+
+                ////                                            Index File
+                //                                              ---------------------------------------------------------
+                //                                              Position     Value               Type        Number      Byte Order
+                //                                              ---------------------------------------------------------
+                shxStream.WriteBe(shapeHeaders[fid].Offset);                   // Byte 0     Offset             Integer     1           Big
+                shxStream.WriteBe(contentLength);               // Byte 4    Content Length      Integer     1           Big
+
+                ////                                            X Y Points
+                //                                              ---------------------------------------------------------
+                //                                              Position     Value               Type        Number      Byte Order
+                //                                              ---------------------------------------------------------
+                shpStream.WriteBe(recordNumber);             // Byte 0       Record Number       Integer     1           Big
+                shpStream.WriteBe(contentLength);            // Byte 4       Content Length      Integer     1           Big
+                shpStream.WriteLe((int)header.ShapeType);    // Byte 8       Shape Type 3        Integer     1           Little
+                if (header.ShapeType != ShapeType.NullShape)
+                {
+                    WriteGeometryContent(shpStream, header.ShapeType, geometry);
+                }
+
+                if (shxRemainderCount > 0)
+                {
+                    CopyTo(tmpShxStream, shxStream, 0, shxRemainderCount);
+                }
+                int dOffset = (int)((shpStream.Position - shpOffset) / 2);
+                if (dOffset != 0)
+                {
+                    long shpPosition = shpStream.Position;
+                    for (int i = fid; i < shapeHeaders.Count; i++)
+                    {
+                        shxStream.Seek(100 + (i + 1) * 8, SeekOrigin.Begin);
+                        shxStream.WriteBe(shapeHeaders[i].Offset + dOffset);
+
+                        shpStream.Seek((shapeHeaders[i].Offset + dOffset) * 2, SeekOrigin.Begin);
+                        shpStream.WriteBe(i + 2);
+                    }
+                    shpStream.Seek(shpPosition, SeekOrigin.Begin);
+                }
+
+                int shxLength = Convert.ToInt32(shxStream.Length / 2);
+                shxStream.Flush();
+                tmpShxStream.Dispose();
+                shxStream.Dispose();
+                File.Delete(tmpShxPath);
+
+                if (shpRemainderCount > 0)
+                {
+                    CopyTo(tmpShpStream, shpStream, 0, shpRemainderCount);
+                }
+                if (shpStream.Length != shpStream.Position + shpRemainderCount)
+                {
+                    shpStream.SetLength(shpStream.Position + shpRemainderCount);
+                }
+;
+                int shpLength = Convert.ToInt32(shpStream.Length / 2);
+                shpStream.Flush();
+                shpStream.Dispose();
+                Shapefile.WriteFileLength(Filename, shpLength);
+                Shapefile.WriteFileLength(header.ShxFilename, shxLength);
                 tmpShpStream.Dispose();
                 File.Delete(tmpShpPath);
             }

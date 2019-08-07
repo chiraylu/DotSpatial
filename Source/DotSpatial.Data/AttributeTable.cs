@@ -861,10 +861,10 @@ namespace DotSpatial.Data
             object[] newValues = new object[table.Rows.Count];
             string name = oldDataColumn.ColumnName;
             Field dc = new Field(oldDataColumn.ColumnName, newDataType)
-                       {
-                           Length = oldDataColumn.Length,
-                           DecimalCount = oldDataColumn.DecimalCount
-                       };
+            {
+                Length = oldDataColumn.Length,
+                DecimalCount = oldDataColumn.DecimalCount
+            };
             for (int row = 0; row < currentRow; row++)
             {
                 try
@@ -1178,7 +1178,10 @@ namespace DotSpatial.Data
         {
             return new BinaryWriter(new FileStream(_fileName, FileMode.OpenOrCreate, FileAccess.Write, FileShare.None, 1000000));
         }
-
+        private BinaryWriter GetBinaryReadWriter()
+        {
+            return new BinaryWriter(new FileStream(_fileName, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.None, 1000000));
+        }
         private int GetColumnOffset(int column)
         {
             int offset = 0;
@@ -1777,9 +1780,9 @@ namespace DotSpatial.Data
 
                 name = tempName;
                 Field myField = new Field(name, code, tempLength, decimalcount)
-                                {
-                                    DataAddress = dataAddress
-                                };
+                {
+                    DataAddress = dataAddress
+                };
 
                 _columns.Add(myField); // Store fields accessible by an index
                 _dataTable.Columns.Add(myField);
@@ -1994,6 +1997,61 @@ namespace DotSpatial.Data
             {
                 Write(columnValue.ToString(), _columns[fld].Length);
             }
+        }
+
+         public virtual void InsertRow(int index, DataRow values)
+        {
+            // Test to see if the file exists yet. If not, simply create it with the expectation
+            // that there will simply be one row in the data table.
+            if (!File.Exists(_fileName))
+            {
+                _dataTable = new DataTable();
+                foreach (DataColumn col in values.Table.Columns)
+                {
+                    _dataTable.Columns.Add(col.ColumnName, col.DataType, col.Expression);
+                }
+
+                DataRow newRow = _dataTable.NewRow();
+                newRow.ItemArray = values.ItemArray;
+                _dataTable.Rows.InsertAt(newRow, index);
+                SaveAs(_fileName, true);
+                return;
+            }
+
+            // Step 1) Modify the file structure to allow an additional row
+            NumRecords += 1;
+            int rawRow = GetFileIndex(index);
+            using (var bw = GetBinaryReadWriter())
+            {
+                WriteHeader(bw);
+                int offset = HeaderLength + (RecordLength * rawRow);
+                long lastCount = bw.BaseStream.Length - offset;
+                Action writeBlankAction=new Action( () =>
+                {
+                    bw.BaseStream.Seek(offset, SeekOrigin.Begin);
+                    byte[] blank = new byte[RecordLength];
+                    bw.Write(blank); // the deleted flag
+                });
+                if (lastCount > 0)
+                {
+                    string tmpPath = Path.GetTempFileName();
+                    using (var stream = new FileStream(tmpPath, FileMode.Create, FileAccess.ReadWrite))
+                    {
+                        bw.BaseStream.Seek(0, SeekOrigin.Begin);
+                        ShapefileFeatureSource.CopyTo(bw.BaseStream, stream, offset, lastCount);
+                        writeBlankAction.Invoke();
+                        ShapefileFeatureSource.CopyTo(stream, bw.BaseStream, 0, lastCount);
+                    }
+                    File.Delete(tmpPath);
+                }
+                else
+                {
+                    writeBlankAction.Invoke();
+                }
+            }
+
+            // Step 2) Re-use the insert code to insert the values for the new row.
+            Edit(rawRow, values);
         }
 
         #endregion
