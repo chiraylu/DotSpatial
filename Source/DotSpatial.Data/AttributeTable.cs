@@ -483,8 +483,11 @@ namespace DotSpatial.Data
                 {
                     result.Columns.Add(new Field(field.ColumnName, field.TypeCharacter, field.Length, field.DecimalCount));
                 }
-
-                int maxRawRow = (int)((fileLength - (HeaderLength + 1)) / RecordLength);
+                int maxRawRow = -1;
+                if (fileLength - (HeaderLength + 1) > 0)
+                {
+                    maxRawRow = (int)((fileLength - (HeaderLength + 1)) / RecordLength);
+                }
 
                 foreach (int rowNumber in rowNumbers)
                 {
