@@ -1993,12 +1993,14 @@ namespace DotSpatial.Data
             // not sure, but I bet arrays a smidge faster at indexed access than lists
             _shapeIndices = new List<ShapeRange>();
             int vIndex = 0;
+            int recordNumber = 1;
             foreach (IFeature f in _features)
             {
                 ShapeRange shx = new ShapeRange(FeatureType)
                 {
                     Extent = new Extent(f.Geometry.EnvelopeInternal),
-                    StartIndex = vIndex
+                    StartIndex = vIndex,
+                    RecordNumber = recordNumber++
                 };
                 _shapeIndices.Add(shx);
                 f.ShapeIndex = shx;

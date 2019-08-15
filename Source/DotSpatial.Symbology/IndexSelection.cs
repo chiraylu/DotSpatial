@@ -431,11 +431,14 @@ namespace DotSpatial.Symbology
         {
             List<IFeature> result = new List<IFeature>();
             FastDrawnState[] drawnStates = _layer.DrawnStates;
-            for (int shp = 0; shp < drawnStates.Length; shp++)
+            if (drawnStates != null)
             {
-                if (drawnStates[shp].Selected == SelectionState)
+                for (int shp = 0; shp < drawnStates.Length; shp++)
                 {
-                    result.Add(_layer.DataSet.GetFeature(shp));
+                    if (drawnStates[shp].Selected == SelectionState)
+                    {
+                        result.Add(_layer.DataSet.GetFeature(shp));
+                    }
                 }
             }
 

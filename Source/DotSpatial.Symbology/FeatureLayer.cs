@@ -157,7 +157,7 @@ namespace DotSpatial.Symbology
 
         #endregion
 
-       #region Properties
+        #region Properties
 
         /// <summary>
         /// Gets the dictionary of extents that is calculated from the categories. This is calculated one time,
@@ -524,10 +524,10 @@ namespace DotSpatial.Symbology
         public void AssignFastDrawnStates()
         {
             _drawnStatesNeeded = true;
+            var selectedIndices = Selection.ToFeatureList().Select(x => x.Fid);
             _drawnStates = new FastDrawnState[DataSet.ShapeIndices.Count];
             Selection.Changed -= SelectedFeaturesChanged;
             Selection = new IndexSelection(this); // update the new drawn-states;
-            Selection.Changed += SelectedFeaturesChanged;
 
             // Fastest when no categories are used because we don't need DataTable at all
             List<IFeatureCategory> categories = _scheme.GetCategories().ToList();
@@ -544,6 +544,8 @@ namespace DotSpatial.Symbology
                     Category = deflt
                 };
             }
+            (Selection as IndexSelection).AddRange(selectedIndices);
+            Selection.Changed += SelectedFeaturesChanged;
 
             if (categories.Count == 1 && categories[0].FilterExpression == null)
             {
@@ -823,7 +825,7 @@ namespace DotSpatial.Symbology
         /// <param name="indexValues">The list or array of integer index values.</param>
         public void RemoveFeaturesAt(IEnumerable<int> indexValues)
         {
-            DataSet.RemoveShapesAt(indexValues); 
+            DataSet.RemoveShapesAt(indexValues);
 
             // Since the indexing has changed, we need to update the drawn states too.
             AssignFastDrawnStates();
