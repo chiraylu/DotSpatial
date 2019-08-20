@@ -677,7 +677,15 @@ namespace DotSpatial.Symbology
 
                 if (oper == TkOperation.OperLineBreak)
                 {
-                    elLeft.CalcValue.Str = valLeft + Environment.NewLine + valRight;
+                    if (valLeft.Str == string.Empty)
+                    {
+                        elLeft.CalcValue.Str = valRight.Str;
+                    }
+                    else
+                    {
+                        elLeft.CalcValue.Str = valLeft + Environment.NewLine + valRight;
+                    }
+
                     elLeft.CalcValue.Type = TkValueType.VtString;
                 }
                 else if (valLeft.Type == valRight.Type)

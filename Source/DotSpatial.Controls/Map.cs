@@ -1544,6 +1544,10 @@ namespace DotSpatial.Controls
        
         private void MapKeyDown(object sender, KeyEventArgs e)
         {
+            if (e.Handled)
+            {
+                return;
+            }
             foreach (var tool in MapFunctions.Where(_ => _.Enabled))
             {
                 tool.DoKeyDown(e);
@@ -1553,6 +1557,10 @@ namespace DotSpatial.Controls
 
         private void MapKeyUp(object sender, KeyEventArgs e)
         {
+            if (e.Handled)
+            {
+                return;
+            }
             foreach (var tool in MapFunctions.Where(_ => _.Enabled))
             {
                 tool.DoKeyUp(e);
