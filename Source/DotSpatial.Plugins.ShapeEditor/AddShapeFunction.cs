@@ -275,7 +275,7 @@ namespace DotSpatial.Plugins.ShapeEditor
                 Map.Invalidate();
             }
 
-            Deactivate();
+            base.OnDeactivate();
         }
         protected override void OnMouseWheel(GeoMouseArgs e)
         {
