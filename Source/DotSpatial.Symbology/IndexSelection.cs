@@ -433,7 +433,8 @@ namespace DotSpatial.Symbology
             FastDrawnState[] drawnStates = _layer.DrawnStates;
             if (drawnStates != null)
             {
-                for (int shp = 0; shp < drawnStates.Length; shp++)
+                int count = Math.Min(drawnStates.Length, _layer.DataSet.Features.Count);
+                for (int shp = 0; shp < count; shp++)
                 {
                     if (drawnStates[shp].Selected == SelectionState)
                     {
