@@ -46,7 +46,7 @@ namespace DotSpatial.Data
         /// <summary>
         /// Occurs when a feature is removed from the list.
         /// </summary>
-        public event EventHandler<FeatureEventArgs> FeatureRemoved;
+        public event EventHandler<FeatureRemovedEventArgs> FeatureRemoved;
 
         #region Properties
 
@@ -516,8 +516,11 @@ namespace DotSpatial.Data
         public virtual void RemoveAt(int index)
         {
             IFeature item = _list[index];
-            ExcludeFeature(item);
+            int fid = item.Fid;
+            Parent.DataTable.Rows.Remove(item.DataRow);
             _list.RemoveAt(index);
+            item.ParentFeatureSet = null;
+            OnFeatureRemoved(item, fid);
         }
 
         /// <summary>
@@ -690,9 +693,10 @@ namespace DotSpatial.Data
         /// called if suspend events is false.
         /// </summary>
         /// <param name="feature">he feature that was removed</param>
-        protected virtual void OnFeatureRemoved(IFeature feature)
+        /// <param name="fid">Fid</param>
+        protected virtual void OnFeatureRemoved(IFeature feature, int fid)
         {
-            if (!EventsSuspended) FeatureRemoved?.Invoke(this, new FeatureEventArgs(feature));
+            if (!EventsSuspended) FeatureRemoved?.Invoke(this, new FeatureRemovedEventArgs(feature, fid));
         }
 
         private void Configure()
@@ -708,9 +712,10 @@ namespace DotSpatial.Data
         /// <param name="item">Feature that gets excluded.</param>
         private void ExcludeFeature(IFeature item)
         {
+            int fid = item.Fid;
             item.ParentFeatureSet = null;
             Parent.DataTable.Rows.Remove(item.DataRow);
-            OnFeatureRemoved(item);
+            OnFeatureRemoved(item, fid);
         }
 
         /// <summary>

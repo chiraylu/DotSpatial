@@ -65,7 +65,7 @@ namespace DotSpatial.Symbology
         /// Gets or sets an array of floating point values ranging from 0 to 1 that
         /// indicate the start and end point for where the line should draw.
         /// </summary>
-        [XmlIgnore]
+        [Serialize("CompoundArray")]
         public float[] CompoundArray
         {
             get
@@ -137,7 +137,7 @@ namespace DotSpatial.Symbology
         /// <summary>
         /// Gets or sets the DashPattern as an array of floating point values from 0 to 1
         /// </summary>
-        [XmlIgnore]
+        [Serialize("DashPattern")]
         public float[] DashPattern
         {
             get

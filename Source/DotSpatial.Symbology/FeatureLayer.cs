@@ -840,34 +840,37 @@ namespace DotSpatial.Symbology
             if (Selection.Count == 0) return;
 
             IFeatureSet fs = DataSet;
-            if (fs.IndexMode)
-            {
-                // Use Index selection to remove by index
-                IndexSelection indexSel = Selection as IndexSelection;
+            var mode = fs.IndexMode;
+            //if (fs.IndexMode)
+            //{
+            //    // Use Index selection to remove by index
+            //    IndexSelection indexSel = Selection as IndexSelection;
 
-                // In case we have an invalid cast for some reason.
-                if (indexSel == null) return;
+            //    // In case we have an invalid cast for some reason.
+            //    if (indexSel == null) return;
 
-                // Create a list of index values to remove.
-                List<int> orderedIndex = new List<int>(indexSel);
+            //    // Create a list of index values to remove.
+            //    List<int> orderedIndex = new List<int>(indexSel);
 
-                // Clear the selection so the removed features are no longer contained when IFeatureSet.FeatureRemoved is raised
-                Selection.Clear();
+            //    // Clear the selection so the removed features are no longer contained when IFeatureSet.FeatureRemoved is raised
+            //    Selection.Clear();
 
-                RemoveFeaturesAt(orderedIndex);
-            }
-            else
+            //    RemoveFeaturesAt(orderedIndex);
+            //}
+            //else
             {
                 // This case tracks by IFeature, so we don't need to do a lot else.
-                List<IFeature> features = Selection.ToFeatureList();
-
+                List<int> featureIndexes = Selection.ToFeatureList().Select(x => x.Fid).ToList();
+                featureIndexes.Sort();
                 // Clear the selection so the removed features are no longer contained when IFeatureSet.FeatureRemoved is raised
                 Selection.Clear();
-
-                foreach (IFeature feature in features)
+                for (int i = featureIndexes.Count - 1; i >= 0; i--)
                 {
-                    DataSet.Features.Remove(feature);
+                    DataSet.Features.RemoveAt(featureIndexes[i]);
                 }
+                //DataSet.ShapeIndices = null;
+                DataSet.UpdateExtent();
+                AssignFastDrawnStates();
             }
         }
 
@@ -1764,7 +1767,7 @@ namespace DotSpatial.Symbology
             DrawingFilter?.DrawnStates?.Add(e.Feature, new DrawnState(Symbology.GetCategories().First(), false, 0, true));
         }
 
-        private void DataSetFeatureRemoved(object sender, FeatureEventArgs e)
+        private void DataSetFeatureRemoved(object sender, FeatureRemovedEventArgs e)
         {
             DrawingFilter?.DrawnStates.Remove(e.Feature);
         }

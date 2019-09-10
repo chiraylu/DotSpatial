@@ -27,7 +27,7 @@ namespace DotSpatial.Data
         /// <summary>
         /// Occurs when a feature is removed from the list.
         /// </summary>
-        event EventHandler<FeatureEventArgs> FeatureRemoved;
+        event EventHandler<FeatureRemovedEventArgs> FeatureRemoved;
 
         /// <summary>
         /// Occurs when the vertices are invalidated, encouraging a re-draw.

@@ -121,6 +121,7 @@
     <Compile Include="ExtentM.cs" />
     <Compile Include="ExtentMZ.cs" />
     <Compile Include="ExtentParseException.cs" />
+    <Compile Include="FeatureRemovedEventArgs.cs" />
     <Compile Include="FeatureRow.cs" />
     <Compile Include="FeatureRowChangeEvent.cs" />
     <Compile Include="FeatureSetEventArgs.cs" />

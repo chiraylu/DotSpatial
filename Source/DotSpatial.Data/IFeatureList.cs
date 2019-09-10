@@ -21,7 +21,7 @@ namespace DotSpatial.Data
         /// <summary>
         /// Occurs when a feature is removed from the list.
         /// </summary>
-        event EventHandler<FeatureEventArgs> FeatureRemoved;
+        event EventHandler<FeatureRemovedEventArgs> FeatureRemoved;
 
         #endregion
 

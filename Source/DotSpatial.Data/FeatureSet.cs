@@ -186,7 +186,7 @@ namespace DotSpatial.Data
         /// <summary>
         /// Occurs when a feature is removed from the list.
         /// </summary>
-        public event EventHandler<FeatureEventArgs> FeatureRemoved;
+        public event EventHandler<FeatureRemovedEventArgs> FeatureRemoved;
 
         /// <summary>
         /// Occurs when the vertices are invalidated, encouraging a re-draw
@@ -1277,7 +1277,7 @@ namespace DotSpatial.Data
                 {
                     DataTable.Rows.RemoveAt(index);
                 }
-
+                
                 ProgressMeter.Next();
             }
 
@@ -1962,6 +1962,7 @@ namespace DotSpatial.Data
             _features.FeatureAdded += FeaturesFeatureAdded;
             _features.FeatureRemoved += FeaturesFeatureRemoved;
         }
+        
 
         /// <summary>
         /// Occurs when the vertices are being re-calculated.
@@ -1993,14 +1994,12 @@ namespace DotSpatial.Data
             // not sure, but I bet arrays a smidge faster at indexed access than lists
             _shapeIndices = new List<ShapeRange>();
             int vIndex = 0;
-            int recordNumber = 1;
             foreach (IFeature f in _features)
             {
                 ShapeRange shx = new ShapeRange(FeatureType)
                 {
                     Extent = new Extent(f.Geometry.EnvelopeInternal),
-                    StartIndex = vIndex,
-                    RecordNumber = recordNumber++
+                    StartIndex = vIndex
                 };
                 _shapeIndices.Add(shx);
                 f.ShapeIndex = shx;
@@ -2191,7 +2190,7 @@ namespace DotSpatial.Data
         /// </summary>
         /// <param name="sender">The object sender.</param>
         /// <param name="e">The FeatureEventArgs.</param>
-        private void FeaturesFeatureRemoved(object sender, FeatureEventArgs e)
+        private void FeaturesFeatureRemoved(object sender, FeatureRemovedEventArgs e)
         {
             _verticesAreValid = false;
             ShapeIndices.Remove(e.Feature.ShapeIndex);

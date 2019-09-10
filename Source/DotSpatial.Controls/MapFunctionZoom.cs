@@ -1,6 +1,8 @@
 // Copyright (c) DotSpatial Team. All rights reserved.
 // Licensed under the MIT license. See License.txt file in the project root for full license information.
 
+using DotSpatial.Data;
+using GeoAPI.Geometries;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -138,10 +140,10 @@ namespace DotSpatial.Controls
 
                 _isDragging = true;
                 Point diff = new Point
-                             {
-                                 X = _dragStart.X - e.X,
-                                 Y = _dragStart.Y - e.Y
-                             };
+                {
+                    X = _dragStart.X - e.X,
+                    Y = _dragStart.Y - e.Y
+                };
                 e.Map.MapFrame.View = new Rectangle(_source.X + diff.X, _source.Y + diff.Y, _source.Width, _source.Height);
                 Map.Invalidate();
             }
@@ -182,6 +184,7 @@ namespace DotSpatial.Controls
             {
                 e.Map.IsZoomedToMaxExtent = false;
                 Rectangle r = e.Map.MapFrame.View;
+                Extent extent = e.Map.MapFrame.ViewExtents;
 
                 // For multiple zoom steps before redrawing, we actually
                 // want the x coordinate relative to the screen, not
@@ -192,22 +195,47 @@ namespace DotSpatial.Controls
 
                 double w = r.Width;
                 double h = r.Height;
-
+                double srcCenterX = r.X + r.Width / 2.0;
+                double srcCenterY = r.Y + r.Height / 2.0;
                 if (_direction * e.Delta > 0)
                 {
-                    double inFactor = 2.0 * _sensitivity;
-                    r.Inflate(Convert.ToInt32(-w / inFactor), Convert.ToInt32(-h / inFactor));
+                    double ratio = Sensitivity / 2;
+                    double dHalfWidth = -w * ratio;
+                    double dHalfHeight = -h * ratio;
+                    r.Inflate(Convert.ToInt32(dHalfWidth), Convert.ToInt32(dHalfHeight));
+                    double ratioWidth = r.Width / w;
+                    double ratioHeight = r.Height / h;
+                    double destX = e.X * ratioWidth + (1 - ratioWidth) * srcCenterX;
+                    double destY = e.Y * ratioHeight + (1 - ratioHeight) * srcCenterY;
+                    int xOff = Convert.ToInt32(e.X - destX);
+                    int yOff = Convert.ToInt32(e.Y - destY);
+                    r.X += xOff;
+                    r.Y += yOff;
 
-                    // try to keep the mouse cursor in the same geographic position
-                    r.X += Convert.ToInt32((e.X * w / (_sensitivity * cw)) - (w / inFactor));
-                    r.Y += Convert.ToInt32((e.Y * h / (_sensitivity * ch)) - (h / inFactor));
+                    //Extent destExtent = (Extent)extent.Clone();
+                    //var currentCoord = e.Map.MapFrame.BufferToProj(e.Location);
+                    //destExtent.SetCenter(currentCoord);
+                    //destExtent.ExpandBy(-extent.Width * ratio, -extent.Height * ratio);
+                    //var destCoordX = (extent.Center.X - currentCoord.X) * ((1 - Sensitivity) / 2) + currentCoord.X;
+                    //var destCoordY = (extent.Center.Y - currentCoord.Y) * ((1 - Sensitivity) / 2) + currentCoord.Y;
+                    //destExtent.SetCenter(new Coordinate(destCoordX, destCoordY));
+                    //Rectangle rect = e.Map.MapFrame.ProjToBuffer(destExtent);
+                    //r = rect;
                 }
                 else
                 {
-                    double outFactor = 0.5 * _sensitivity;
-                    r.Inflate(Convert.ToInt32(w / _sensitivity), Convert.ToInt32(h / _sensitivity));
-                    r.X += Convert.ToInt32((w / _sensitivity) - (e.X * w / (outFactor * cw)));
-                    r.Y += Convert.ToInt32((h / _sensitivity) - (e.Y * h / (outFactor * ch)));
+                    double ratio = Sensitivity / (2 * (1 - Sensitivity));
+                    double dHalfWidth = w * ratio;
+                    double dHalfHeight = h * ratio;
+                    r.Inflate(Convert.ToInt32(dHalfWidth), Convert.ToInt32(dHalfHeight));
+                    double ratioWidth = r.Width / w;
+                    double ratioHeight = r.Height / h;
+                    double destX = e.X * ratioWidth + (1 - ratioWidth) * srcCenterX;
+                    double destY = e.Y * ratioHeight + (1 - ratioHeight) * srcCenterY;
+                    int xOff = Convert.ToInt32(e.X - destX);
+                    int yOff = Convert.ToInt32(e.Y - destY);
+                    r.X += xOff;
+                    r.Y += yOff;
                 }
 
                 e.Map.MapFrame.View = r;
@@ -229,12 +257,12 @@ namespace DotSpatial.Controls
             YieldStyle = YieldStyles.Scroll;
             _timerInterval = 100;
             _zoomTimer = new Timer
-                         {
-                             Interval = _timerInterval
-                         };
+            {
+                Interval = _timerInterval
+            };
             _zoomTimer.Tick += ZoomTimerTick;
             _client = Rectangle.Empty;
-            Sensitivity = .30;
+            Sensitivity = 0.2;
             ForwardZoomsIn = true;
             Name = "ScrollZoom";
         }
