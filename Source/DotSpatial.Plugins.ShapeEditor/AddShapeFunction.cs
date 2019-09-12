@@ -406,7 +406,7 @@ namespace DotSpatial.Plugins.ShapeEditor
                 Rectangle newRect = SymbologyGlobal.GetRectangle(e.Location, points[points.Count - 1]);
                 Rectangle invalid = Rectangle.Union(newRect, oldRect);
                 invalid.Inflate(20, 20);
-                Map.Invalidate(invalid);
+                Map.Invalidate(invalid); 
             }
 
             // Begin snapping changes

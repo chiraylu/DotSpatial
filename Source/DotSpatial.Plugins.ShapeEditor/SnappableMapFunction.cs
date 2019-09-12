@@ -85,7 +85,7 @@ namespace DotSpatial.Plugins.ShapeEditor
         /// <param name="e">The event args.</param>
         /// <param name="snappedCoord">set if a coordinate is found</param>
         /// <returns>true if snap found</returns>
-        protected bool ComputeSnappedLocation(GeoMouseArgs e, ref Coordinate snappedCoord)
+        protected virtual bool ComputeSnappedLocation(GeoMouseArgs e, ref Coordinate snappedCoord)
         {
             if (SnapLayers == null || e == null || Map == null)
                 return false;
@@ -124,7 +124,7 @@ namespace DotSpatial.Plugins.ShapeEditor
         /// </summary>
         /// <param name="prevWasSnapped">Indicates whether the mouse was snapped to a point before.</param>
         /// <param name="pos">Current position.</param>
-        protected void DoMouseMoveForSnapDrawing(bool prevWasSnapped, Point pos)
+        protected virtual void DoMouseMoveForSnapDrawing(bool prevWasSnapped, Point pos)
         {
             // Invalidate the region around the mouse so that the previous snap colors are erased.
             if ((prevWasSnapped || IsSnapped) && DoSnapping)
@@ -139,7 +139,7 @@ namespace DotSpatial.Plugins.ShapeEditor
         /// </summary>
         /// <param name="graphics">graphics to draw on</param>
         /// <param name="pos">point where the circles center will be</param>
-        protected void DoSnapDrawing(Graphics graphics, Point pos)
+        protected virtual void DoSnapDrawing(Graphics graphics, Point pos)
         {
             if (IsSnapped)
             {

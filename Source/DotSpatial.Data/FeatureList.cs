@@ -516,10 +516,16 @@ namespace DotSpatial.Data
         public virtual void RemoveAt(int index)
         {
             IFeature item = _list[index];
+            DataRow srcRow = item.DataRow;
+            DataRow cloneRow = srcRow.Table.NewRow();
+            object[] obj = new object[srcRow.ItemArray.Length];
+            srcRow.ItemArray.CopyTo(obj, 0);
+            cloneRow.ItemArray = obj;
             int fid = item.Fid;
             Parent.DataTable.Rows.Remove(item.DataRow);
             _list.RemoveAt(index);
             item.ParentFeatureSet = null;
+            item.DataRow = cloneRow;
             OnFeatureRemoved(item, fid);
         }
 
@@ -713,8 +719,14 @@ namespace DotSpatial.Data
         private void ExcludeFeature(IFeature item)
         {
             int fid = item.Fid;
+            DataRow srcRow = item.DataRow;
+            DataRow cloneRow = srcRow.Table.NewRow();
+            object[] obj = new object[srcRow.ItemArray.Length];
+            srcRow.ItemArray.CopyTo(obj, 0);
+            cloneRow.ItemArray = obj;
             item.ParentFeatureSet = null;
             Parent.DataTable.Rows.Remove(item.DataRow);
+            item.DataRow = cloneRow;
             OnFeatureRemoved(item, fid);
         }
 
