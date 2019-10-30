@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using OSGeo.GDAL;
 
 namespace DotSpatial.Data.Rasters.GdalExtension
@@ -21,21 +22,26 @@ namespace DotSpatial.Data.Rasters.GdalExtension
         /// <returns>Opened file as data set.</returns>
         public static Dataset Open(string fileName)
         {
-            try
-            {
-                return Gdal.Open(fileName, Access.GA_Update);
-            }
-            catch
+            Dataset dataset = null;
+            if (File.Exists(fileName))
             {
                 try
                 {
-                    return Gdal.Open(fileName, Access.GA_ReadOnly);
+                    dataset = Gdal.Open(fileName, Access.GA_Update);
                 }
-                catch (Exception ex)
+                catch
                 {
-                    throw new GdalException(ex.ToString());
+                    try
+                    {
+                        dataset = Gdal.Open(fileName, Access.GA_ReadOnly);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw new GdalException(ex.ToString());
+                    }
                 }
             }
+            return dataset;
         }
 
         public static int CreateOverview(Dataset _dataset, string resampling = "NEAREST", int[] overviewlist = null)

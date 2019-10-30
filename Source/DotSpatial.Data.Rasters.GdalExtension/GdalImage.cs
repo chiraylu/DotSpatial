@@ -897,6 +897,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
             double dValue = maxValue - minValue;
             double highValue = maxValue - dValue * maxPercent / 100;
             double lowValue = minValue + dValue * minPercent / 100;
+            double dValuePercent = highValue - lowValue;
             switch (dataType)
             {
                 case DataType.GDT_Unknown:
@@ -906,10 +907,9 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                         byte[] tmpBuffer = new byte[length];
                         bufferPtr = GCHandleHelper.GetIntPtr(tmpBuffer);
                         band.ReadRaster(xOffset, yOffset, width, height, bufferPtr, width, height, dataType, 0, 0);
-                        dValue = (byte)(highValue - lowValue);
                         for (int i = 0; i < length; i++)
                         {
-                            byte value = tmpBuffer[i];
+                            var value = tmpBuffer[i];
                             if (value >= highValue)
                             {
                                 buffer[i] = 255;
@@ -920,7 +920,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                             }
                             else
                             {
-                                buffer[i] = (byte)((value - lowValue) / dValue * 255);
+                                buffer[i] = (byte)((value - lowValue) / dValuePercent * 255);
                             }
                         }
                     }
@@ -930,10 +930,9 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                         ushort[] tmpBuffer = new ushort[length];
                         bufferPtr = GCHandleHelper.GetIntPtr(tmpBuffer);
                         band.ReadRaster(xOffset, yOffset, width, height, bufferPtr, width, height, dataType, 0, 0);
-                        dValue = (ushort)(highValue - lowValue);
                         for (int i = 0; i < length; i++)
                         {
-                            ushort value = tmpBuffer[i];
+                            var value = tmpBuffer[i];
                             if (value >= highValue)
                             {
                                 buffer[i] = 255;
@@ -944,7 +943,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                             }
                             else
                             {
-                                buffer[i] = (byte)((value - lowValue) / dValue * 255);
+                                buffer[i] = (byte)((value - lowValue) / dValuePercent * 255);
                             }
                         }
                     }
@@ -954,10 +953,9 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                         short[] tmpBuffer = new short[length];
                         bufferPtr = GCHandleHelper.GetIntPtr(tmpBuffer);
                         band.ReadRaster(xOffset, yOffset, width, height, bufferPtr, width, height, dataType, 0, 0);
-                        dValue = (short)(highValue - lowValue);
                         for (int i = 0; i < length; i++)
                         {
-                            short value = tmpBuffer[i];
+                            var value = tmpBuffer[i];
                             if (value >= highValue)
                             {
                                 buffer[i] = 255;
@@ -968,7 +966,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                             }
                             else
                             {
-                                buffer[i] = (byte)((value - lowValue) / dValue * 255);
+                                buffer[i] = (byte)((value - lowValue) / dValuePercent * 255);
                             }
                         }
                     }
@@ -978,10 +976,9 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                         uint[] tmpBuffer = new uint[length];
                         bufferPtr = GCHandleHelper.GetIntPtr(tmpBuffer);
                         band.ReadRaster(xOffset, yOffset, width, height, bufferPtr, width, height, dataType, 0, 0);
-                        dValue = (uint)(highValue - lowValue);
                         for (int i = 0; i < length; i++)
                         {
-                            uint value = tmpBuffer[i];
+                            var value = tmpBuffer[i];
                             if (value >= highValue)
                             {
                                 buffer[i] = 255;
@@ -992,7 +989,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                             }
                             else
                             {
-                                buffer[i] = (byte)((value - lowValue) / dValue * 255);
+                                buffer[i] = (byte)((value - lowValue) / dValuePercent * 255);
                             }
                         }
                     }
@@ -1002,10 +999,9 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                         int[] tmpBuffer = new int[length];
                         bufferPtr = GCHandleHelper.GetIntPtr(tmpBuffer);
                         band.ReadRaster(xOffset, yOffset, width, height, bufferPtr, width, height, dataType, 0, 0);
-                        dValue = (int)(highValue - lowValue);
                         for (int i = 0; i < length; i++)
                         {
-                            int value = tmpBuffer[i];
+                            var value = tmpBuffer[i];
                             if (value >= highValue)
                             {
                                 buffer[i] = 255;
@@ -1016,7 +1012,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                             }
                             else
                             {
-                                buffer[i] = (byte)((value - lowValue) / dValue * 255);
+                                buffer[i] = (byte)((value - lowValue) / dValuePercent * 255);
                             }
                         }
                     }
@@ -1026,10 +1022,9 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                         float[] tmpBuffer = new float[length];
                         bufferPtr = GCHandleHelper.GetIntPtr(tmpBuffer);
                         band.ReadRaster(xOffset, yOffset, width, height, bufferPtr, width, height, dataType, 0, 0);
-                        dValue = (float)(highValue - lowValue);
                         for (int i = 0; i < length; i++)
                         {
-                            float value = tmpBuffer[i];
+                            var value = tmpBuffer[i];
                             if (value >= highValue)
                             {
                                 buffer[i] = 255;
@@ -1040,7 +1035,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                             }
                             else
                             {
-                                buffer[i] = (byte)((value - lowValue) / dValue * 255);
+                                buffer[i] = (byte)((value - lowValue) / dValuePercent * 255);
                             }
                         }
                     }
@@ -1050,10 +1045,9 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                         double[] tmpBuffer = new double[length];
                         bufferPtr = GCHandleHelper.GetIntPtr(tmpBuffer);
                         band.ReadRaster(xOffset, yOffset, width, height, bufferPtr, width, height, dataType, 0, 0);
-                        dValue = (double)(highValue - lowValue);
                         for (int i = 0; i < length; i++)
                         {
-                            double value = tmpBuffer[i];
+                            var value = tmpBuffer[i];
                             if (value >= highValue)
                             {
                                 buffer[i] = 255;
@@ -1064,7 +1058,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                             }
                             else
                             {
-                                buffer[i] = (byte)((value - lowValue) / dValue * 255);
+                                buffer[i] = (byte)((value - lowValue) / dValuePercent * 255);
                             }
                         }
                     }
@@ -1078,6 +1072,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
             }
             return buffer;
         }
+
         private Bitmap ReadGrayIndex(int xOffset, int yOffset, int xSize, int ySize, Band first)
         {
             Band firstO;

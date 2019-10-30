@@ -880,33 +880,35 @@ namespace DotSpatial.Data
         public virtual IRaster OpenFileAsIRaster(string fileName, bool inRam, IProgressHandler progressHandler)
         {
             // First check for the extension in the preferred plugins list
-            string ext = Path.GetExtension(fileName);
-            if (ext != null)
+            if (File.Exists(fileName))
             {
-                ext = ext.ToLower();
-                IRaster result;
-                if (PreferredProviders.ContainsKey(ext))
+                string ext = Path.GetExtension(fileName);
+                if (ext != null)
                 {
-                    result = PreferredProviders[ext].Open(fileName) as IRaster;
-                    if (result != null) return result;
+                    ext = ext.ToLower();
+                    IRaster result;
+                    if (PreferredProviders.ContainsKey(ext))
+                    {
+                        result = PreferredProviders[ext].Open(fileName) as IRaster;
+                        if (result != null) return result;
 
-                    // if we get here, we found the provider, but it did not succeed in opening the file.
-                }
+                        // if we get here, we found the provider, but it did not succeed in opening the file.
+                    }
 
-                // Then check the general list of developer specified providers... but not the directory providers
-                foreach (IDataProvider dp in DataProviders)
-                {
-                    if (!GetSupportedExtensions(dp.DialogReadFilter).Contains(ext)) continue;
+                    // Then check the general list of developer specified providers... but not the directory providers
+                    foreach (IDataProvider dp in DataProviders)
+                    {
+                        if (!GetSupportedExtensions(dp.DialogReadFilter).Contains(ext)) continue;
 
-                    // attempt to open with the fileName.
-                    dp.ProgressHandler = ProgressHandler;
+                        // attempt to open with the fileName.
+                        dp.ProgressHandler = ProgressHandler;
 
-                    result = dp.Open(fileName) as IRaster;
-                    if (result != null) return result;
+                        result = dp.Open(fileName) as IRaster;
+                        if (result != null) return result;
+                    }
                 }
             }
-
-            throw new ApplicationException(DataStrings.FileTypeNotSupported);
+            return null;
         }
 
         /// <summary>

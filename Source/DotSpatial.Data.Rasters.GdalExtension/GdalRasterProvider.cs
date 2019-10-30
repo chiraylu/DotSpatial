@@ -196,7 +196,6 @@ namespace DotSpatial.Data.Rasters.GdalExtension
 
             return result;
         }
-
         private static string GetDriverCode(string fileExtension)
         {
             if (string.IsNullOrEmpty(fileExtension))

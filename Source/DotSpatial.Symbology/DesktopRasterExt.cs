@@ -212,7 +212,8 @@ namespace DotSpatial.Symbology
             int numCols = raster.NumColumns;
             List<double> result = new List<double>();
             double noData = raster.NoDataValue;
-            if (numRows * numCols < sampleSize)
+            var totalPixels = numRows * numCols;
+            if (totalPixels > 0 && totalPixels < sampleSize)
             {
                 for (int row = 0; row < numRows; row++)
                 {
@@ -266,8 +267,8 @@ namespace DotSpatial.Symbology
             int remaining = sampleSize;
             while (remaining > 0)
             {
-                int row = rnd.Next(numRows);
-                int col = rnd.Next(numCols);
+                long row = rnd.Next(numRows);
+                long col = rnd.Next(numCols);
                 long index = (row * numCols) + col;
                 if (exclusiveResults.Contains(index)) continue;
 

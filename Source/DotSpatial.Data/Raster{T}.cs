@@ -62,12 +62,12 @@ namespace DotSpatial.Data
             NumRows = numRows;
             NumColumns = numColumns;
             DataType = typeof(T);
-            if (numRows * numColumns > 64000000)
+            int count = numRows * numColumns;
+            if (count > 64000000 || count < 0)
             {
                 IsInRam = false;
                 NumRowsInFile = numRows;
                 NumColumnsInFile = numColumns;
-                IsInRam = false;
                 Bounds = new RasterBounds(numRows, numColumns, new[] { 0.5, 1.0, 0.0, numRows - .5, 0.0, -1.0 });
                 NoDataValue = 0; // sets the no-data value to the minimum value for the specified type.
                 ValuesT = new ValueGrid<T>(this);

@@ -203,8 +203,8 @@ namespace DotSpatial.Symbology
             Matrix adjust = g.Transform;
             float dx = (float)(scaleWidth * _offset.X);
             float dy = (float)(scaleWidth * _offset.Y);
-            adjust.Translate(dx, -dy);
             adjust.Rotate((float)_angle);
+            adjust.Translate(dx, -dy);
             g.Transform = adjust;
 
             OnDraw(g, scaleWidth);

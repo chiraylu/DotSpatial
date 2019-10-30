@@ -142,15 +142,7 @@ namespace DotSpatial.Symbology
         [Serialize("ImageBase64String")]
         public string ImageBase64String
         {
-            get
-            {
-                if (string.IsNullOrEmpty(ImageFilename))
-                {
-                    return ConvertImageToBase64(Image);
-                }
-
-                return string.Empty;
-            }
+            get=> ConvertImageToBase64(Image);
 
             set
             {
@@ -169,11 +161,10 @@ namespace DotSpatial.Symbology
                 }
             }
         }
-
         /// <summary>
         /// Gets or sets the string image fileName to use
         /// </summary>
-        [Serialize("ImageFilename")]
+        //[Serialize("ImageFilename")]
         public string ImageFilename
         {
             get

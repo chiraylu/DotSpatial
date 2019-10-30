@@ -873,8 +873,7 @@ namespace DotSpatial.Data
 
                     Bands = null;
                 }
-
-                Bounds = null;
+                
                 CustomFileType = null;
                 DriverCode = null;
                 Filename = null;

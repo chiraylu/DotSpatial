@@ -971,7 +971,15 @@ namespace DotSpatial.Data.Rasters.GdalExtension
 
             return null;
         }
-
+        protected override void Dispose(bool disposeManagedResources)
+        {
+            if (disposeManagedResources)
+            {
+                _band?.Dispose();
+                _dataset?.Dispose();
+            }
+            base.Dispose(disposeManagedResources);
+        }
         /// <summary>
         /// Writes values from the jagged array to the raster at the specified location
         /// </summary>

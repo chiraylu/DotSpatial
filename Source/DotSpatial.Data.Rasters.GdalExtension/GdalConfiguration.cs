@@ -81,7 +81,6 @@ namespace DotSpatial.Data.Rasters.GdalExtension
             var projSharePath = Path.Combine(gdalPath, "share");
             Environment.SetEnvironmentVariable("PROJ_LIB", projSharePath);
             Gdal.SetConfigOption("PROJ_LIB", projSharePath);
-
         }
 
         /// <summary>
