@@ -336,41 +336,50 @@ namespace DotSpatial.Data.Rasters.GdalExtension
             }
 
             var overviewPow = Math.Pow(2, _overview + 1);
+            m11 *= (float)overviewPow;
+            m12 *= (float)overviewPow;
+            m21 *= (float)overviewPow;
+            m22 *= (float)overviewPow;
+            g.Transform = new Matrix(m11, m12, m21, m22, xShift, yShift);
 
-            // witdh and height of the image
-            var w = (bRx - tLx) / overviewPow;
-            var h = (bRy - tLy) / overviewPow;
-
-            using (var matrix = new Matrix(m11 * (float)overviewPow, m12 * (float)overviewPow, m21 * (float)overviewPow, m22 * (float)overviewPow, xShift, yShift))
-            {
-                g.Transform = matrix;
-            }
-
-            int blockXsize, blockYsize;
+            int blockXsize = 0, blockYsize = 0;
 
             // get the optimal block size to request gdal.
             // if the image is stored line by line then ask for a 100px stripe.
+            int size = 64;
+            Action<Band> computeBlockSize = new Action<Band>((band) =>
+              {
+                  band.GetBlockSize(out blockXsize, out blockYsize);
+                  if (blockYsize == 1)
+                  {
+                      blockYsize = Math.Min(size, band.YSize);
+                  }
+                  //if (blockYsize < size)
+                  //{
+                  //    blockYsize = Math.Min(size, band.YSize);
+                  //}
+                  //if (blockXsize < size)
+                  //{
+                  //    blockXsize = Math.Min(size, band.XSize);
+                  //}
+              });
             if (_overview >= 0 && _overviewCount > 0)
             {
                 using (var overview = _band.GetOverview(_overview))
                 {
-                    overview.GetBlockSize(out blockXsize, out blockYsize);
-                    if (blockYsize == 1)
-                    {
-                        blockYsize = Math.Min(100, overview.YSize);
-                    }
+                    computeBlockSize(overview);
                 }
             }
             else
             {
-                _band.GetBlockSize(out blockXsize, out blockYsize);
-                if (blockYsize == 1)
-                {
-                    blockYsize = Math.Min(100, _band.YSize);
-                }
+                computeBlockSize(_band);
             }
 
             int nbX, nbY;
+
+            // witdh and height of the image
+            var w = (bRx - tLx) / overviewPow;
+            var h = (bRy - tLy) / overviewPow;
 
             // limit the block size to the viewable image.
             if (w < blockXsize)
@@ -400,7 +409,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
             {
                 nbY = (int)Math.Ceiling(h / blockYsize);
             }
-
+            int redundancy = (int)Math.Ceiling(1 / Math.Min(m11, m22));
             for (var i = 0; i < nbX; i++)
             {
                 for (var j = 0; j < nbY; j++)
@@ -410,8 +419,8 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                     double yOffsetD = (tLy / overviewPow) + (j * blockYsize);
                     int xOffsetI = (int)Math.Floor(xOffsetD);
                     int yOffsetI = (int)Math.Floor(yOffsetD);
-                    int xSize = blockXsize + 1;
-                    int ySize = blockYsize + 1;
+                    int xSize = blockXsize + redundancy;
+                    int ySize = blockYsize + redundancy;
                     using (var bitmap = GetBitmap(xOffsetI, yOffsetI, xSize, ySize))
                     {
                         if (bitmap != null)
@@ -1084,8 +1093,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
             if (_band != null)
             {
                 double val;
-                int hasInterval;
-                _band.GetNoDataValue(out val, out hasInterval);
+                _band.GetNoDataValue(out val, out _);
                 base.NoDataValue = val;
                 _overviewCount = _band.GetOverviewCount();
                 _colorInterp = _band.GetColorInterpretation();

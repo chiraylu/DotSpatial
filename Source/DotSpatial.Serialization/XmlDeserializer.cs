@@ -167,7 +167,7 @@ namespace DotSpatial.Serialization
 
             // create the instance via static method, if an argument contained a name of a static method that should be used for the instance construction
             // this is used for classes that can't initialize themselves correctly in the constructor but can be created correctly via static method
-            if (string.IsNullOrWhiteSpace(constructorMethod))
+            if (string.IsNullOrWhiteSpace(constructorMethod)) 
             {
                 var ctor = type.GetConstructor(types);
                 return ctor?.Invoke(constructorArgs.ToArray());
