@@ -1036,25 +1036,29 @@ namespace DotSpatial.Controls
                 CreateLabels();
             }
 
-            Dictionary<IFeature, LabelDrawState> drawStates = DrawnStates;
-            if (drawStates == null) return;
+            //Dictionary<IFeature, LabelDrawState> drawStates = DrawnStates;
+            //if (drawStates == null) return;
 
             // Sets the graphics objects smoothing modes
             g.TextRenderingHint = TextRenderingHint.AntiAlias;
             g.SmoothingMode = SmoothingMode.AntiAlias;
 
-            Action<IFeature> drawFeature;
+            bool selected = false;
+            Action<IFeature,ILabelCategory> drawFeature;
             switch (featureList.First().FeatureType)
             {
                 case FeatureType.Polygon:
-                    drawFeature = f => DrawPolygonFeature(e, g, f, drawStates[f].Category, drawStates[f].Selected, ExistingLabels);
+                    // drawFeature = (f, category) => DrawPolygonFeature(e, g, f, category, drawStates[f].Selected, ExistingLabels);
+                    drawFeature = (f, category) => DrawPolygonFeature(e, g, f, category, selected, ExistingLabels);
                     break;
                 case FeatureType.Line:
-                    drawFeature = f => DrawLineFeature(e, g, f, drawStates[f].Category, drawStates[f].Selected, ExistingLabels);
+                    // drawFeature = (f, category) => DrawLineFeature(e, g, f, category, drawStates[f].Selected, ExistingLabels);
+                    drawFeature = (f, category) => DrawLineFeature(e, g, f, category, selected, ExistingLabels);
                     break;
                 case FeatureType.Point:
                 case FeatureType.MultiPoint:
-                    drawFeature = f => DrawPointFeature(e, g, f, drawStates[f].Category, drawStates[f].Selected, ExistingLabels);
+                    // drawFeature = (f, category) => DrawPointFeature(e, g, f, category, drawStates[f].Selected, ExistingLabels);
+                    drawFeature = (f, category) => DrawPointFeature(e, g, f, category, selected, ExistingLabels);
                     break;
                 default:
                     return; // Can't draw something else
@@ -1067,10 +1071,11 @@ namespace DotSpatial.Controls
                 List<IFeature> catFeatures = new List<IFeature>();
                 foreach (IFeature f in featureList)
                 {
-                    if (drawStates.ContainsKey(f) && drawStates[f].Category == cat)
-                    {
-                        catFeatures.Add(f);
-                    }
+                    //if (drawStates.ContainsKey(f) && drawStates[f].Category == cat)
+                    //{
+                    //    catFeatures.Add(f);
+                    //}
+                    catFeatures.Add(f);
                 }
 
                 // Now that we are restricted to a certain category, we can look at
@@ -1101,7 +1106,7 @@ namespace DotSpatial.Controls
                 for (int i = 0; i < catFeatures.Count; i++)
                 {
                     if (!FeatureLayer.DrawnStates[i].Visible) continue;
-                    drawFeature(catFeatures[i]);
+                    drawFeature(catFeatures[i],category);
                 }
             }
 
