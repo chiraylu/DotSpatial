@@ -77,14 +77,27 @@ namespace DotSpatial.Symbology
                     if (!dash)
                     {
                         totalUsedLength = (float)(totalLength / 2);
-                        PointF location = GetPoint(startPoint, endPoint, totalUsedLength);
-                        DrawImage(g, startPoint, endPoint, location, symbol);
+
+                        double usedLength = 0;
+                        for (int i = start; i < end; i++)
+                        {
+                            startPoint = points[i];
+                            endPoint = points[i + 1];
+                            double segmentLength = Math.Sqrt(Math.Pow(endPoint.X - startPoint.X, 2) + Math.Pow(endPoint.Y - startPoint.Y, 2));
+                            if (usedLength + segmentLength > totalUsedLength)
+                            {
+                                double length = totalUsedLength - usedLength;
+                                PointF location = GetPoint(startPoint, endPoint, length);
+                                DrawImage(g, startPoint, endPoint, location, symbol);
+                                break;
+                            }
+                            usedLength += segmentLength;
+                        }
                     }
                 }
                 else
                 {
                     int k = 0;
-                    PointF beginPoint = points[start];
                     for (int i = start; i < end; i++)
                     {
                         startPoint = points[i];

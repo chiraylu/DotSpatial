@@ -1,0 +1,1 @@
+若提示找不到gdal_wrap，则将libpq.dll拷贝到程序根目录
