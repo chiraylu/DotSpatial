@@ -165,7 +165,7 @@ namespace DotSpatial.Controls
         /// <param name="category">The label category the feature belongs to.</param>
         /// <param name="selected">Indicates whether the feature is selected.</param>
         /// <param name="existingLabels">List with the already existing labels.</param>
-        public static void DrawLineFeature(MapArgs e, Graphics g, IFeature f, ILabelCategory category, bool selected, List<IPolygon> existingLabels)
+        public static void DrawLineFeature(MapArgs e, Graphics g, IFeature f, ILabelCategory category, bool selected, List<IPolygon> existingLabels, ILineSymbolizer symbolizer)
         {
             var symb = selected ? category.SelectionSymbolizer : category.Symbolizer;
 
@@ -176,11 +176,11 @@ namespace DotSpatial.Controls
             Func<SizeF> labelSize = () => g.MeasureString(txt, CacheList.GetFont(symb));
 
             IGeometry geo = f.Geometry;
-
+            
             if (geo.NumGeometries == 1)
             {
                 var angle = GetAngleToRotate(symb, f, f.Geometry);
-                RectangleF labelBounds = PlaceLineLabel(f.Geometry, labelSize, e, symb, angle);
+                RectangleF labelBounds = PlaceLineLabel(f.Geometry, labelSize, e, symb, angle, symbolizer);
                 CollisionDraw(txt, g, symb, f, e, labelBounds, existingLabels, angle);
             }
             else
@@ -191,7 +191,7 @@ namespace DotSpatial.Controls
                     for (int n = 0; n < geo.NumGeometries; n++)
                     {
                         var angle = GetAngleToRotate(symb, f, geo.GetGeometryN(n));
-                        RectangleF labelBounds = PlaceLineLabel(geo.GetGeometryN(n), labelSize, e, symb, angle);
+                        RectangleF labelBounds = PlaceLineLabel(geo.GetGeometryN(n), labelSize, e, symb, angle, symbolizer);
                         CollisionDraw(txt, g, symb, f, e, labelBounds, existingLabels, angle);
                     }
                 }
@@ -212,7 +212,7 @@ namespace DotSpatial.Controls
                     }
 
                     var angle = GetAngleToRotate(symb, f, geo.GetGeometryN(longestIndex));
-                    RectangleF labelBounds = PlaceLineLabel(geo.GetGeometryN(longestIndex), labelSize, e, symb, angle);
+                    RectangleF labelBounds = PlaceLineLabel(geo.GetGeometryN(longestIndex), labelSize, e, symb, angle, symbolizer);
                     CollisionDraw(txt, g, symb, f, e, labelBounds, existingLabels, angle);
                 }
             }
@@ -227,7 +227,8 @@ namespace DotSpatial.Controls
         /// <param name="category">The label category the feature belongs to.</param>
         /// <param name="selected">Indicates whether the feature is selected.</param>
         /// <param name="existingLabels">List with the already existing labels.</param>
-        public static void DrawPointFeature(MapArgs e, Graphics g, IFeature f, ILabelCategory category, bool selected, List<IPolygon> existingLabels)
+        /// <param name="symbolizer">point symbolizer</param>
+        public static void DrawPointFeature(MapArgs e, Graphics g, IFeature f, ILabelCategory category, bool selected, List<IPolygon> existingLabels,IPointSymbolizer symbolizer)
         {
             var symb = selected ? category.SelectionSymbolizer : category.Symbolizer;
 
@@ -242,13 +243,13 @@ namespace DotSpatial.Controls
             {
                 for (int n = 0; n < f.Geometry.NumGeometries; n++)
                 {
-                    RectangleF labelBounds = PlacePointLabel(f.Geometry.GetGeometryN(n), e, labelSize, symb, angle);
+                    RectangleF labelBounds = PlacePointLabel(f.Geometry.GetGeometryN(n), e, labelSize, symb, angle, symbolizer);
                     CollisionDraw(txt, g, symb, f, e, labelBounds, existingLabels, angle);
                 }
             }
             else
             {
-                RectangleF labelBounds = PlacePointLabel(f.Geometry, e, labelSize, symb, angle);
+                RectangleF labelBounds = PlacePointLabel(f.Geometry, e, labelSize, symb, angle, symbolizer);
                 CollisionDraw(txt, g, symb, f, e, labelBounds, existingLabels, angle);
             }
         }
@@ -767,26 +768,6 @@ namespace DotSpatial.Controls
         }
 
         /// <summary>
-        /// Creates the RectangleF for the label.
-        /// </summary>
-        /// <param name="c">Coordinate, where the label should be placed.</param>
-        /// <param name="e">MapArgs for calculating the position of the label on the output medium.</param>
-        /// <param name="labelSize">Function that calculates the labelSize.</param>
-        /// <param name="symb">ILabelSymbolizer to calculate the orientation based adjustment.</param>
-        /// <param name="angle">Angle in degree used to rotate the label.</param>
-        /// <returns>Empty Rectangle if Coordinate is outside of the drawn extent, otherwise Rectangle needed to draw the label.</returns>
-        private static RectangleF PlaceLabel(Coordinate c, MapArgs e, Func<SizeF> labelSize, ILabelSymbolizer symb, double angle)
-        {
-            if (!e.GeographicExtents.Intersects(c)) return RectangleF.Empty;
-            var lz = labelSize();
-            PointF adjustment = Position(symb, lz);
-            RotatePoint(ref adjustment, angle); // rotates the adjustment according to the given angle
-            float x = Convert.ToSingle((c.X - e.MinX) * e.Dx) + e.ImageRectangle.X + adjustment.X;
-            float y = Convert.ToSingle((e.MaxY - c.Y) * e.Dy) + e.ImageRectangle.Y + adjustment.Y;
-            return new RectangleF(x, y, lz.Width, lz.Height);
-        }
-
-        /// <summary>
         /// Places the label according to the selected LabelPlacementMethode.
         /// </summary>
         /// <param name="lineString">LineString, whose label gets drawn.</param>
@@ -794,22 +775,34 @@ namespace DotSpatial.Controls
         /// <param name="e">The map args.</param>
         /// <param name="symb">Symbolizer to figure out the look of the label.</param>
         /// <param name="angle">Angle in degree the label gets rotated by.</param>
+        /// <param name="symbolizer">feature symbolizer</param>
         /// <returns>The RectangleF that is needed to draw the label.</returns>
-        private static RectangleF PlaceLineLabel(IGeometry lineString, Func<SizeF> labelSize, MapArgs e, ILabelSymbolizer symb, float angle)
+        private static RectangleF PlaceLineLabel(IGeometry lineString, Func<SizeF> labelSize, MapArgs e, ILabelSymbolizer symb, float angle, ILineSymbolizer symbolizer)
         {
             LineString ls = lineString as LineString;
             if (ls == null) return Rectangle.Empty;
 
             ls = GetSegment(ls, symb);
-            if (ls == null) return Rectangle.Empty;
-
-            return PlaceLabel(ls.Centroid.Coordinate, e, labelSize, symb, angle);
+            var c = ls.Centroid.Coordinate;
+            if (!e.GeographicExtents.Intersects(c)) return RectangleF.Empty;
+            var lz = labelSize();
+            PointF adjustment = GetLineLabelPosition(symb, lz, symbolizer);
+            return PlaceLabel(e, c, adjustment, angle, lz);
         }
-
-        private static RectangleF PlacePointLabel(IGeometry f, MapArgs e, Func<SizeF> labelSize, ILabelSymbolizer symb, float angle)
+        private static RectangleF PlaceLabel(MapArgs e, Coordinate c, PointF adjustment, float angle, SizeF lz)
+        {
+            RotatePoint(ref adjustment, angle); // rotates the adjustment according to the given angle
+            float x = Convert.ToSingle((c.X - e.MinX) * e.Dx) + e.ImageRectangle.X + adjustment.X;
+            float y = Convert.ToSingle((e.MaxY - c.Y) * e.Dy) + e.ImageRectangle.Y + adjustment.Y;
+            return new RectangleF(x, y, lz.Width, lz.Height);
+        }
+        private static RectangleF PlacePointLabel(IGeometry f, MapArgs e, Func<SizeF> labelSize, ILabelSymbolizer symb, float angle, IPointSymbolizer symbolizer)
         {
             Coordinate c = f.GetGeometryN(1).Coordinates[0];
-            return PlaceLabel(c, e, labelSize, symb, angle);
+            if (!e.GeographicExtents.Intersects(c)) return RectangleF.Empty;
+            var lz = labelSize();
+            PointF adjustment = GetPointLabelPosition(symb, lz, symbolizer);
+            return PlaceLabel(e, c, adjustment, angle, lz);
         }
 
         /// <summary>
@@ -839,7 +832,10 @@ namespace DotSpatial.Controls
                     break;
             }
 
-            return PlaceLabel(c, e, labelSize, symb, angle);
+            if (!e.GeographicExtents.Intersects(c)) return RectangleF.Empty;
+            var lz = labelSize();
+            PointF adjustment = GetLabelPosition(symb, lz);
+            return PlaceLabel(e, c, adjustment, angle, lz);
         }
 
         /// <summary>
@@ -848,7 +844,7 @@ namespace DotSpatial.Controls
         /// <param name="symb">ILabelSymbolizer whose orientation should be considered.</param>
         /// <param name="size">Size of the label.</param>
         /// <returns>New label-position based on label-size and symbolizer-orientation.</returns>
-        private static PointF Position(ILabelSymbolizer symb, SizeF size)
+        private static PointF GetLabelPosition(ILabelSymbolizer symb, SizeF size)
         {
             ContentAlignment orientation = symb.Orientation;
             float x = symb.OffsetX;
@@ -874,7 +870,65 @@ namespace DotSpatial.Controls
                 case ContentAlignment.BottomRight:
                     return new PointF(0 + x, 0 + y);
             }
-
+            return new PointF(0, 0);
+        }
+        private static PointF GetPointLabelPosition(ILabelSymbolizer symb, SizeF size, IPointSymbolizer symbolizer)
+        {
+            ContentAlignment orientation = symb.Orientation;
+            var symbolSize2d = symbolizer.GetSize();
+            var symbolSize = new SizeF(Convert.ToSingle(symbolSize2d.Width), Convert.ToSingle(symbolSize2d.Height));
+            float x = symb.OffsetX;
+            float y = -symb.OffsetY;
+            switch (orientation)
+            {
+                case ContentAlignment.TopLeft:
+                    return new PointF(-size.Width + x, -size.Height + y - symbolSize.Height);
+                case ContentAlignment.TopCenter:
+                    return new PointF((-size.Width / 2) + x, -size.Height + y - symbolSize.Height);
+                case ContentAlignment.TopRight:
+                    return new PointF(0 + x, -size.Height + y - symbolSize.Height);
+                case ContentAlignment.MiddleLeft:
+                    return new PointF(-size.Width + x - symbolSize.Width, (-size.Height / 2) + y);
+                case ContentAlignment.MiddleCenter:
+                    return new PointF((-size.Width / 2) + x, (-size.Height / 2) + y);
+                case ContentAlignment.MiddleRight:
+                    return new PointF(0 + x + symbolSize.Width, (-size.Height / 2) + y);
+                case ContentAlignment.BottomLeft:
+                    return new PointF(-size.Width + x, 0 + y + symbolSize.Height);
+                case ContentAlignment.BottomCenter:
+                    return new PointF((-size.Width / 2) + x, 0 + y + symbolSize.Height);
+                case ContentAlignment.BottomRight:
+                    return new PointF(0 + x, 0 + y + symbolSize.Height);
+            }
+            return new PointF(0, 0);
+        }
+        private static PointF GetLineLabelPosition(ILabelSymbolizer symb, SizeF size, ILineSymbolizer symbolizer)
+        {
+            ContentAlignment orientation = symb.Orientation;
+            var lineWidth = Convert.ToSingle(symbolizer.GetWidth());
+            float x = symb.OffsetX;
+            float y = -symb.OffsetY;
+            switch (orientation)
+            {
+                case ContentAlignment.TopLeft:
+                    return new PointF(-size.Width + x, -size.Height + y - lineWidth);
+                case ContentAlignment.TopCenter:
+                    return new PointF((-size.Width / 2) + x, -size.Height + y - lineWidth);
+                case ContentAlignment.TopRight:
+                    return new PointF(0 + x, -size.Height + y - lineWidth);
+                case ContentAlignment.MiddleLeft:
+                    return new PointF(-size.Width + x - lineWidth, (-size.Height / 2) + y);
+                case ContentAlignment.MiddleCenter:
+                    return new PointF((-size.Width / 2) + x, (-size.Height / 2) + y);
+                case ContentAlignment.MiddleRight:
+                    return new PointF(0 + x + lineWidth, (-size.Height / 2) + y);
+                case ContentAlignment.BottomLeft:
+                    return new PointF(-size.Width + x, 0 + y + lineWidth);
+                case ContentAlignment.BottomCenter:
+                    return new PointF((-size.Width / 2) + x, 0 + y + lineWidth);
+                case ContentAlignment.BottomRight:
+                    return new PointF(0 + x, 0 + y + lineWidth);
+            }
             return new PointF(0, 0);
         }
 
@@ -956,11 +1010,19 @@ namespace DotSpatial.Controls
                     drawFeature = (category, feature) => DrawPolygonFeature(e, g, feature, category, selected, ExistingLabels);
                     break;
                 case FeatureType.Line:
-                    drawFeature = (category, feature) => DrawLineFeature(e, g, feature, category, selected, ExistingLabels);
+                    drawFeature = (category, feature) =>
+                    {
+                        var symbolizer = FeatureLayer.GetCategory(feature).Symbolizer as ILineSymbolizer;
+                        DrawLineFeature(e, g, feature, category, selected, ExistingLabels, symbolizer);
+                    };
                     break;
                 case FeatureType.Point:
                 case FeatureType.MultiPoint:
-                    drawFeature = (category, feature) => DrawPointFeature(e, g, feature, category, selected, ExistingLabels);
+                    drawFeature = (category, feature) =>
+                    {
+                        var symbolizer = FeatureLayer.GetCategory(feature).Symbolizer as IPointSymbolizer;
+                        DrawPointFeature(e, g, feature, category, selected, ExistingLabels,symbolizer);
+                    };
                     break;
                 default:
                     return; // Can't draw something else
@@ -1044,7 +1106,7 @@ namespace DotSpatial.Controls
             g.SmoothingMode = SmoothingMode.AntiAlias;
 
             bool selected = false;
-            Action<IFeature,ILabelCategory> drawFeature;
+            Action<IFeature, ILabelCategory> drawFeature;
             switch (featureList.First().FeatureType)
             {
                 case FeatureType.Polygon:
@@ -1052,13 +1114,19 @@ namespace DotSpatial.Controls
                     drawFeature = (f, category) => DrawPolygonFeature(e, g, f, category, selected, ExistingLabels);
                     break;
                 case FeatureType.Line:
-                    // drawFeature = (f, category) => DrawLineFeature(e, g, f, category, drawStates[f].Selected, ExistingLabels);
-                    drawFeature = (f, category) => DrawLineFeature(e, g, f, category, selected, ExistingLabels);
+                    drawFeature = (f, category) =>
+                    {
+                        var symbolizer = FeatureLayer.GetCategory(f).Symbolizer as ILineSymbolizer;
+                        DrawLineFeature(e, g, f, category, selected, ExistingLabels, symbolizer);
+                    };
                     break;
                 case FeatureType.Point:
                 case FeatureType.MultiPoint:
-                    // drawFeature = (f, category) => DrawPointFeature(e, g, f, category, drawStates[f].Selected, ExistingLabels);
-                    drawFeature = (f, category) => DrawPointFeature(e, g, f, category, selected, ExistingLabels);
+                    drawFeature = (f, category) =>
+                    {
+                        var symbolizer = FeatureLayer.GetCategory(f).Symbolizer as IPointSymbolizer;
+                        DrawPointFeature(e, g, f, category, selected, ExistingLabels, symbolizer);
+                    };
                     break;
                 default:
                     return; // Can't draw something else
@@ -1106,7 +1174,7 @@ namespace DotSpatial.Controls
                 for (int i = 0; i < catFeatures.Count; i++)
                 {
                     if (!FeatureLayer.DrawnStates[i].Visible) continue;
-                    drawFeature(catFeatures[i],category);
+                    drawFeature(catFeatures[i], category);
                 }
             }
 

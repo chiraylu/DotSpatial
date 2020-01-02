@@ -43,6 +43,7 @@ namespace DotSpatial.Controls
         private Color _selectionHighlight;
         private TabColorDialog _tabColorDialog;
         private bool _wasDoubleClick;
+        private bool _isLoaded;
 
         #endregion
 
@@ -73,10 +74,16 @@ namespace DotSpatial.Controls
 
             // Adding a legend ensures that symbology dialogs will be properly launched.
             // Otherwise, an ordinary map may not even need them.
-            SharedEventHandlers = new SymbologyEventManager
+            SharedEventHandlers = new SymbologyEventManager();
+            VisibleChanged += Legend_VisibleChanged;
+        }
+        private void Legend_VisibleChanged(object sender, EventArgs e)
+        {
+            if (!_isLoaded)
             {
-                Owner = FindForm()
-            };
+                SharedEventHandlers.Owner = FindForm();
+                _isLoaded = true;
+            }
         }
 
         #endregion
@@ -534,7 +541,7 @@ namespace DotSpatial.Controls
                 {
                     using (var layDialog = new LayerDialog(fl, new FeatureCategoryControl()))
                     {
-                        layDialog.ShowDialog();
+                        layDialog.ShowDialog(); 
                     }
                 }
 
@@ -645,7 +652,14 @@ namespace DotSpatial.Controls
                     }
                     else if (_dragTarget.Item.LegendType == LegendType.Layer && _dragItem.Item.LegendType == LegendType.Layer)
                     {
-                        boxOverLine = BoxFromItem(_dragTarget.Item.BottomMember());
+                        if (!_dragTarget.Item.IsExpanded)
+                        {
+                            boxOverLine = _dragTarget;
+                        }
+                        else
+                        {
+                            boxOverLine = BoxFromItem(_dragTarget.Item.BottomMember());
+                        }
                     }
                     else
                     {
