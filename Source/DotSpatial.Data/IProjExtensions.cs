@@ -50,6 +50,24 @@ namespace DotSpatial.Data
 
             return new Coordinate(x, y, 0.0);
         }
+        /// <summary>
+        /// Converts a single point location into an equivalent geographic coordinate
+        /// </summary>
+        /// <param name="self">This IProj</param>
+        /// <param name="position">The client coordinate relative to the map control</param>
+        /// <returns>The geographic ICoordinate interface</returns>
+        public static Coordinate PixelToProj(this IProj self, PointF position)
+        {
+            double x = Convert.ToDouble(position.X);
+            double y = Convert.ToDouble(position.Y);
+            if (self != null && self.GeographicExtents != null)
+            {
+                x = (x - self.ImageRectangle.X) * self.GeographicExtents.Width / self.ImageRectangle.Width + self.GeographicExtents.MinX;
+                y = self.GeographicExtents.MaxY - (y - self.ImageRectangle.Y) * self.GeographicExtents.Height / self.ImageRectangle.Height;
+            }
+
+            return new Coordinate(x, y, 0.0);
+        }
 
         /// <summary>
         /// Converts a rectangle in pixel coordinates relative to the map control into

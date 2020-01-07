@@ -176,7 +176,7 @@ namespace DotSpatial.Controls
             Func<SizeF> labelSize = () => g.MeasureString(txt, CacheList.GetFont(symb));
 
             IGeometry geo = f.Geometry;
-            
+
             if (geo.NumGeometries == 1)
             {
                 var angle = GetAngleToRotate(symb, f, f.Geometry);
@@ -228,7 +228,7 @@ namespace DotSpatial.Controls
         /// <param name="selected">Indicates whether the feature is selected.</param>
         /// <param name="existingLabels">List with the already existing labels.</param>
         /// <param name="symbolizer">point symbolizer</param>
-        public static void DrawPointFeature(MapArgs e, Graphics g, IFeature f, ILabelCategory category, bool selected, List<IPolygon> existingLabels,IPointSymbolizer symbolizer)
+        public static void DrawPointFeature(MapArgs e, Graphics g, IFeature f, ILabelCategory category, bool selected, List<IPolygon> existingLabels, IPointSymbolizer symbolizer)
         {
             var symb = selected ? category.SelectionSymbolizer : category.Symbolizer;
 
@@ -518,43 +518,25 @@ namespace DotSpatial.Controls
         {
         }
 
-        private static void RotateCoordinateRad(PointF rotationPoint, ref PointF point, double radAngle)
-        {
-            double x = rotationPoint.X + ((Math.Cos(radAngle) * (point.X - rotationPoint.X)) - (Math.Sin(radAngle) * (point.Y - rotationPoint.Y)));
-            double y = rotationPoint.Y + ((Math.Sin(radAngle) * (point.X - rotationPoint.X)) + (Math.Cos(radAngle) * (point.Y - rotationPoint.Y)));
-            point.X = (float)x;
-            point.Y = (float)y;
-        }
-
-        private static IPolygon GetPolygon(RectangleF rectangleF, double angle)
+        private static IPolygon GetPolygon(RectangleF rectangleF, float angle)
         {
             IPolygon polygon = null;
-            float xMin = rectangleF.X;
-            float yMax = rectangleF.Y;
-            float xMax = xMin + rectangleF.Width;
-            float yMin = yMax - rectangleF.Height;
-            PointF p0 = new PointF(xMin, yMin);
-            PointF p1 = new PointF(xMax, yMin);
-            PointF p2 = new PointF(xMax, yMax);
-            PointF p3 = new PointF(xMin, yMax);
-            //angle = angle * Math.PI / 180;
-            RotateCoordinateRad(rectangleF.Location, ref p0, angle);
-            RotateCoordinateRad(rectangleF.Location, ref p1, angle);
-            RotateCoordinateRad(rectangleF.Location, ref p2, angle);
-            RotateCoordinateRad(rectangleF.Location, ref p3, angle);
-            Coordinate[] coordinates = new Coordinate[]
+            float left = rectangleF.Left;
+            float top = rectangleF.Top;
+            float right = rectangleF.Right;
+            float bottom = rectangleF.Bottom;
+            PointF[] points = { new PointF(left, top), new PointF(right, top), new PointF(right, bottom), new PointF(left, bottom) };
+            using (Matrix matrix = new Matrix())
             {
-                new Coordinate(p0.X,p0.Y),
-                new Coordinate(p1.X,p1.Y),
-                new Coordinate(p2.X,p2.Y),
-                new Coordinate(p3.X,p3.Y),
-                new Coordinate(p0.X,p0.Y)
-            };
-            ILinearRing shell = new LinearRing(coordinates);
+                matrix.RotateAt(angle, rectangleF.Location, MatrixOrder.Append);
+                matrix.TransformPoints(points);
+            }
+            var coordinates = points.Select(x => new Coordinate(x.X, x.Y)).ToList();
+            coordinates.Add(coordinates[0]);
+            ILinearRing shell = new LinearRing(coordinates.ToArray());
             polygon = new Polygon(shell);
             return polygon;
         }
-
         /// <summary>
         /// Checks whether the given rectangle collides with the drawnRectangles.
         /// </summary>
@@ -566,10 +548,13 @@ namespace DotSpatial.Controls
             bool ret = false;
             foreach (IPolygon tmpPolygon in drawnRectangles)
             {
-                if (polygon.Intersects(tmpPolygon))
+                if (polygon.Envelope.Intersects(tmpPolygon.Envelope))
                 {
-                    ret = true;
-                    break;
+                    if (polygon.Intersects(tmpPolygon))
+                    {
+                        ret = true;
+                        break;
+                    }
                 }
             }
             return ret;
@@ -720,7 +705,7 @@ namespace DotSpatial.Controls
                     ls = GetSegment(ls, symb);
                     if (ls == null) return 0;
                     if (symb.LineOrientation == LineOrientation.Parallel)
-                        return ToSingle(-ls.Angle);
+                        return ToSingle(-Angle(ls));
                     return ToSingle(-ls.Angle - 90);
                 }
             }
@@ -728,6 +713,27 @@ namespace DotSpatial.Controls
             return 0;
         }
 
+        private static double Angle(LineString lineString)
+        {
+            var endPoint = lineString.EndPoint;
+            var startPoint = lineString.StartPoint;
+            var dx = endPoint.X - startPoint.X;
+            var dy = endPoint.Y - startPoint.Y;
+            var dc = Math.Sqrt(Math.Pow(dx, 2) + Math.Pow(dy, 2));
+            double radian = 0;
+            if (dc != 0)
+            {
+                radian = Math.Acos(dx / dc);
+                if (dy < 0)
+                {
+                    radian = Math.PI * 2 - radian;
+                }
+                radian %= 2 * Math.PI;
+            }
+            double angle = radian * 180 / Math.PI;
+
+            return angle;
+        }
         /// <summary>
         /// Gets the segment of the LineString that is used to position and rotate the label.
         /// </summary>
@@ -1021,7 +1027,7 @@ namespace DotSpatial.Controls
                     drawFeature = (category, feature) =>
                     {
                         var symbolizer = FeatureLayer.GetCategory(feature).Symbolizer as IPointSymbolizer;
-                        DrawPointFeature(e, g, feature, category, selected, ExistingLabels,symbolizer);
+                        DrawPointFeature(e, g, feature, category, selected, ExistingLabels, symbolizer);
                     };
                     break;
                 default:
