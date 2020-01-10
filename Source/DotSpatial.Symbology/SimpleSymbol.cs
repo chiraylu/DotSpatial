@@ -24,7 +24,6 @@ namespace DotSpatial.Symbology
         {
             Configure();
         }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="SimpleSymbol"/> class with the specified color.
         /// </summary>
@@ -117,7 +116,9 @@ namespace DotSpatial.Symbology
 
             set
             {
-                Color = ColorTranslator.FromHtml(value);
+                var color = ColorTranslator.FromHtml(value);
+                int alpha = (int)(Opacity * 255);
+                Color = Color.FromArgb(alpha, color);
             }
         }
 

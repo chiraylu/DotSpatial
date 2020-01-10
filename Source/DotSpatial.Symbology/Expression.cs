@@ -455,12 +455,15 @@ namespace DotSpatial.Symbology
                 if (part.Elements.Count > 1)
                 {
                     // reading caching operation
-                    bool found;
+                    bool found = false;
                     if (!_saveOperations)
                     {
-                        operation = _operations[operationCount];
-                        operationCount++;
-                        found = true;
+                        if (operationCount < _operations.Count)
+                        {
+                            operation = _operations[operationCount];
+                            operationCount++;
+                            found = true;
+                        }
                     }
                     else
                     {
