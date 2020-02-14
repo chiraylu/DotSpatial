@@ -319,8 +319,8 @@ namespace DotSpatial.Symbology
                     }
                 }
             }
-
-            return true;
+            _valid = true;
+            return _valid;
         }
 
         /// <summary>
