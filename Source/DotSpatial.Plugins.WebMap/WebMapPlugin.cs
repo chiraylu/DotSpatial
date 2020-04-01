@@ -37,7 +37,6 @@ namespace DotSpatial.Plugins.WebMap
         private BackgroundWorker _bw;
         private ServiceProvider _emptyProvider;
         private int _extendBufferCoeff = 3;
-        private IMapFeatureLayer _featureSetLayer;
         private short _opacity = 100;
 
         private DropDownActionItem _opacityDropDown;
@@ -90,12 +89,12 @@ namespace DotSpatial.Plugins.WebMap
                                          }
                                      }
                                  })
-                                 {
-                                     Key = "kOptions",
-                                     RootKey = HeaderControl.HomeRootItemKey,
-                                     GroupCaption = Resources.Panel_Name,
-                                     Enabled = false,
-                                 };
+            {
+                Key = "kOptions",
+                RootKey = HeaderControl.HomeRootItemKey,
+                GroupCaption = Resources.Panel_Name,
+                Enabled = false,
+            };
             App.HeaderControl.Add(_optionsAction);
             AddOpaticyDropDown(App.HeaderControl);
 
@@ -109,10 +108,10 @@ namespace DotSpatial.Plugins.WebMap
 
             // Setup the background worker
             _bw = new BackgroundWorker
-                      {
-                          WorkerSupportsCancellation = true,
-                          WorkerReportsProgress = true
-                      };
+            {
+                WorkerSupportsCancellation = true,
+                WorkerReportsProgress = true
+            };
             _bw.DoWork += BwDoWork;
             _bw.RunWorkerCompleted += BwRunWorkerCompleted;
             _bw.ProgressChanged += BwProgressChanged;
@@ -149,13 +148,13 @@ namespace DotSpatial.Plugins.WebMap
         {
             string defaultOpacity = null;
             _opacityDropDown = new DropDownActionItem
-                                   {
-                                       AllowEditingText = true,
-                                       Caption = Resources.Opacity_Box_Text,
-                                       ToolTipText = Resources.Opacity_Box_ToolTip,
-                                       Width = 45,
-                                       Key = StrKeyOpacityDropDown
-                                   };
+            {
+                AllowEditingText = true,
+                Caption = Resources.Opacity_Box_Text,
+                ToolTipText = Resources.Opacity_Box_ToolTip,
+                Width = 45,
+                Key = StrKeyOpacityDropDown
+            };
 
             // Make some opacity settings
             for (var i = 100; i > 0; i -= 10)
@@ -182,14 +181,14 @@ namespace DotSpatial.Plugins.WebMap
         private void AddServiceDropDown(IHeaderControl header)
         {
             _serviceDropDown = new DropDownActionItem
-                                   {
-                                       Key = StrKeyServiceDropDown,
-                                       RootKey = HeaderControl.HomeRootItemKey,
-                                       Width = 145,
-                                       AllowEditingText = false,
-                                       ToolTipText = Resources.Service_Box_ToolTip,
-                                       GroupCaption = Resources.Panel_Name
-                                   };
+            {
+                Key = StrKeyServiceDropDown,
+                RootKey = HeaderControl.HomeRootItemKey,
+                Width = 145,
+                AllowEditingText = false,
+                ToolTipText = Resources.Service_Box_ToolTip,
+                GroupCaption = Resources.Panel_Name
+            };
 
             // "None" provider
             _emptyProvider = new ServiceProvider(Resources.None);
@@ -274,11 +273,9 @@ namespace DotSpatial.Plugins.WebMap
         private void DisableBasemapLayer()
         {
             RemoveBasemapLayer(_baseMapLayer);
-            RemoveBasemapLayer(_featureSetLayer);
 
             _optionsAction.Enabled = false;
             _baseMapLayer = null;
-            _featureSetLayer = null;
 
             App.Map.MapFrame.ViewExtentsChanged -= MapFrameExtentsChanged;
         }
@@ -325,13 +322,14 @@ namespace DotSpatial.Plugins.WebMap
                 var tempImageData = new InRamImageData(Resources.nodata, new Extent(1, 1, 2, 2));
 
                 _baseMapLayer = new MapImageLayer(tempImageData)
-                                    {
-                                        Projection = App.Map.Projection,
-                                        LegendText = Resources.Legend_Title
-                                    };
+                {
+                    Projection = App.Map.Projection,
+                    LegendText = Resources.Legend_Title
+                };
 
                 _baseMapLayer.RemoveItem += BaseMapLayerRemoveItem;
                 AddBasemapLayerToMap();
+                ZoomToMaxExtent();
             }
 
             App.Map.MapFrame.ViewExtentsChanged -= MapFrameExtentsChanged;
@@ -349,14 +347,26 @@ namespace DotSpatial.Plugins.WebMap
             fs.Features.Add(new Coordinate(TileCalculator.MaxWebMercX, TileCalculator.MaxWebMercY));
 
             fs.Projection = App.Map.Projection;
-            _featureSetLayer = App.Map.Layers.Add(fs);
+            //_featureSetLayer = App.Map.Layers.Add(fs);
 
             // hide the points that we are adding.
-            _featureSetLayer.LegendItemVisible = false;
+            //_featureSetLayer.LegendItemVisible = false;
 
-            App.Map.ZoomToMaxExtent();
+            //App.Map.ZoomToMaxExtent();
+            ZoomToMaxExtent();
         }
-
+        private void ZoomToMaxExtent()
+        {
+            var xmin = TileCalculator.MinWebMercX;
+            var ymin = TileCalculator.MinWebMercY;
+            var xmax = TileCalculator.MaxWebMercX;
+            var ymax = TileCalculator.MaxWebMercY;
+            if (!App.Map.ZoomOutFartherThanMaxExtent)
+            {
+                App.Map.ZoomOutFartherThanMaxExtent = true;
+            }
+            App.Map.ViewExtents = new Extent(xmin, ymin, xmax, ymax);
+        }
         private bool InsertBaseMapLayer(IMapGroup group)
         {
             for (var i = 0; i < group.Layers.Count; i++)
@@ -583,9 +593,9 @@ namespace DotSpatial.Plugins.WebMap
             // Stitch them into a single image
             var stitchedBasemap = TileCalculator.StitchTiles(tiles.Bitmaps, _opacity);
             var tileImage = new InRamImageData(stitchedBasemap)
-                                {
-                                    Projection = _baseMapLayer.Projection
-                                };
+            {
+                Projection = _baseMapLayer.Projection
+            };
 
             // report progress and check for cancel
             if (!bwProgress(70)) return;

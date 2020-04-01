@@ -163,8 +163,7 @@ namespace DotSpatial.Serialization
                 constructorArgs = GetConstructorArgs(element, out constructorMethod);
             }
 
-            Type[] types = constructorArgs.Select(arg => arg.GetType()).ToArray();
-
+            Type[] types = constructorArgs.Select(arg => arg?.GetType()).ToArray();
             // create the instance via static method, if an argument contained a name of a static method that should be used for the instance construction
             // this is used for classes that can't initialize themselves correctly in the constructor but can be created correctly via static method
             if (string.IsNullOrWhiteSpace(constructorMethod)) 
@@ -175,7 +174,7 @@ namespace DotSpatial.Serialization
             else
             {
                 var ctor = type.GetMethod(constructorMethod, types);
-                return ctor.Invoke(null, constructorArgs.ToArray());
+                return ctor?.Invoke(null, constructorArgs.ToArray());
             }
         }
 

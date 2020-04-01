@@ -74,7 +74,7 @@ namespace DotSpatial.Plugins.WebMap
 
             if (servEq(Resources.GoogleMap))
             {
-                return new BrutileServiceProvider(name, CreateGoogleTileSource("http://mt{s}.google.com/vt/lyrs=m@130&hl=en&x={x}&y={y}&z={z}"), fileCache());
+                return new BrutileServiceProvider(name, CreateGoogleTileSource("http://khm{s}.google.com/kh/v=863&gl=cn&x={x}&y={y}&z={z}"), fileCache());
             }
 
             if (servEq(Resources.GoogleTerrain))
