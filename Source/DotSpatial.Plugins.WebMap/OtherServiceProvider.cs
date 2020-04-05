@@ -15,6 +15,7 @@ namespace DotSpatial.Plugins.WebMap
     /// <summary>
     /// This can be used to work with services other than the ones already defined.
     /// </summary>
+    [Serializable]
     public class OtherServiceProvider : ServiceProvider
     {
         #region Fields

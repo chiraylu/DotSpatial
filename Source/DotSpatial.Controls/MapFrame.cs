@@ -1271,7 +1271,36 @@ namespace DotSpatial.Controls
 
             return new Bitmap(_width, _height);
         }
+        private ProjectionInfo GerProjectionResult(IMapLayer layer)
+        {
+            ProjectionInfo projection = null;
+            if (Parent.InvokeRequired)
+            {
+                Parent.Invoke(new Action(() => projection = GerProjectionResult(layer)));
+            }
+            else
+            {
+                var dlg = new UndefinedProjectionDialog
+                {
+                    OriginalString = layer.DataSet.ProjectionString,
+                    MapProjection = Projection,
+                    LayerName = layer.DataSet.Name
+                };
 
+                if (_chosenProjection != null) dlg.SelectedCoordinateSystem = _chosenProjection;
+                dlg.AlwaysUse = ProjectionModeDefine == ActionMode.PromptOnce;
+
+                if (dlg.AlwaysUse)
+                {
+                    _chosenProjection = dlg.Result;
+                    ProjectionModeDefine = ActionMode.Always;
+                }
+
+                dlg.ShowDialog(Parent);
+                projection = dlg.Result;
+            }
+            return projection;
+        }
         /// <summary>
         /// Prompts the user to define the projection of the given layer, if it doesn't not have one.
         /// </summary>
@@ -1289,24 +1318,7 @@ namespace DotSpatial.Controls
                 ProjectionInfo result = _chosenProjection;
                 if (ProjectionModeDefine == ActionMode.Prompt || ProjectionModeDefine == ActionMode.PromptOnce)
                 {
-                    var dlg = new UndefinedProjectionDialog
-                    {
-                        OriginalString = layer.DataSet.ProjectionString,
-                        MapProjection = Projection,
-                        LayerName = layer.DataSet.Name
-                    };
-
-                    if (_chosenProjection != null) dlg.SelectedCoordinateSystem = _chosenProjection;
-                    dlg.AlwaysUse = ProjectionModeDefine == ActionMode.PromptOnce;
-                    dlg.ShowDialog(Parent);
-
-                    if (dlg.AlwaysUse)
-                    {
-                        _chosenProjection = dlg.Result;
-                        ProjectionModeDefine = ActionMode.Always;
-                    }
-
-                    result = dlg.Result;
+                    result = GerProjectionResult(layer);
                 }
 
                 if (result != null)

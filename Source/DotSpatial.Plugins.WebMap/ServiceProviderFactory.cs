@@ -15,6 +15,7 @@ using BruTile.Web;
 using DotSpatial.Plugins.WebMap.Configuration;
 using DotSpatial.Plugins.WebMap.Properties;
 using DotSpatial.Plugins.WebMap.WMS;
+using DotSpatial.Projections;
 
 namespace DotSpatial.Plugins.WebMap
 {
@@ -23,6 +24,13 @@ namespace DotSpatial.Plugins.WebMap
     /// </summary>
     public static class ServiceProviderFactory
     {
+        public static Lazy<ProjectionInfo> WebMercProj { get; }
+        public static Lazy<ProjectionInfo> Wgs84Proj { get; }
+        static ServiceProviderFactory()
+        {
+            WebMercProj = new Lazy<ProjectionInfo>(() => ProjectionInfo.FromEsriString(KnownCoordinateSystems.Projected.World.WebMercator.ToEsriString()));
+            Wgs84Proj = new Lazy<ProjectionInfo>(() => ProjectionInfo.FromEsriString(KnownCoordinateSystems.Geographic.World.WGS1984.ToEsriString()));
+        }
         #region Methods
 
         /// <summary>
@@ -74,7 +82,12 @@ namespace DotSpatial.Plugins.WebMap
 
             if (servEq(Resources.GoogleMap))
             {
-                return new BrutileServiceProvider(name, CreateGoogleTileSource("http://khm{s}.google.com/kh/v=863&gl=cn&x={x}&y={y}&z={z}"), fileCache());
+                var destUrl = url;
+                if (string.IsNullOrEmpty(destUrl))
+                {
+                    destUrl = "http://khm{s}.google.com/kh/v=863&gl=cn&x={x}&y={y}&z={z}";
+                }
+                return new BrutileServiceProvider(name, CreateGoogleTileSource(destUrl), fileCache());
             }
 
             if (servEq(Resources.GoogleTerrain))

@@ -45,9 +45,9 @@ namespace DotSpatial.Plugins.WebMap.Tiling
 
         /* Adapted from methods at http://msdn.microsoft.com/en-us/library/bb259689.aspx */
 
-            /// <summary>
-            /// The minimal latitude.
-            /// </summary>
+        /// <summary>
+        /// The minimal latitude.
+        /// </summary>
         public const double MinLatitude = -85.05112878;
 
         /// <summary>
@@ -86,8 +86,10 @@ namespace DotSpatial.Plugins.WebMap.Tiling
         /// </summary>
         /// <param name="envelope">Envelope of the region the tiles are needed for.</param>
         /// <param name="rectangle">Screen rectangle used for zoom level calculation.</param>
+        /// <param name="minLevel">min level</param>
+        /// <param name="maxLevel">max level</param>
         /// <returns>The zoom level.</returns>
-        public static int DetermineZoomLevel(Envelope envelope, Rectangle rectangle)
+        public static int DetermineZoomLevel(Envelope envelope, Rectangle rectangle, int minLevel = 0, int maxLevel = 18)
         {
             double metersAcross = EarthRadiusKms * envelope.Width * Math.PI / 180; // find the arc length represented by the displayed map
             metersAcross *= Math.Cos(envelope.Center().Y * Math.PI / 180); // correct for the center latitude
@@ -95,7 +97,7 @@ namespace DotSpatial.Plugins.WebMap.Tiling
             double metersAcrossPerPixel = metersAcross / rectangle.Width; // find the resolution in meters per pixel
 
             // find zoomlevel such that metersAcrossPerPix is close
-            for (int i = 2; i < 19; i++)
+            for (int i = minLevel; i <= maxLevel; i++)
             {
                 double groundRes = GroundResolution(envelope.Center().Y, i);
 
@@ -103,7 +105,7 @@ namespace DotSpatial.Plugins.WebMap.Tiling
                 {
                     // fix zoom level.
                     // changed to a slightly lower zoom level to increase readability
-                    if (i > 2 && i < 18) return i - 1;
+                    if (i > minLevel && i < maxLevel) return i - 1;
                     return i;
                 }
             }
@@ -131,7 +133,7 @@ namespace DotSpatial.Plugins.WebMap.Tiling
         /// <param name="longitude">Longitude of the point, in degrees.</param>
         /// <param name="levelOfDetail">Level of detail, from 1 (lowest detail) to 23 (highest detail).</param>
         /// <returns>Pixel XY coordinate</returns>
-        public static NtsPoint LatLongToPixelXy(double latitude, double longitude, int levelOfDetail)
+        public static Point LatLongToPixelXy(double latitude, double longitude, int levelOfDetail)
         {
             latitude = Clip(latitude, MinLatitude, MaxLatitude);
             longitude = Clip(longitude, MinLongitude, MaxLongitude);
@@ -142,7 +144,7 @@ namespace DotSpatial.Plugins.WebMap.Tiling
 
             var mapSize = MapSize(levelOfDetail);
 
-            return new NtsPoint((int)Clip((x * mapSize) + 0.5, 0, mapSize - 1), (int)Clip((y * mapSize) + 0.5, 0, mapSize - 1));
+            return new Point((int)Clip((x * mapSize) + 0.5, 0, mapSize - 1), (int)Clip((y * mapSize) + 0.5, 0, mapSize - 1));
         }
 
         /// <summary>
@@ -152,7 +154,7 @@ namespace DotSpatial.Plugins.WebMap.Tiling
         /// <param name="coord">Latitude, Longitude Coordinate of the point, in degrees.</param>
         /// <param name="levelOfDetail">Level of detail, from 1 (lowest detail) to 23 (highest detail). </param>
         /// <returns>Pixel XY coordinate.</returns>
-        public static NtsPoint LatLongToPixelXy(Coordinate coord, int levelOfDetail)
+        public static Point LatLongToPixelXy(Coordinate coord, int levelOfDetail)
         {
             return LatLongToPixelXy(coord.Y, coord.X, levelOfDetail);
         }
@@ -163,10 +165,10 @@ namespace DotSpatial.Plugins.WebMap.Tiling
         /// <param name="coord">WGS-84 Lat/Long</param>
         /// <param name="levelOfDetail">Level of detail, from 1 (lowest detail) to 23 (highest detail).</param>
         /// <returns>Tile XY Point</returns>
-        public static NtsPoint LatLongToTileXy(Coordinate coord, int levelOfDetail)
+        public static Point LatLongToTileXy(Coordinate coord, int levelOfDetail)
         {
-            NtsPoint pixelXy = LatLongToPixelXy(coord.Y, coord.X, levelOfDetail);
-            NtsPoint tileXy = PixelXyToTileXy(pixelXy);
+            Point pixelXy = LatLongToPixelXy(coord.Y, coord.X, levelOfDetail);
+            Point tileXy = PixelXyToTileXy(pixelXy);
 
             return tileXy;
         }
@@ -218,9 +220,9 @@ namespace DotSpatial.Plugins.WebMap.Tiling
         /// <param name="pixelX">Pixel X coordinate.</param>
         /// <param name="pixelY">Pixel Y coordinate.</param>
         /// <returns>Tile XY coordinate.</returns>
-        public static NtsPoint PixelXyToTileXy(int pixelX, int pixelY)
+        public static Point PixelXyToTileXy(int pixelX, int pixelY)
         {
-            return new NtsPoint(pixelX / 256, pixelY / 256);
+            return new Point(pixelX / 256, pixelY / 256);
         }
 
         /// <summary>
@@ -228,9 +230,9 @@ namespace DotSpatial.Plugins.WebMap.Tiling
         /// </summary>
         /// <param name="point">Pixel X,Y point.</param>
         /// <returns>Tile XY coordinate</returns>
-        public static NtsPoint PixelXyToTileXy(NtsPoint point)
+        public static Point PixelXyToTileXy(Point point)
         {
-            return PixelXyToTileXy((int)point.X, (int)point.Y);
+            return PixelXyToTileXy(point.X, point.Y);
         }
 
         /// <summary>
@@ -256,9 +258,9 @@ namespace DotSpatial.Plugins.WebMap.Tiling
                 using (var iaPic = new ImageAttributes())
                 {
                     var cmxPic = new ColorMatrix
-                                     {
-                                         Matrix33 = opacity / 100f
-                                     };
+                    {
+                        Matrix33 = opacity / 100f
+                    };
                     iaPic.SetColorMatrix(cmxPic, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
 
                     // go through each image and "draw" it on the final image

@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Threading.Tasks;
 using DotSpatial.Plugins.WebMap.Properties;
+using DotSpatial.Serialization;
 using GeoAPI.Geometries;
 
 namespace DotSpatial.Plugins.WebMap.Tiling
@@ -14,7 +15,7 @@ namespace DotSpatial.Plugins.WebMap.Tiling
     /// <summary>
     /// The tile manager manages the way tiles are gotten.
     /// </summary>
-    internal class TileManager
+    public class TileManager
     {
         #region Fields
 
@@ -30,7 +31,7 @@ namespace DotSpatial.Plugins.WebMap.Tiling
         /// <param name="serviceProvider">The service provider that gets the tiles.</param>
         public TileManager(ServiceProvider serviceProvider)
         {
-            _serviceProvider = serviceProvider;
+            _serviceProvider = serviceProvider; 
         }
 
         #endregion
@@ -57,16 +58,15 @@ namespace DotSpatial.Plugins.WebMap.Tiling
             mapBottomRight.X = TileCalculator.Clip(mapBottomRight.X, TileCalculator.MinLongitude, TileCalculator.MaxLongitude);
 
             var zoom = TileCalculator.DetermineZoomLevel(envelope, bounds);
-
             var topLeftTileXy = TileCalculator.LatLongToTileXy(mapTopLeft, zoom);
             var btmRightTileXy = TileCalculator.LatLongToTileXy(mapBottomRight, zoom);
 
-            var tileMatrix = new Bitmap[(int)(btmRightTileXy.X - topLeftTileXy.X) + 1, (int)(btmRightTileXy.Y - topLeftTileXy.Y) + 1];
+            var tileMatrix = new Bitmap[btmRightTileXy.X - topLeftTileXy.X + 1, btmRightTileXy.Y - topLeftTileXy.Y + 1];
             var po = new ParallelOptions
                          {
                              MaxDegreeOfParallelism = -1
                          };
-            Parallel.For((int)topLeftTileXy.Y, (int)btmRightTileXy.Y + 1, po, (y, loopState) => Parallel.For((int)topLeftTileXy.X, (int)btmRightTileXy.X + 1, po, (x, loopState2) =>
+            Parallel.For(topLeftTileXy.Y, btmRightTileXy.Y + 1, po, (y, loopState) => Parallel.For(topLeftTileXy.X, btmRightTileXy.X + 1, po, (x, loopState2) =>
                 {
                     if (bw.CancellationPending)
                     {
@@ -76,13 +76,13 @@ namespace DotSpatial.Plugins.WebMap.Tiling
                     }
 
                     var currEnv = GetTileEnvelope(x, y, zoom);
-                    tileMatrix[x - (int)topLeftTileXy.X, y - (int)topLeftTileXy.Y] = GetTile(x, y, currEnv, zoom);
+                    tileMatrix[x - topLeftTileXy.X, y - topLeftTileXy.Y] = GetTile(x, y, currEnv, zoom);
                 }));
 
             return new Tiles(
                 tileMatrix,
-                GetTileEnvelope((int)topLeftTileXy.X, (int)topLeftTileXy.Y, zoom), // top left tile = tileMatrix[0,0]
-                GetTileEnvelope((int)btmRightTileXy.X, (int)btmRightTileXy.Y, zoom)); // bottom right tile = tileMatrix[last, last]
+                GetTileEnvelope(topLeftTileXy.X, topLeftTileXy.Y, zoom), // top left tile = tileMatrix[0,0]
+                GetTileEnvelope(btmRightTileXy.X, btmRightTileXy.Y, zoom)); // bottom right tile = tileMatrix[last, last]
         }
 
         /// <summary>

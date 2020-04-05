@@ -9,7 +9,7 @@ namespace DotSpatial.Plugins.WebMap.Tiling
     /// <summary>
     /// Tiles can be used to return the tiles that the provider returned.
     /// </summary>
-    internal class Tiles
+    public class Tiles
     {
         #region  Constructors
 

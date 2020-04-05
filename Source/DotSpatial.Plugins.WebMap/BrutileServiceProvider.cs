@@ -1,6 +1,10 @@
 ﻿// Copyright (c) DotSpatial Team. All rights reserved.
 // Licensed under the MIT license. See License.txt file in the project root for full license information.
 
+using BruTile;
+using BruTile.Cache;
+using BruTile.Web;
+using GeoAPI.Geometries;
 using System;
 using System.Diagnostics;
 using System.Drawing;
@@ -8,10 +12,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
-using BruTile;
-using BruTile.Cache;
-using BruTile.Web;
-using GeoAPI.Geometries;
 
 namespace DotSpatial.Plugins.WebMap
 {
@@ -42,12 +42,12 @@ namespace DotSpatial.Plugins.WebMap
         /// <summary>
         /// Gets or sets the tile cache.
         /// </summary>
-        protected ITileCache<byte[]> TileCache { get; set; }
+        public ITileCache<byte[]> TileCache { get; set; }
 
         /// <summary>
         /// Gets or sets the tile source.
         /// </summary>
-        protected ITileSource TileSource { get; set; }
+        public ITileSource TileSource { get; set; }
 
         #endregion
 

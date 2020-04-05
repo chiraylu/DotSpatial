@@ -48,11 +48,9 @@
   <ItemGroup>
     <Reference Include="BruTile, Version=2.1.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\BruTile.2.1.2\lib\net45\BruTile.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="BruTile.Desktop, Version=2.1.2.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\BruTile.Desktop.2.1.2\lib\net45\BruTile.Desktop.dll</HintPath>
-      <Private>True</Private>
     </Reference>
     <Reference Include="DotSpatial.GeoAPI, Version=1.7.4.0, Culture=neutral, PublicKeyToken=a1a0da7def465678, processorArchitecture=MSIL">
       <HintPath>..\packages\DotSpatial.GeoAPI.1.7.4.3\lib\net40-client\DotSpatial.GeoAPI.dll</HintPath>
@@ -94,6 +92,7 @@
     <Compile Include="Tiling\TileCalculator.cs" />
     <Compile Include="Tiling\TileManager.cs" />
     <Compile Include="Tiling\Tiles.cs" />
+    <Compile Include="WebMapImageLayer.cs" />
     <Compile Include="WMS\RequestHelper.cs" />
     <Compile Include="WMS\WmsRequest.cs" />
     <Compile Include="WMS\WmsServiceProvider.cs" />
@@ -134,6 +133,11 @@
       <Name>DotSpatial.Projections</Name>
       <Private>False</Private>
     </ProjectReference>
+    <ProjectReference Include="..\DotSpatial.Serialization\DotSpatial.Serialization.csproj">
+      <Project>{9B692E11-0273-4331-9B15-1670093EDDBF}</Project>
+      <Name>DotSpatial.Serialization</Name>
+      <Private>False</Private>
+    </ProjectReference>
     <ProjectReference Include="..\DotSpatial.Symbology\DotSpatial.Symbology.csproj">
       <Project>{21C1D7A7-E8E5-4590-A921-2287AD43CB98}</Project>
       <Name>DotSpatial.Symbology</Name>
@@ -164,8 +168,6 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Lib\BruTile.Desktop.dll" />
-    <Content Include="Lib\BruTile.dll" />
     <Content Include="Readme.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

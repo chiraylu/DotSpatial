@@ -162,6 +162,10 @@ namespace DotSpatial.Controls
         /// <param name="clipRectangles">The clip rectangles.</param>
         private void DrawWindows(MapArgs args, IList<Extent> regions, IList<Rectangle> clipRectangles)
         {
+            if (DataSet == null)
+            {
+                return;
+            }
             Graphics g;
             if (args.Device != null)
             {

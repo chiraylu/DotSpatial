@@ -5,6 +5,7 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using DotSpatial.Serialization;
 using GeoAPI.Geometries;
 
 namespace DotSpatial.Plugins.WebMap
@@ -12,6 +13,7 @@ namespace DotSpatial.Plugins.WebMap
     /// <summary>
     /// The base implementation for service providers.
     /// </summary>
+    [Serializable]
     public class ServiceProvider
     {
         #region  Constructors
@@ -25,7 +27,9 @@ namespace DotSpatial.Plugins.WebMap
             if (name == null) throw new ArgumentNullException(nameof(name));
             Name = name;
         }
-
+        public ServiceProvider()
+        {
+        }
         #endregion
 
         #region Properties
@@ -36,14 +40,14 @@ namespace DotSpatial.Plugins.WebMap
         public Func<bool> Configure { get; protected set; }
 
         /// <summary>
-        /// Gets the name of the service provider.
+        /// Gets or sets the name of the service provider.
         /// </summary>
-        public string Name { get; private set; }
+        public string Name { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether configuration is needed.
         /// </summary>
-        public virtual bool NeedConfigure { get; protected set; }
+        public virtual bool NeedConfigure { get;  set; }
 
         #endregion
 
