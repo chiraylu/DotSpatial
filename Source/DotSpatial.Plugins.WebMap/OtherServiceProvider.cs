@@ -4,8 +4,12 @@
 using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.Globalization;
+using System.IO;
 using System.Net;
+using BruTile;
+using BruTile.Cache;
 using DotSpatial.Plugins.WebMap.Tiling;
 using GeoAPI.Geometries;
 using Microsoft.VisualBasic;
@@ -53,6 +57,11 @@ namespace DotSpatial.Plugins.WebMap
 
         #region Properties
 
+        /// <summary>
+        /// Gets or sets the tile cache.
+        /// </summary>
+        public ITileCache<byte[]> TileCache { get; set; }
+
         /// <inheritdoc />
         public override bool NeedConfigure => string.IsNullOrWhiteSpace(_url);
 
@@ -63,36 +72,55 @@ namespace DotSpatial.Plugins.WebMap
         /// <inheritdoc/>
         public override Bitmap GetBitmap(int x, int y, Envelope envelope, int zoom)
         {
+            Bitmap bitMap = null;
             try
             {
-                var url = _url;
-                if (url == null)
+                var zoomS = zoom.ToString(CultureInfo.InvariantCulture);
+                var index = new TileIndex(x, y, zoomS);
+                var bytes = TileCache?.Find(index);
+                if (bytes == null)
                 {
-                    return null;
-                }
+                    var url = _url;
+                    if (url != null)
+                    {
+                        if (url.Contains("{key}"))
+                        {
+                            var quadKey = TileCalculator.TileXyToBingQuadKey(x, y, zoom);
+                            url = url.Replace("{key}", quadKey);
+                        }
+                        else
+                        {
+                            url = url.Replace("{zoom}", zoom.ToString(CultureInfo.InvariantCulture));
+                            url = url.Replace("{x}", x.ToString(CultureInfo.InvariantCulture));
+                            url = url.Replace("{y}", y.ToString(CultureInfo.InvariantCulture));
+                        }
 
-                if (url.Contains("{key}"))
-                {
-                    var quadKey = TileCalculator.TileXyToBingQuadKey(x, y, zoom);
-                    url = url.Replace("{key}", quadKey);
+                        using (var client = new WebClient())
+                        {
+                            var stream = client.OpenRead(url);
+                            if (stream != null)
+                            {
+                                int count = 1024;
+                                int readCount = count;
+                                byte[] buffer = new byte[count];
+                                var ms = new MemoryStream();
+                                while ((readCount = stream.Read(buffer, 0, buffer.Length)) > 0)
+                                {
+                                    ms.Write(buffer, 0, readCount);
+                                }
+                                bytes = ms.GetBuffer();
+                                ms.Seek(0, SeekOrigin.Begin);
+                                bitMap = new Bitmap(ms);
+                                TileCache?.Add(index, bytes);
+                                stream.Flush();
+                                stream.Close();
+                            }
+                        }
+                    }
                 }
                 else
                 {
-                    url = url.Replace("{zoom}", zoom.ToString(CultureInfo.InvariantCulture));
-                    url = url.Replace("{x}", x.ToString(CultureInfo.InvariantCulture));
-                    url = url.Replace("{y}", y.ToString(CultureInfo.InvariantCulture));
-                }
-
-                using (var client = new WebClient())
-                {
-                    var stream = client.OpenRead(url);
-                    if (stream != null)
-                    {
-                        var bitmap = new Bitmap(stream);
-                        stream.Flush();
-                        stream.Close();
-                        return bitmap;
-                    }
+                    bitMap = new Bitmap(new MemoryStream(bytes));
                 }
             }
             catch (Exception ex)
@@ -105,7 +133,7 @@ namespace DotSpatial.Plugins.WebMap
                 Debug.WriteLine(ex.Message);
             }
 
-            return null;
+            return bitMap;
         }
 
         #endregion

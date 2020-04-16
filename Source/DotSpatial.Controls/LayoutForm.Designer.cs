@@ -35,7 +35,6 @@ namespace DotSpatial.Controls
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LayoutForm));
             this._toolStripContainer1 = new System.Windows.Forms.ToolStripContainer();
             this._splitContainer1 = new System.Windows.Forms.SplitContainer();
-            this._splitContainer2 = new System.Windows.Forms.SplitContainer();
             this._layoutControl1 = new DotSpatial.Controls.LayoutControl();
             this._layoutDocToolStrip1 = new DotSpatial.Controls.LayoutDocToolStrip();
             this._layoutInsertToolStrip1 = new DotSpatial.Controls.LayoutInsertToolStrip();
@@ -44,6 +43,7 @@ namespace DotSpatial.Controls
             this._layoutMenuStrip1 = new DotSpatial.Controls.LayoutMenuStrip();
             this._layoutPropertyGrid1 = new DotSpatial.Controls.LayoutPropertyGrid();
             this._layoutZoomToolStrip1 = new DotSpatial.Controls.LayoutZoomToolStrip();
+            this._splitContainer2 = new System.Windows.Forms.SplitContainer();
             this._toolStripContainer1.ContentPanel.SuspendLayout();
             this._toolStripContainer1.TopToolStripPanel.SuspendLayout();
             this._toolStripContainer1.SuspendLayout();
@@ -87,25 +87,13 @@ namespace DotSpatial.Controls
             // 
             this._splitContainer1.Panel2.Controls.Add(this._splitContainer2);
             // 
-            // _splitContainer2
-            // 
-            resources.ApplyResources(this._splitContainer2, "_splitContainer2");
-            this._splitContainer2.Name = "_splitContainer2";
-            // 
-            // _splitContainer2.Panel1
-            // 
-            this._splitContainer2.Panel1.Controls.Add(this._layoutListBox1);
-            // 
-            // _splitContainer2.Panel2
-            // 
-            this._splitContainer2.Panel2.Controls.Add(this._layoutPropertyGrid1);
-            // 
             // _layoutControl1
             // 
             this._layoutControl1.Cursor = System.Windows.Forms.Cursors.Default;
             resources.ApplyResources(this._layoutControl1, "_layoutControl1");
             this._layoutControl1.DrawingQuality = System.Drawing.Drawing2D.SmoothingMode.HighQuality;
             this._layoutControl1.Filename = "";
+            this._layoutControl1.InitialOpenFileDirectory = null;
             this._layoutControl1.LayoutDocToolStrip = this._layoutDocToolStrip1;
             this._layoutControl1.LayoutInsertToolStrip = this._layoutInsertToolStrip1;
             this._layoutControl1.LayoutListBox = this._layoutListBox1;
@@ -113,7 +101,7 @@ namespace DotSpatial.Controls
             this._layoutControl1.LayoutMenuStrip = this._layoutMenuStrip1;
             this._layoutControl1.LayoutPropertyGrip = this._layoutPropertyGrid1;
             this._layoutControl1.LayoutZoomToolStrip = this._layoutZoomToolStrip1;
-            this._layoutControl1.MouseMode = MouseMode.Default;
+            this._layoutControl1.MouseMode = DotSpatial.Controls.MouseMode.Default;
             this._layoutControl1.Name = "_layoutControl1";
             this._layoutControl1.ShowMargin = false;
             this._layoutControl1.Zoom = 0.3541667F;
@@ -163,6 +151,19 @@ namespace DotSpatial.Controls
             resources.ApplyResources(this._layoutZoomToolStrip1, "_layoutZoomToolStrip1");
             this._layoutZoomToolStrip1.LayoutControl = this._layoutControl1;
             this._layoutZoomToolStrip1.Name = "_layoutZoomToolStrip1";
+            // 
+            // _splitContainer2
+            // 
+            resources.ApplyResources(this._splitContainer2, "_splitContainer2");
+            this._splitContainer2.Name = "_splitContainer2";
+            // 
+            // _splitContainer2.Panel1
+            // 
+            this._splitContainer2.Panel1.Controls.Add(this._layoutListBox1);
+            // 
+            // _splitContainer2.Panel2
+            // 
+            this._splitContainer2.Panel2.Controls.Add(this._layoutPropertyGrid1);
             // 
             // LayoutForm
             // 

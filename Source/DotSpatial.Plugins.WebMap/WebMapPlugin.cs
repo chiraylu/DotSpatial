@@ -287,7 +287,7 @@ namespace DotSpatial.Plugins.WebMap
                 _baseLayer = (WebMapImageLayer)App.Map.MapFrame.GetAllLayers().FirstOrDefault(layer => layer.LegendText == Resources.Legend_Title);
                 if (_baseLayer != null)
                 {
-                    _baseLayer.Projection = _webMercProj; // changed by jany_(2015-07-09) set the projection because if it is not set we produce a cross thread exception when DotSpatial tries to show the projection dialog
+                    //_baseLayer.Projection = _webMercProj; // changed by jany_(2015-07-09) set the projection because if it is not set we produce a cross thread exception when DotSpatial tries to show the projection dialog
 
                     // hack: need to set provider to original object, not a new one.
                     _serviceDropDown.SelectedItem = _serviceDropDown.Items.OfType<ServiceProvider>().FirstOrDefault(p => p.Name.Equals(_baseLayer.WebMapName, StringComparison.InvariantCultureIgnoreCase));

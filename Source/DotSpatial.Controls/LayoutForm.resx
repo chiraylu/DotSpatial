@@ -147,7 +147,7 @@
     <value>None</value>
   </data>
   <data name="_layoutDocToolStrip1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>3, 0</value>
+    <value>3, 50</value>
   </data>
   <data name="_layoutDocToolStrip1.Size" type="System.Drawing.Size, System.Drawing">
     <value>133, 25</value>
@@ -163,7 +163,7 @@
     <value>_layoutDocToolStrip1</value>
   </data>
   <data name="&gt;&gt;_layoutDocToolStrip1.Type" xml:space="preserve">
-    <value>DotSpatial.Controls.LayoutDocToolStrip, DotSpatial.Controls, Version=0.11.9.6, Culture=neutral, PublicKeyToken=4d9e49339a7d240c</value>
+    <value>DotSpatial.Controls.LayoutDocToolStrip, DotSpatial.Controls, Version=2.0.0.0, Culture=neutral, PublicKeyToken=4d9e49339a7d240c</value>
   </data>
   <data name="&gt;&gt;_layoutDocToolStrip1.Parent" xml:space="preserve">
     <value>_toolStripContainer1.TopToolStripPanel</value>
@@ -178,10 +178,10 @@
     <value>None</value>
   </data>
   <data name="_layoutInsertToolStrip1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>294, 0</value>
+    <value>3, 25</value>
   </data>
   <data name="_layoutInsertToolStrip1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>173, 25</value>
+    <value>196, 25</value>
   </data>
   <data name="_layoutInsertToolStrip1.TabIndex" type="System.Int32, mscorlib">
     <value>2</value>
@@ -190,7 +190,7 @@
     <value>_layoutInsertToolStrip1</value>
   </data>
   <data name="&gt;&gt;_layoutInsertToolStrip1.Type" xml:space="preserve">
-    <value>DotSpatial.Controls.LayoutInsertToolStrip, DotSpatial.Controls, Version=0.11.9.6, Culture=neutral, PublicKeyToken=4d9e49339a7d240c</value>
+    <value>DotSpatial.Controls.LayoutInsertToolStrip, DotSpatial.Controls, Version=2.0.0.0, Culture=neutral, PublicKeyToken=4d9e49339a7d240c</value>
   </data>
   <data name="&gt;&gt;_layoutInsertToolStrip1.Parent" xml:space="preserve">
     <value>_toolStripContainer1.TopToolStripPanel</value>
@@ -205,7 +205,7 @@
     <value>0, 0</value>
   </data>
   <data name="_layoutListBox1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>200, 215</value>
+    <value>200, 192</value>
   </data>
   <data name="_layoutListBox1.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
@@ -214,7 +214,7 @@
     <value>_layoutListBox1</value>
   </data>
   <data name="&gt;&gt;_layoutListBox1.Type" xml:space="preserve">
-    <value>DotSpatial.Controls.LayoutListBox, DotSpatial.Controls, Version=0.11.9.6, Culture=neutral, PublicKeyToken=4d9e49339a7d240c</value>
+    <value>DotSpatial.Controls.LayoutListBox, DotSpatial.Controls, Version=2.0.0.0, Culture=neutral, PublicKeyToken=4d9e49339a7d240c</value>
   </data>
   <data name="&gt;&gt;_layoutListBox1.Parent" xml:space="preserve">
     <value>_splitContainer2.Panel1</value>
@@ -232,7 +232,7 @@
     <value>False</value>
   </data>
   <data name="_layoutMapToolStrip1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>467, 0</value>
+    <value>23, 0</value>
   </data>
   <data name="_layoutMapToolStrip1.Size" type="System.Drawing.Size, System.Drawing">
     <value>127, 25</value>
@@ -244,7 +244,7 @@
     <value>_layoutMapToolStrip1</value>
   </data>
   <data name="&gt;&gt;_layoutMapToolStrip1.Type" xml:space="preserve">
-    <value>DotSpatial.Controls.LayoutMapToolStrip, DotSpatial.Controls, Version=0.11.9.6, Culture=neutral, PublicKeyToken=4d9e49339a7d240c</value>
+    <value>DotSpatial.Controls.LayoutMapToolStrip, DotSpatial.Controls, Version=2.0.0.0, Culture=neutral, PublicKeyToken=4d9e49339a7d240c</value>
   </data>
   <data name="&gt;&gt;_layoutMapToolStrip1.Parent" xml:space="preserve">
     <value>_toolStripContainer1.TopToolStripPanel</value>
@@ -259,7 +259,7 @@
     <value>0, 0</value>
   </data>
   <data name="_layoutMenuStrip1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>744, 24</value>
+    <value>744, 25</value>
   </data>
   <data name="_layoutMenuStrip1.TabIndex" type="System.Int32, mscorlib">
     <value>1</value>
@@ -271,7 +271,7 @@
     <value>_layoutMenuStrip1</value>
   </data>
   <data name="&gt;&gt;_layoutMenuStrip1.Type" xml:space="preserve">
-    <value>DotSpatial.Controls.LayoutMenuStrip, DotSpatial.Controls, Version=0.11.9.6, Culture=neutral, PublicKeyToken=4d9e49339a7d240c</value>
+    <value>DotSpatial.Controls.LayoutMenuStrip, DotSpatial.Controls, Version=2.0.0.0, Culture=neutral, PublicKeyToken=4d9e49339a7d240c</value>
   </data>
   <data name="&gt;&gt;_layoutMenuStrip1.Parent" xml:space="preserve">
     <value>$this</value>
@@ -286,7 +286,7 @@
     <value>0, 0</value>
   </data>
   <data name="_layoutPropertyGrid1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>200, 279</value>
+    <value>200, 251</value>
   </data>
   <data name="_layoutPropertyGrid1.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
@@ -295,7 +295,7 @@
     <value>_layoutPropertyGrid1</value>
   </data>
   <data name="&gt;&gt;_layoutPropertyGrid1.Type" xml:space="preserve">
-    <value>DotSpatial.Controls.LayoutPropertyGrid, DotSpatial.Controls, Version=0.11.9.6, Culture=neutral, PublicKeyToken=4d9e49339a7d240c</value>
+    <value>DotSpatial.Controls.LayoutPropertyGrid, DotSpatial.Controls, Version=2.0.0.0, Culture=neutral, PublicKeyToken=4d9e49339a7d240c</value>
   </data>
   <data name="&gt;&gt;_layoutPropertyGrid1.Parent" xml:space="preserve">
     <value>_splitContainer2.Panel2</value>
@@ -310,7 +310,7 @@
     <value>None</value>
   </data>
   <data name="_layoutZoomToolStrip1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>136, 0</value>
+    <value>136, 50</value>
   </data>
   <data name="_layoutZoomToolStrip1.Size" type="System.Drawing.Size, System.Drawing">
     <value>158, 25</value>
@@ -322,7 +322,7 @@
     <value>_layoutZoomToolStrip1</value>
   </data>
   <data name="&gt;&gt;_layoutZoomToolStrip1.Type" xml:space="preserve">
-    <value>DotSpatial.Controls.LayoutZoomToolStrip, DotSpatial.Controls, Version=0.11.9.6, Culture=neutral, PublicKeyToken=4d9e49339a7d240c</value>
+    <value>DotSpatial.Controls.LayoutZoomToolStrip, DotSpatial.Controls, Version=2.0.0.0, Culture=neutral, PublicKeyToken=4d9e49339a7d240c</value>
   </data>
   <data name="&gt;&gt;_layoutZoomToolStrip1.Parent" xml:space="preserve">
     <value>_toolStripContainer1.TopToolStripPanel</value>
@@ -334,7 +334,7 @@
     <value>0, 0</value>
   </data>
   <data name="_layoutControl1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>540, 498</value>
+    <value>540, 447</value>
   </data>
   <data name="_layoutControl1.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
@@ -343,7 +343,7 @@
     <value>_layoutControl1</value>
   </data>
   <data name="&gt;&gt;_layoutControl1.Type" xml:space="preserve">
-    <value>DotSpatial.Controls.LayoutControl, DotSpatial.Controls, Version=0.11.9.6, Culture=neutral, PublicKeyToken=4d9e49339a7d240c</value>
+    <value>DotSpatial.Controls.LayoutControl, DotSpatial.Controls, Version=2.0.0.0, Culture=neutral, PublicKeyToken=4d9e49339a7d240c</value>
   </data>
   <data name="&gt;&gt;_layoutControl1.Parent" xml:space="preserve">
     <value>_splitContainer1.Panel1</value>
@@ -406,10 +406,10 @@
     <value>100</value>
   </data>
   <data name="_splitContainer2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>200, 498</value>
+    <value>200, 447</value>
   </data>
   <data name="_splitContainer2.SplitterDistance" type="System.Int32, mscorlib">
-    <value>215</value>
+    <value>192</value>
   </data>
   <data name="_splitContainer2.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
@@ -442,7 +442,7 @@
     <value>100</value>
   </data>
   <data name="_splitContainer1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>744, 498</value>
+    <value>744, 447</value>
   </data>
   <data name="_splitContainer1.SplitterDistance" type="System.Int32, mscorlib">
     <value>540</value>
@@ -463,7 +463,7 @@
     <value>0</value>
   </data>
   <data name="_toolStripContainer1.ContentPanel.Size" type="System.Drawing.Size, System.Drawing">
-    <value>744, 498</value>
+    <value>744, 447</value>
   </data>
   <data name="&gt;&gt;_toolStripContainer1.ContentPanel.Name" xml:space="preserve">
     <value>_toolStripContainer1.ContentPanel</value>
@@ -493,7 +493,7 @@
     <value>1</value>
   </data>
   <data name="_toolStripContainer1.Location" type="System.Drawing.Point, System.Drawing">
-    <value>0, 24</value>
+    <value>0, 25</value>
   </data>
   <data name="&gt;&gt;_toolStripContainer1.RightToolStripPanel.Name" xml:space="preserve">
     <value>_toolStripContainer1.RightToolStripPanel</value>
@@ -508,7 +508,7 @@
     <value>2</value>
   </data>
   <data name="_toolStripContainer1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>744, 523</value>
+    <value>744, 522</value>
   </data>
   <data name="_toolStripContainer1.TabIndex" type="System.Int32, mscorlib">
     <value>0</value>
@@ -572,9 +572,6 @@
         /wD///8A4AcAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAEAAMADAADgBwAA4AcAAOAH
         AADgDwAA8B8AAA==
 </value>
-  </data>
-  <data name="$this.ImeMode" type="System.Windows.Forms.ImeMode, System.Windows.Forms">
-    <value>NoControl</value>
   </data>
   <data name="$this.MinimumSize" type="System.Drawing.Size, System.Drawing">
     <value>450, 350</value>

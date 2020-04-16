@@ -291,7 +291,7 @@ namespace DotSpatial.Symbology
         /// </summary>
         [Category("DataSet Properties")]
         [Description("The geographic projection that this raster is using.")]
-        public ProjectionInfo Projection
+        public virtual ProjectionInfo Projection
         {
             get
             {

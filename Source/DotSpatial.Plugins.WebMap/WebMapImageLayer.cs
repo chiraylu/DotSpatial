@@ -1,17 +1,19 @@
-﻿using DotSpatial.Controls;
+﻿using System;
+using System.ComponentModel;
+using System.Linq;
+using DotSpatial.Controls;
 using DotSpatial.Data;
-using DotSpatial.Plugins.WebMap.Properties;
 using DotSpatial.Plugins.WebMap.Tiling;
 using DotSpatial.Projections;
 using DotSpatial.Serialization;
 using DotSpatial.Symbology;
 using GeoAPI.Geometries;
-using System;
-using System.ComponentModel;
-using System.Linq;
 
 namespace DotSpatial.Plugins.WebMap
 {
+    /// <summary>
+    /// 在线地图图层类
+    /// </summary>
     [Serializable]
     public class WebMapImageLayer : MapImageLayer
     {
@@ -21,6 +23,7 @@ namespace DotSpatial.Plugins.WebMap
         private object _lockObj = new object();
 
         private int _busyCount;
+
         private bool BwIsBusy
         {
             get => _busyCount > 0;
@@ -78,6 +81,22 @@ namespace DotSpatial.Plugins.WebMap
             }
         }
 
+        /// <inheritdoc/>
+        public override ProjectionInfo Projection
+        {
+            get
+            {
+                var projection = base.Projection;
+                #region 默认为web墨卡托投影
+                if (projection == null)
+                {
+                    projection = ServiceProviderFactory.WebMercProj.Value;
+                }
+                #endregion
+                return projection;
+            }
+            set => base.Projection = value; 
+        }
         private IMapFrame RealMapFrame => MapFrame as IMapFrame;
 
         private Map Map => RealMapFrame?.Parent as Map;
@@ -114,7 +133,10 @@ namespace DotSpatial.Plugins.WebMap
                 TileManager = new TileManager(provider);
             }
         }
-
+        protected override void OnDataSetChanged(IImageData value)
+        {
+            base.OnDataSetChanged(value);
+        }
         private void OnTileManagerChanged()
         {
             RunOrCancelBw();
@@ -138,7 +160,10 @@ namespace DotSpatial.Plugins.WebMap
         }
         private void MapFrameExtentsChanged(object sender, ExtentArgs e)
         {
-            RunOrCancelBw();
+            if (IsVisible)
+            {
+                RunOrCancelBw();
+            }
         }
 
         private void RunOrCancelBw()
@@ -187,7 +212,7 @@ namespace DotSpatial.Plugins.WebMap
 
                 return true;
             });
-            if (Map != null&&TileManager != null)
+            if (Map != null && TileManager != null)
             {
 
                 var rectangle = Map.Bounds;
@@ -276,6 +301,6 @@ namespace DotSpatial.Plugins.WebMap
                 ProgressHandler.Progress(string.Empty, 0, string.Empty);
             }
         }
-        
+
     }
 }

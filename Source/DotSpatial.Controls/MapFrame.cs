@@ -69,7 +69,7 @@ namespace DotSpatial.Controls
             }
 
             _backBuffer = CreateBuffer();
-            Layers = new MapLayerCollection(this);
+            Layers = new MapLayerCollection(this); 
 
             IsSelected = true; // by default allow the map frame to be selected
 

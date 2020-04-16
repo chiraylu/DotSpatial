@@ -2082,6 +2082,10 @@ namespace DotSpatial.Controls
                     _suppressLEinvalidate = true;
                     foreach (var le in SelectedLayoutElements)
                     {
+                        if (le.IsFixedPosition)
+                        {
+                            continue;
+                        }
                         if (le.Background?.OutlineSymbolizer != null)
                             inflate = inflate + ((float)le.Background.GetOutlineWidth() * _zoom);
                         var invalRect = PaperToScreen(le.Rectangle);
@@ -2100,7 +2104,10 @@ namespace DotSpatial.Controls
 
                 // This handle mouse movement when in resize mode
                 case MouseMode.ResizeSelected:
-
+                    if (SelectedLayoutElements[0].IsFixedSize)
+                    {
+                        return;
+                    }
                     // Makes sure that we have a outline to use it to inflate the invalidation rectangle
                     if (SelectedLayoutElements[0].Background?.OutlineSymbolizer != null)
                         inflate = inflate + ((float)SelectedLayoutElements[0].Background.GetOutlineWidth() * _zoom);

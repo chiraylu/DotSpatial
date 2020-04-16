@@ -65,6 +65,16 @@ namespace DotSpatial.Controls
         #region Properties
 
         /// <summary>
+        /// Gets or sets a value indicating whether the element can resize
+        /// </summary>
+        public bool IsFixedSize { get; set; }
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the element can move
+        /// </summary>
+        public bool IsFixedPosition { get; set; }
+
+        /// <summary>
         /// Gets or sets the line symbolizer that draws the outline
         /// </summary>
         [TypeConverter(typeof(GeneralTypeConverter))]

@@ -1,11 +1,10 @@
 // Copyright (c) DotSpatial Team. All rights reserved.
 // Licensed under the MIT license. See License.txt file in the project root for full license information.
 
+using GeoAPI.Geometries;
 using System;
 using System.Collections.Generic;
 using System.Data;
-
-using GeoAPI.Geometries;
 
 namespace DotSpatial.Data
 {
