@@ -68,18 +68,23 @@ namespace DotSpatial.Controls
 
             set
             {
-                if (value.Width / value.Height < Size.Width / Size.Height)
+                double controlAspect = (double)Size.Width / Size.Height;
+                double envelopeAspect = value.Width / value.Height;
+                double width = value.Width;
+                double height = value.Height;
+                double centerX = value.Centre.X;
+                double centerY = value.Centre.Y;
+                if (envelopeAspect < controlAspect)
                 {
-                    double yCenter = value.MinY + (value.Height / 2.0);
-                    double deltaY = (value.Width / Size.Width * Size.Height) / 2.0;
-                    _envelope = new Envelope(value.MinX, value.MaxX, yCenter - deltaY, yCenter + deltaY);
+                    width = value.Height * controlAspect;
                 }
                 else
                 {
-                    double xCenter = value.MinX + (value.Width / 2.0);
-                    double deltaX = (value.Height / Size.Height * Size.Width) / 2.0;
-                    _envelope = new Envelope(xCenter - deltaX, xCenter + deltaX, value.MinY, value.MaxY);
+                    height = value.Width / controlAspect;
                 }
+                double halfWidth = width / 2;
+                double halfHeight = height / 2;
+                _envelope = new Envelope(centerX - halfWidth, centerX + halfWidth, centerY - halfHeight, centerY + halfHeight);
 
                 _extentChanged = true;
                 OnThumbnailChanged();
