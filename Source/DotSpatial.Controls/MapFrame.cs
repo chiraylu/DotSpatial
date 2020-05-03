@@ -655,6 +655,11 @@ namespace DotSpatial.Controls
         }
 
         /// <inheritdoc />
+        public void Print(MapArgs args, List<Extent> regions, bool selected)
+        {
+        }
+
+        /// <inheritdoc />
         public override IEnumerator<ILayer> GetEnumerator()
         {
             return new MapLayerEnumerator(_layers.GetEnumerator());
@@ -1413,7 +1418,7 @@ namespace DotSpatial.Controls
             // first draw the normal colors and then the selection colors on top
             for (int i = 0; i < 2; i++)
             {
-                geoLayer.DrawRegions(args, new List<Extent> { args.GeographicExtents }, i == 1);
+                geoLayer.Print(args, new List<Extent> { args.GeographicExtents }, i == 1);
             }
 
             IMapFeatureLayer mfl = geoLayer as IMapFeatureLayer;
@@ -1426,7 +1431,7 @@ namespace DotSpatial.Controls
                     return;
                 }
 
-                mfl.LabelLayer.DrawRegions(args, new List<Extent> { args.GeographicExtents }, false);
+                mfl.LabelLayer.Print(args, new List<Extent> { args.GeographicExtents }, false);
             }
         }
 

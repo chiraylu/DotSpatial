@@ -33,6 +33,19 @@ namespace DotSpatial.Controls
                 _toolStripContainer1.LeftToolStripPanel.Size = new Size(1, _toolStripContainer1.LeftToolStripPanel.Size.Height);
                 _toolStripContainer1.RightToolStripPanel.Size = new Size(1, _toolStripContainer1.RightToolStripPanel.Size.Height);
             }
+            #region 临时
+            _layoutMenuStrip1.Items.Add(new ToolStripButton("添加矩形框", null, onClick: addRectangle));
+            #endregion
+        }
+
+        private void addRectangle(object sender, EventArgs e)
+        {
+            var element = new LayoutRectangle
+            {
+                Size = new SizeF(200, 100),
+                IsFixedSize = true
+            };
+            LayoutControl.AddToLayout(element);
         }
 
         #endregion

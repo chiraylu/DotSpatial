@@ -183,20 +183,20 @@ namespace DotSpatial.Plugins.WebMap
             else if (!App.Map.Projection.Equals(_webMercProj))
             {
                 // get original view extents
-                App.ProgressHandler.Progress(string.Empty, 0, "Reprojecting Map Layers...");
-                double[] viewExtentXy = { App.Map.ViewExtents.MinX, App.Map.ViewExtents.MinY, App.Map.ViewExtents.MaxX, App.Map.ViewExtents.MaxY };
-                double[] viewExtentZ = { 0.0, 0.0 };
+                //App.ProgressHandler.Progress(string.Empty, 0, "Reprojecting Map Layers...");
+                //double[] viewExtentXy = { App.Map.ViewExtents.MinX, App.Map.ViewExtents.MinY, App.Map.ViewExtents.MaxX, App.Map.ViewExtents.MaxY };
+                //double[] viewExtentZ = { 0.0, 0.0 };
 
-                // reproject view extents
-                Reproject.ReprojectPoints(viewExtentXy, viewExtentZ, App.Map.Projection, _webMercProj, 0, 2);
+                //// reproject view extents
+                //Reproject.ReprojectPoints(viewExtentXy, viewExtentZ, App.Map.Projection, _webMercProj, 0, 2);
 
-                // set the new map extents
-                App.Map.ViewExtents = new Extent(viewExtentXy);
+                //// set the new map extents
+                //App.Map.ViewExtents = new Extent(viewExtentXy);
 
-                // if projection is not WebMercator - reproject all layers:
-                App.Map.MapFrame.ReprojectMapFrame(_webMercProj);
+                //// if projection is not WebMercator - reproject all layers:
+                //App.Map.MapFrame.ReprojectMapFrame(_webMercProj);
 
-                App.ProgressHandler.Progress(string.Empty, 0, "Loading Basemap...");
+                //App.ProgressHandler.Progress(string.Empty, 0, "Loading Basemap...");
             }
 
             EnableBasemapLayer(provider.Name);
@@ -207,11 +207,13 @@ namespace DotSpatial.Plugins.WebMap
             if (_baseLayer == null)
             {
                 // Need to first initialize and add the basemap layer synchronously (it will fail if done in another thread).
+                var tempImageData = new InRamImageData(Resources.nodata, new Extent(1, 1, 2, 2));
 
                 _baseLayer = new WebMapImageLayer()
                 {
                     LegendText = Resources.Legend_Title,
-                    WebMapName = webMapName
+                    WebMapName = webMapName,
+                    Projection = App.Map.Projection,
                 };
 
                 _baseLayer.RemoveItem += BaseMapLayerRemoveItem;

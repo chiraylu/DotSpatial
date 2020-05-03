@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using BruTile;
@@ -24,6 +25,19 @@ namespace DotSpatial.Plugins.WebMap
     /// </summary>
     public static class ServiceProviderFactory
     {
+        private static string[] _googleMaps;
+        public static string[] GoogleMaps
+        {
+            get
+            {
+                if (_googleMaps == null)
+                {
+                    _googleMaps = new string[] { Resources.GoogleLabel, Resources.GoogleLabelSatellite, Resources.GoogleLabelTerrain, Resources.GoogleMap, Resources.GoogleSatellite, Resources.GoogleTerrain };
+                }
+                return _googleMaps;
+            }
+        }
+
         public static Lazy<ProjectionInfo> WebMercProj { get; }
         public static Lazy<ProjectionInfo> Wgs84Proj { get; }
         static ServiceProviderFactory()
@@ -43,7 +57,7 @@ namespace DotSpatial.Plugins.WebMap
         {
             var servEq = (Func<string, bool>)(s => name.Equals(s, StringComparison.InvariantCultureIgnoreCase));
 
-            var fileCache = (Func<ITileCache<byte[]>>)(() => new FileCache(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TileCache", name), string.Empty, new TimeSpan(30, 0, 0, 0)));
+            var fileCache = (Func<ITileCache<byte[]>>)(() => new FileCache(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TileCache", name), "jpg", new TimeSpan(30, 0, 0, 0)));
 
             if (servEq(Resources.EsriHydroBaseMap))
             {
@@ -74,25 +88,14 @@ namespace DotSpatial.Plugins.WebMap
             {
                 return new BrutileServiceProvider(name, KnownTileSources.Create(KnownTileSource.BingAerial), fileCache());
             }
-
             if (servEq(Resources.BingRoads))
             {
                 return new BrutileServiceProvider(name, KnownTileSources.Create(KnownTileSource.BingRoads), fileCache());
             }
 
-            if (servEq(Resources.GoogleMap))
+            if (GoogleMaps.Contains(name))
             {
-                var destUrl = url;
-                if (string.IsNullOrEmpty(destUrl))
-                {
-                    destUrl = "http://khm{s}.google.com/kh/v=863&gl=cn&x={x}&y={y}&z={z}";
-                }
-                return new BrutileServiceProvider(name, CreateGoogleTileSource(destUrl), fileCache());
-            }
-
-            if (servEq(Resources.GoogleTerrain))
-            {
-                return new BrutileServiceProvider(name, CreateGoogleTileSource("http://mt{s}.google.com/vt/lyrs=t@125,r@130&hl=en&x={x}&y={y}&z={z}"), fileCache());
+                return new BrutileServiceProvider(name, CreateGoogleTileSource(url), fileCache()) { Projection = WebMercProj.Value };
             }
 
             if (servEq(Resources.OpenStreetMap))
@@ -145,8 +148,14 @@ namespace DotSpatial.Plugins.WebMap
                 yield return Create(Resources.BingRoads);
                 yield return Create(Resources.BingAerial);
                 yield return Create(Resources.BingHybrid);
+
                 yield return Create(Resources.GoogleMap);
                 yield return Create(Resources.GoogleTerrain);
+                yield return Create(Resources.GoogleSatellite);
+                yield return Create(Resources.GoogleLabel);
+                yield return Create(Resources.GoogleLabelTerrain);
+                yield return Create(Resources.GoogleLabelSatellite);
+
                 yield return Create(Resources.OpenStreetMap);
                 yield return Create(Resources.WMSMap);
             }

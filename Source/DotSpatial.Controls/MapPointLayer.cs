@@ -343,6 +343,12 @@ namespace DotSpatial.Controls
             }
         }
 
+        /// <inheritdoc/>
+        public virtual void Print(MapArgs args, List<Extent> regions, bool selected)
+        {
+            DrawRegions(args, regions, selected);
+        }
+
         /// <summary>
         /// Indicates that the drawing process has been finalized and swaps the back buffer
         /// to the front buffer.

@@ -17,11 +17,7 @@ namespace DotSpatial.Plugins.WebMap.Tiling
     /// </summary>
     public class TileManager
     {
-        #region Fields
-
-        private readonly ServiceProvider _serviceProvider;
-
-        #endregion
+        public ServiceProvider ServiceProvider { get; }
 
         #region  Constructors
 
@@ -31,7 +27,7 @@ namespace DotSpatial.Plugins.WebMap.Tiling
         /// <param name="serviceProvider">The service provider that gets the tiles.</param>
         public TileManager(ServiceProvider serviceProvider)
         {
-            _serviceProvider = serviceProvider; 
+            ServiceProvider = serviceProvider;
         }
 
         #endregion
@@ -41,14 +37,14 @@ namespace DotSpatial.Plugins.WebMap.Tiling
         /// <summary>
         /// Gets the tiles.
         /// </summary>
-        /// <param name="envelope">Envelope that indicates for which region the tiles are needed.</param>
+        /// <param name="wgs84Envelope">Envelope that indicates for which region the tiles are needed.</param>
         /// <param name="bounds">Bounds needed for zoom level calculation.</param>
         /// <param name="bw">The background worker.</param>
         /// <returns>The tiles needed for the envelope.</returns>
-        public Tiles GetTiles(Envelope envelope, Rectangle bounds, BackgroundWorker bw)
+        public Tiles GetTiles(Envelope wgs84Envelope, Rectangle bounds, BackgroundWorker bw)
         {
-            Coordinate mapTopLeft = new Coordinate(envelope.MinX, envelope.MaxY);
-            Coordinate mapBottomRight = new Coordinate(envelope.MaxX, envelope.MinY);
+            Coordinate mapTopLeft = new Coordinate(wgs84Envelope.MinX, wgs84Envelope.MaxY);
+            Coordinate mapBottomRight = new Coordinate(wgs84Envelope.MaxX, wgs84Envelope.MinY);
 
             // Clip the coordinates so they are in the range of the web mercator projection
             mapTopLeft.Y = TileCalculator.Clip(mapTopLeft.Y, TileCalculator.MinLatitude, TileCalculator.MaxLatitude);
@@ -56,16 +52,15 @@ namespace DotSpatial.Plugins.WebMap.Tiling
 
             mapBottomRight.Y = TileCalculator.Clip(mapBottomRight.Y, TileCalculator.MinLatitude, TileCalculator.MaxLatitude);
             mapBottomRight.X = TileCalculator.Clip(mapBottomRight.X, TileCalculator.MinLongitude, TileCalculator.MaxLongitude);
-
-            var zoom = TileCalculator.DetermineZoomLevel(envelope, bounds);
+            var zoom = TileCalculator.DetermineZoomLevel(wgs84Envelope, bounds);
             var topLeftTileXy = TileCalculator.LatLongToTileXy(mapTopLeft, zoom);
             var btmRightTileXy = TileCalculator.LatLongToTileXy(mapBottomRight, zoom);
 
             var tileMatrix = new Bitmap[btmRightTileXy.X - topLeftTileXy.X + 1, btmRightTileXy.Y - topLeftTileXy.Y + 1];
             var po = new ParallelOptions
-                         {
-                             MaxDegreeOfParallelism = -1
-                         };
+            {
+                MaxDegreeOfParallelism = -1
+            };
             Parallel.For(topLeftTileXy.Y, btmRightTileXy.Y + 1, po, (y, loopState) => Parallel.For(topLeftTileXy.X, btmRightTileXy.X + 1, po, (x, loopState2) =>
                 {
                     if (bw.CancellationPending)
@@ -80,6 +75,7 @@ namespace DotSpatial.Plugins.WebMap.Tiling
                 }));
 
             return new Tiles(
+                zoom,
                 tileMatrix,
                 GetTileEnvelope(topLeftTileXy.X, topLeftTileXy.Y, zoom), // top left tile = tileMatrix[0,0]
                 GetTileEnvelope(btmRightTileXy.X, btmRightTileXy.Y, zoom)); // bottom right tile = tileMatrix[last, last]
@@ -107,7 +103,7 @@ namespace DotSpatial.Plugins.WebMap.Tiling
             Bitmap bm;
             try
             {
-                bm = _serviceProvider.GetBitmap(x, y, envelope, zoom) ?? Resources.nodata;
+                bm = ServiceProvider.GetBitmap(x, y, envelope, zoom) ?? Resources.nodata;
             }
             catch (Exception ex)
             {

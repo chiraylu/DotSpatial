@@ -467,7 +467,9 @@ namespace DotSpatial.Controls
             LayoutElements.Insert(0, le);
             OnElementsChanged(EventArgs.Empty);
             le.Invalidated += LeInvalidated;
-            Invalidate(new Region(PaperToScreen(le.Rectangle)));
+            int buffer = 2;
+            var newExtent = new RectangleF(le.Rectangle.X - buffer, le.Rectangle.Y - buffer, le.Rectangle.Width + 2 * buffer, le.Rectangle.Height + 2 * buffer);
+            Invalidate(new Region(PaperToScreen(newExtent)));
         }
 
         /// <summary>

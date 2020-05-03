@@ -431,7 +431,7 @@ namespace DotSpatial.Symbology
         {
             List<IFeature> result = new List<IFeature>();
             FastDrawnState[] drawnStates = _layer.DrawnStates;
-            if (drawnStates != null)
+            if (drawnStates != null && _layer.DataSet != null)
             {
                 int count = Math.Min(drawnStates.Length, _layer.DataSet.Features.Count);
                 for (int shp = 0; shp < count; shp++)

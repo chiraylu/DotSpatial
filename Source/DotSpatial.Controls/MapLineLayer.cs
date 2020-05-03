@@ -310,6 +310,12 @@ namespace DotSpatial.Controls
             }
         }
 
+        /// <inheritdoc/>
+        public virtual void Print(MapArgs args, List<Extent> regions, bool selected)
+        {
+            DrawRegions(args, regions, selected);
+        }
+
         /// <summary>
         /// Builds a linestring into the graphics path, using minX, maxY, dx and dy for the transformations.
         /// </summary>

@@ -5,6 +5,7 @@ using System;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
+using DotSpatial.Projections;
 using DotSpatial.Serialization;
 using GeoAPI.Geometries;
 
@@ -33,6 +34,11 @@ namespace DotSpatial.Plugins.WebMap
         #endregion
 
         #region Properties
+
+        /// <summary>
+        /// Gets or sets
+        /// </summary>
+        public ProjectionInfo Projection { get; set; }
 
         /// <summary>
         /// Gets or sets

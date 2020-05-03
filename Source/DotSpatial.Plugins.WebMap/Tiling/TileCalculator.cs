@@ -89,28 +89,46 @@ namespace DotSpatial.Plugins.WebMap.Tiling
         /// <param name="minLevel">min level</param>
         /// <param name="maxLevel">max level</param>
         /// <returns>The zoom level.</returns>
-        public static int DetermineZoomLevel(Envelope envelope, Rectangle rectangle, int minLevel = 0, int maxLevel = 18)
+        public static int DetermineZoomLevel(Envelope envelope, Rectangle rectangle, int minLevel = 0, int maxLevel = 19)
         {
+            int zoom = -1;
             double metersAcross = EarthRadiusKms * envelope.Width * Math.PI / 180; // find the arc length represented by the displayed map
             metersAcross *= Math.Cos(envelope.Center().Y * Math.PI / 180); // correct for the center latitude
 
             double metersAcrossPerPixel = metersAcross / rectangle.Width; // find the resolution in meters per pixel
-
-            // find zoomlevel such that metersAcrossPerPix is close
-            for (int i = minLevel; i <= maxLevel; i++)
+            if (GroundResolution(envelope.Center().Y, minLevel) < metersAcrossPerPixel)
             {
-                double groundRes = GroundResolution(envelope.Center().Y, i);
-
-                if (metersAcrossPerPixel > groundRes)
+                zoom = minLevel;
+            }
+            else if (GroundResolution(envelope.Center().Y, maxLevel) > metersAcrossPerPixel)
+            {
+                zoom = maxLevel;
+            }
+            else
+            {
+                // find zoomlevel such that metersAcrossPerPix is close
+                for (int i = minLevel; i <= maxLevel; i++)
                 {
-                    // fix zoom level.
-                    // changed to a slightly lower zoom level to increase readability
-                    if (i > minLevel && i < maxLevel) return i - 1;
-                    return i;
+                    double groundRes = GroundResolution(envelope.Center().Y, i);
+
+                    if (metersAcrossPerPixel > groundRes)
+                    {
+                        // fix zoom level.
+                        // changed to a slightly lower zoom level to increase readability
+                        if (i > minLevel && i < maxLevel)
+                        {
+                            zoom = i - 1;
+                        }
+                        else
+                        {
+                            zoom = i;
+                        }
+                        break;
+                    }
                 }
             }
 
-            return -1;
+            return zoom;
         }
 
         /// <summary>

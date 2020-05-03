@@ -16,11 +16,13 @@ namespace DotSpatial.Plugins.WebMap.Tiling
         /// <summary>
         /// Initializes a new instance of the <see cref="Tiles"/> class.
         /// </summary>
+        /// <param name="zoom">zoom</param>
         /// <param name="bitmaps">An array of bitmaps.</param>
         /// <param name="topLeftTile">The top left tile.</param>
         /// <param name="bottomRightTile">The bottom right tile.</param>
-        public Tiles(Bitmap[,] bitmaps, Envelope topLeftTile, Envelope bottomRightTile)
+        public Tiles(int zoom, Bitmap[,] bitmaps, Envelope topLeftTile, Envelope bottomRightTile)
         {
+            Zoom = zoom;
             BottomRightTile = bottomRightTile;
             TopLeftTile = topLeftTile;
             Bitmaps = bitmaps;
@@ -44,6 +46,7 @@ namespace DotSpatial.Plugins.WebMap.Tiling
         /// Gets the top left tile.
         /// </summary>
         public Envelope TopLeftTile { get; private set; }
+        public int Zoom { get; private set; }
 
         #endregion
     }

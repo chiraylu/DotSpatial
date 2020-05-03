@@ -208,4 +208,16 @@
   <data name="Queryable" xml:space="preserve">
     <value>Queryable: </value>
   </data>
+  <data name="GoogleLabel" xml:space="preserve">
+    <value>Google Label</value>
+  </data>
+  <data name="GoogleLabelSatellite" xml:space="preserve">
+    <value>Google Label Satellite</value>
+  </data>
+  <data name="GoogleLabelTerrain" xml:space="preserve">
+    <value>Google Label Terrain</value>
+  </data>
+  <data name="GoogleSatellite" xml:space="preserve">
+    <value>Google Satellite</value>
+  </data>
 </root>

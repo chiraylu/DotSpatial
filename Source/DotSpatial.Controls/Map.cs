@@ -554,12 +554,12 @@ namespace DotSpatial.Controls
 
             foreach (var f in MapFunctions)
             {
-                if ((f.YieldStyle & YieldStyles.AlwaysOn) == YieldStyles.AlwaysOn) continue; // ignore "Always On" functions
+                if (!f.Enabled || (f.YieldStyle & YieldStyles.AlwaysOn) == YieldStyles.AlwaysOn) continue; // ignore "Always On" functions
                 int test = (int)(f.YieldStyle & function.YieldStyle);
                 if (test > 0) f.Deactivate(); // any overlap of behavior leads to deactivation
             }
 
-            function.Activate(); 
+            function.Activate();
         }
 
         /// <summary>
@@ -1541,7 +1541,7 @@ namespace DotSpatial.Controls
             // changed by Jiri Kadlec - default function mode is none
             FunctionMode = FunctionMode.None;
         }
-       
+
         private void MapKeyDown(object sender, KeyEventArgs e)
         {
             if (e.Handled)

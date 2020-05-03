@@ -228,6 +228,12 @@ namespace DotSpatial.Controls
             }
         }
 
+        /// <inheritdoc/>
+        public virtual void Print(MapArgs args, List<Extent> regions, bool selected)
+        {
+            DrawRegions(args, regions, selected);
+        }
+
         /// <inheritdoc />
         public override IEnumerator<ILayer> GetEnumerator()
         {

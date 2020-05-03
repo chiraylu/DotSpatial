@@ -1183,35 +1183,41 @@ namespace DotSpatial.Symbology
                         {
                             // string replacer
                             int index = Convert.ToInt32(sub);
-                            sub = _strings[index];
-                            element.Type = TkElementType.EtValue;
-                            element.Value.Type = TkValueType.VtString;
-                            element.Value.Str = sub;
+                            if (index >= 0 && _strings.Count > index)
+                            {
+                                sub = _strings[index];
+                                element.Type = TkElementType.EtValue;
+                                element.Value.Type = TkValueType.VtString;
+                                element.Value.Str = sub;
+                            }
                         }
                         else if (chr == 'f')
                         {
                             // field replacer
                             int index = Convert.ToInt32(sub);
-                            sub = _strings[index].TrimStart('[').TrimEnd(']');
+                            if (index >= 0 && _strings.Count > index)
+                            {
+                                sub = _strings[index].TrimStart('[').TrimEnd(']');
 
-                            if (sub.ToLower() == "fid")
-                            {
-                                element.Field = new Field("fid", typeof(int));
-                            }
-                            else
-                            {
-                                int fieldIndex = _fields.FindIndex(p => p.Name.ToLower() == sub.ToLower());
-                                if (fieldIndex < 0)
+                                if (sub.ToLower() == "fid")
                                 {
-                                    ErrorMessage = SymbologyMessageStrings.Expression_FieldNotFound + sub;
-                                    return false;
+                                    element.Field = new Field("fid", typeof(int));
+                                }
+                                else
+                                {
+                                    int fieldIndex = _fields.FindIndex(p => p.Name.ToLower() == sub.ToLower());
+                                    if (fieldIndex < 0)
+                                    {
+                                        ErrorMessage = SymbologyMessageStrings.Expression_FieldNotFound + sub;
+                                        return false;
+                                    }
+
+                                    element.Field = _fields[fieldIndex];
                                 }
 
-                                element.Field = _fields[fieldIndex];
+                                element.IsField = true;
+                                element.Type = TkElementType.EtValue;
                             }
-
-                            element.IsField = true;
-                            element.Type = TkElementType.EtValue;
                         }
                         else if (chr == 'p')
                         {
