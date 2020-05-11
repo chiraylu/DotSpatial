@@ -237,7 +237,7 @@ namespace DotSpatial.Controls
             string txt = category.CalculateExpression(f.DataRow, selected, f.Fid);
             if (txt == null) return;
             var angle = GetAngleToRotate(symb, f);
-            SizeF labelSize= g.MeasureString(txt, CacheList.GetFont(symb));
+            SizeF labelSize = g.MeasureString(txt, CacheList.GetFont(symb));
             // Depending on the labeling strategy we do different things
             if (symb.PartsLabelingMethod == PartLabelingMethod.LabelAllParts)
             {
@@ -789,7 +789,7 @@ namespace DotSpatial.Controls
         /// <param name="angle">Angle in degree the label gets rotated by.</param>
         /// <param name="symbolizer">feature symbolizer</param>
         /// <returns>The RectangleF that is needed to draw the label.</returns>
-        private static RectangleF PlaceLineLabel(IGeometry lineString, MapArgs e, SizeF labelSize,  ILabelSymbolizer symb, float angle, ILineSymbolizer symbolizer)
+        private static RectangleF PlaceLineLabel(IGeometry lineString, MapArgs e, SizeF labelSize, ILabelSymbolizer symb, float angle, ILineSymbolizer symbolizer)
         {
             LineString ls = lineString as LineString;
             if (ls == null) return Rectangle.Empty;
@@ -886,28 +886,30 @@ namespace DotSpatial.Controls
             ContentAlignment orientation = symb.Orientation;
             var symbolSize2d = symbolizer.GetSize();
             var symbolSize = new SizeF(Convert.ToSingle(symbolSize2d.Width), Convert.ToSingle(symbolSize2d.Height));
+            var halfWidth = symbolSize.Width / 2;
+            var halfHeight = symbolSize.Height / 2;
             float x = symb.OffsetX;
             float y = -symb.OffsetY;
             switch (orientation)
             {
                 case ContentAlignment.TopLeft:
-                    return new PointF(-size.Width + x, -size.Height + y - symbolSize.Height);
+                    return new PointF(-size.Width + x, -size.Height + y - halfHeight);
                 case ContentAlignment.TopCenter:
-                    return new PointF((-size.Width / 2) + x, -size.Height + y - symbolSize.Height);
+                    return new PointF((-size.Width / 2) + x, -size.Height + y - halfHeight);
                 case ContentAlignment.TopRight:
-                    return new PointF(0 + x, -size.Height + y - symbolSize.Height);
+                    return new PointF(0 + x, -size.Height + y - halfHeight);
                 case ContentAlignment.MiddleLeft:
-                    return new PointF(-size.Width + x - symbolSize.Width, (-size.Height / 2) + y);
+                    return new PointF(-size.Width + x - halfWidth, (-size.Height / 2) + y);
                 case ContentAlignment.MiddleCenter:
                     return new PointF((-size.Width / 2) + x, (-size.Height / 2) + y);
                 case ContentAlignment.MiddleRight:
-                    return new PointF(0 + x + symbolSize.Width, (-size.Height / 2) + y);
+                    return new PointF(0 + x + halfWidth, (-size.Height / 2) + y);
                 case ContentAlignment.BottomLeft:
-                    return new PointF(-size.Width + x, 0 + y + symbolSize.Height);
+                    return new PointF(-size.Width + x, 0 + y + halfHeight);
                 case ContentAlignment.BottomCenter:
-                    return new PointF((-size.Width / 2) + x, 0 + y + symbolSize.Height);
+                    return new PointF((-size.Width / 2) + x, 0 + y + halfHeight);
                 case ContentAlignment.BottomRight:
-                    return new PointF(0 + x, 0 + y + symbolSize.Height);
+                    return new PointF(0 + x, 0 + y + halfHeight);
             }
             return new PointF(0, 0);
         }

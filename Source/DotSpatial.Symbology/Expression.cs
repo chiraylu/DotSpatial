@@ -1205,7 +1205,7 @@ namespace DotSpatial.Symbology
                                 }
                                 else
                                 {
-                                    int fieldIndex = _fields.FindIndex(p => p.Name.ToLower() == sub.ToLower());
+                                    int fieldIndex = _fields.FindIndex(p => p?.Name?.ToLower() == sub.ToLower());
                                     if (fieldIndex < 0)
                                     {
                                         ErrorMessage = SymbologyMessageStrings.Expression_FieldNotFound + sub;

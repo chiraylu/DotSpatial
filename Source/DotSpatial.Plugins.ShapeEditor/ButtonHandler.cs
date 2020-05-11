@@ -142,6 +142,12 @@ namespace DotSpatial.Plugins.ShapeEditor
             const string ShapeEditorMenuKey = "kShapeEditor";
 
             // _Header.Add(new RootItem(ShapeEditorMenuKey, "Shape Editing"));
+            _header.Add(new SimpleActionItem(ShapeEditorMenuKey, "Save", SaveButtonClick)
+            {
+                GroupCaption = "Shape Editor",
+                SmallImage = ShapeEditorResources.Save,
+                RootKey = HeaderControl.HomeRootItemKey
+            });
             _header.Add(new SimpleActionItem(ShapeEditorMenuKey, ShapeEditorResources.New, NewButtonClick)
             {
                 GroupCaption = "Shape Editor",
@@ -167,6 +173,16 @@ namespace DotSpatial.Plugins.ShapeEditor
                 SmallImage = ShapeEditorResources.SnappingIcon.ToBitmap(),
                 RootKey = HeaderControl.HomeRootItemKey
             });
+        }
+
+        private void SaveButtonClick(object sender, EventArgs e)
+        {
+            if (_activeLayer == null)
+            {
+                return;
+            }
+            _activeLayer.DataSet.Save();
+            MessageBox.Show("Save Successfully");
         }
 
         private void AddShapeButtonClick(object sender, EventArgs e)

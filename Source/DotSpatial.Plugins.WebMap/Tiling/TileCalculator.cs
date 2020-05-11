@@ -80,7 +80,6 @@ namespace DotSpatial.Plugins.WebMap.Tiling
         {
             return Math.Min(Math.Max(n, minValue), maxValue);
         }
-
         /// <summary>
         /// Determines the zoom level from which the tiles should be gotten.
         /// </summary>
