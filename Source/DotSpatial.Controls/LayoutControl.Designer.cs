@@ -17,6 +17,11 @@ namespace DotSpatial.Controls
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
+            if (disposing && SelectionPen != null)
+            {
+                SelectionPen.Dispose();
+                SelectionPen = null;
+            }
             if (disposing && (components != null))
             {
                 components.Dispose();

@@ -57,6 +57,7 @@ namespace DotSpatial.Controls
         public LayoutControl()
         {
             InitializeComponent();
+            SelectionPen = new Pen(Color.Cyan, 2F);
             _otherToolStrips = new List<ToolStrip>();
             _printerSettings = new PrinterSettings();
             _fileName = string.Empty;
@@ -399,6 +400,8 @@ namespace DotSpatial.Controls
         /// Gets the list of layoutElements currently selected in the project.
         /// </summary>
         internal List<LayoutElement> SelectedLayoutElements { get; } = new List<LayoutElement>();
+
+        private Pen SelectionPen { get; set; }
 
         /// <summary>
         /// Gets the heigh of the paper in 1/100 of an inch.
@@ -1703,15 +1706,10 @@ namespace DotSpatial.Controls
             }
 
             // Draws the selection rectangle around each selected item
-            var selectionPen = new Pen(Color.Black, 1F)
-            {
-                DashPattern = new[] { 2.0F, 1.0F },
-                DashCap = DashCap.Round
-            };
             foreach (var layoutEl in SelectedLayoutElements)
             {
                 var leRect = PaperToScreen(layoutEl.Rectangle);
-                graph.DrawRectangle(selectionPen, Convert.ToInt32(leRect.X), Convert.ToInt32(leRect.Y), Convert.ToInt32(leRect.Width), Convert.ToInt32(leRect.Height));
+                graph.DrawRectangle(SelectionPen, Convert.ToInt32(leRect.X), Convert.ToInt32(leRect.Y), Convert.ToInt32(leRect.Width), Convert.ToInt32(leRect.Height));
             }
 
             // If the users is dragging a select box or an insert box we draw it here
@@ -1739,7 +1737,6 @@ namespace DotSpatial.Controls
             // resets the cursor cuz some times it get jammed
             Cursor = oldCursor;
         }
-
         /// <summary>
         /// Prevents flicker from any default on paint background operations.
         /// </summary>
@@ -2009,6 +2006,7 @@ namespace DotSpatial.Controls
                             return;
                         }
 
+                        _mouseBox = new RectangleF(e.X, e.Y, 0F, 0F);
                         // Starts moving selected elements
                         if (ModifierKeys != Keys.Control)
                         {
@@ -2023,7 +2021,6 @@ namespace DotSpatial.Controls
 
                         // Starts the selection code.
                         MouseMode = MouseMode.CreateSelection;
-                        _mouseBox = new RectangleF(e.X, e.Y, 0F, 0F);
                         break;
 
                     // Start drag rectangle insert new element
@@ -2222,6 +2219,10 @@ namespace DotSpatial.Controls
         {
             if (e.Button == MouseButtons.Left)
             {
+                if (MouseMode == MouseMode.MoveSelection && _mouseBox.Location == e.Location)
+                {
+                    MouseMode = MouseMode.CreateSelection;
+                }
                 // Handles various different mouse modes
                 switch (MouseMode)
                 {
