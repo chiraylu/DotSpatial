@@ -4,6 +4,7 @@
 using System;
 using System.ComponentModel;
 using System.Drawing.Design;
+using System.Linq;
 using System.Windows.Forms;
 using System.Windows.Forms.Design;
 
@@ -55,7 +56,7 @@ namespace DotSpatial.Controls
             ListBox lb = new ListBox();
             if (lc == null) return null;
 
-            foreach (LayoutElement le in lc.LayoutElements.FindAll(o => o is LayoutMap))
+            foreach (LayoutElement le in lc.LayoutElements.Where(o => o is LayoutMap))
             {
                 lb.Items.Add(le);
             }

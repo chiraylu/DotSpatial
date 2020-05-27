@@ -3,6 +3,7 @@
 
 using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace DotSpatial.Controls
@@ -43,31 +44,33 @@ namespace DotSpatial.Controls
             {
                 _layoutControl = value;
                 if (_layoutControl == null) return;
-                _layoutControl.SelectionChanged += LayoutControlSelectionChanged;
+                _layoutControl.SelectedLayoutElements.ListChanged += SelectedLayoutElements_ListChanged;
             }
         }
+
 
         #endregion
 
         #region Methods
 
-        /// <summary>
-        /// If the selection changes this event is called
-        /// </summary>
-        /// <param name="sender">Sender that raised the event.</param>
-        /// <param name="e">The event args.</param>
-        private void LayoutControlSelectionChanged(object sender, EventArgs e)
+        private void SelectedLayoutElements_ListChanged(object sender, ListChangedEventArgs e)
         {
-            // This code is so that the property grid gets updates if one of the properties changes
-            foreach (LayoutElement selecteElement in _layoutControl.LayoutElements)
-                selecteElement.Invalidated -= SelecteElementInvalidated;
-            foreach (LayoutElement selecteElement in _layoutControl.SelectedLayoutElements)
-                selecteElement.Invalidated += SelecteElementInvalidated;
+            switch (e.ListChangedType)
+            {
+                case ListChangedType.ItemAdded:
+                case ListChangedType.ItemDeleted:
+                case ListChangedType.Reset:
+                    // This code is so that the property grid gets updates if one of the properties changes
+                    foreach (LayoutElement selecteElement in _layoutControl.LayoutElements)
+                        selecteElement.Invalidated -= SelecteElementInvalidated;
+                    foreach (LayoutElement selecteElement in _layoutControl.SelectedLayoutElements)
+                        selecteElement.Invalidated += SelecteElementInvalidated;
 
-            // If there is no selection get the layoutControls properties otherwise show the selected elements properties
-            _propertyGrid.SelectedObjects = _layoutControl.SelectedLayoutElements.Count > 0 ? _layoutControl.SelectedLayoutElements.ToArray() : null;
+                    // If there is no selection get the layoutControls properties otherwise show the selected elements properties
+                    _propertyGrid.SelectedObjects = _layoutControl.SelectedLayoutElements.Count > 0 ? _layoutControl.SelectedLayoutElements.ToArray() : null;
+                    break;
+            }
         }
-
         private void LayoutPropertyGridKeyUp(object sender, KeyEventArgs e)
         {
             switch (e.KeyCode)

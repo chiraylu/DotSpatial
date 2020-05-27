@@ -125,7 +125,7 @@ namespace DotSpatial.Controls
             set
             {
                 _layoutControl = value;
-                _layoutControl.ElementsChanged += LayoutControlElementsChanged;
+                _layoutControl.LayoutElements.ListChanged += LayoutElements_ListChanged;
             }
         }
 
@@ -323,15 +323,18 @@ namespace DotSpatial.Controls
             }
         }
 
-        /// <summary>
-        /// Updates the scale bar if the map is deleted
-        /// </summary>
-        /// <param name="sender">Sender that raised the event.</param>
-        /// <param name="e">The event args.</param>
-        private void LayoutControlElementsChanged(object sender, EventArgs e)
+
+        private void LayoutElements_ListChanged(object sender, ListChangedEventArgs e)
         {
-            if (!_layoutControl.LayoutElements.Contains(_layoutMap))
-                Map = null;
+            switch (e.ListChangedType)
+            {
+                case ListChangedType.ItemAdded:
+                case ListChangedType.ItemDeleted:
+                case ListChangedType.Reset:
+                    if (!_layoutControl.LayoutElements.Contains(_layoutMap))
+                        Map = null;
+                    break;
+            }
         }
 
         #endregion

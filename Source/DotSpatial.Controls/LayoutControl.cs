@@ -57,6 +57,7 @@ namespace DotSpatial.Controls
         public LayoutControl()
         {
             InitializeComponent();
+            SelectedLayoutElements.ListChanged += SelectedLayoutElements_ListChanged;
             SelectionPen = new Pen(Color.Cyan, 2F);
             _otherToolStrips = new List<ToolStrip>();
             _printerSettings = new PrinterSettings();
@@ -90,11 +91,6 @@ namespace DotSpatial.Controls
         public event EventHandler ButtonChecked;
 
         /// <summary>
-        /// This fires after a element was added or removed.
-        /// </summary>
-        public event EventHandler ElementsChanged;
-
-        /// <summary>
         /// This fires when the projects file name is changed.
         /// </summary>
         public event EventHandler FilenameChanged;
@@ -110,9 +106,10 @@ namespace DotSpatial.Controls
         public event EventHandler MouseModeChanged;
 
         /// <summary>
-        /// This fires after the selection has changed.
+        /// This fires before remove the element.
         /// </summary>
-        public event EventHandler SelectionChanged;
+
+        public event EventHandler<PreviewElementRemoveEventArgs> PreviewElementRemove;
 
         /// <summary>
         /// This fires when the zoom of the layout changes.
@@ -196,7 +193,7 @@ namespace DotSpatial.Controls
         /// <summary>
         /// Gets the list of layoutElements currently loaded in the project.
         /// </summary>
-        public List<LayoutElement> LayoutElements { get; } = new List<LayoutElement>();
+        public BindingList<LayoutElement> LayoutElements { get; } = new BindingList<LayoutElement>();
 
         /// <summary>
         /// Gets or sets the LayoutInsertToolStrip.
@@ -399,7 +396,7 @@ namespace DotSpatial.Controls
         /// <summary>
         /// Gets the list of layoutElements currently selected in the project.
         /// </summary>
-        internal List<LayoutElement> SelectedLayoutElements { get; } = new List<LayoutElement>();
+        public BindingList<LayoutElement> SelectedLayoutElements { get; } = new BindingList<LayoutElement>();
 
         private Pen SelectionPen { get; set; }
 
@@ -459,7 +456,7 @@ namespace DotSpatial.Controls
         {
             var leName = le.Name + " 1";
             var i = 2;
-            while (LayoutElements.FindAll(o => o.Name == leName).Count > 0)
+            while (LayoutElements.Where(o => o.Name == leName).Count() > 0)
             {
                 leName = le.Name + " " + i;
                 i++;
@@ -468,7 +465,6 @@ namespace DotSpatial.Controls
             le.Name = leName;
 
             LayoutElements.Insert(0, le);
-            OnElementsChanged(EventArgs.Empty);
             le.Invalidated += LeInvalidated;
             int buffer = 2;
             var newExtent = new RectangleF(le.Rectangle.X - buffer, le.Rectangle.Y - buffer, le.Rectangle.Width + 2 * buffer, le.Rectangle.Height + 2 * buffer);
@@ -501,7 +497,7 @@ namespace DotSpatial.Controls
         /// <param name="elements">A list of elements to align</param>
         /// <param name="side">The side to align to</param>
         /// <param name="margin">True to align to paper margins, false to align to the most extreme element of the indicated side</param>
-        public void AlignElements(List<LayoutElement> elements, Alignment side, bool margin)
+        public void AlignElements(IEnumerable<LayoutElement> elements, Alignment side, bool margin)
         {
             switch (side)
             {
@@ -632,7 +628,6 @@ namespace DotSpatial.Controls
         {
             SelectedLayoutElements.Clear();
             Invalidate();
-            OnSelectionChanged(EventArgs.Empty);
         }
 
         /// <summary>
@@ -678,7 +673,6 @@ namespace DotSpatial.Controls
             LayoutElements.Remove(le);
             SelectedLayoutElements.Insert(SelectedLayoutElements.IndexOf(le), newLb);
             SelectedLayoutElements.Remove(le);
-            OnSelectionChanged(EventArgs.Empty);
             Invalidate();
         }
 
@@ -750,7 +744,6 @@ namespace DotSpatial.Controls
             foreach (var le in SelectedLayoutElements.ToArray())
                 RemoveFromLayout(le);
             Invalidate();
-            OnSelectionChanged(EventArgs.Empty);
         }
 
         /// <summary>
@@ -913,10 +906,9 @@ namespace DotSpatial.Controls
         /// </summary>
         public void InvertSelection()
         {
-            var unselected = LayoutElements.FindAll(o => !SelectedLayoutElements.Contains(o));
+            var unselected = LayoutElements.Where(o => !SelectedLayoutElements.Contains(o));
             SelectedLayoutElements.Clear();
-            SelectedLayoutElements.InsertRange(0, unselected);
-            OnSelectionChanged(EventArgs.Empty);
+            SelectedLayoutElements.InsertRange(0,unselected);
             Invalidate();
         }
 
@@ -1206,8 +1198,6 @@ namespace DotSpatial.Controls
 
                 Filename = fileName;
                 Invalidate();
-                OnSelectionChanged(EventArgs.Empty);
-                OnElementsChanged(EventArgs.Empty);
                 OnLayoutLoaded(EventArgs.Empty);
             }
         }
@@ -1218,7 +1208,7 @@ namespace DotSpatial.Controls
         /// <param name="elements">A list of elements to resize to the max size of all elements or the margins</param>
         /// <param name="axis">Fit the width or the height</param>
         /// <param name="margin">True if use margin size false to use arges element in input list</param>
-        public void MatchElementsSize(List<LayoutElement> elements, Fit axis, bool margin)
+        public void MatchElementsSize(IEnumerable<LayoutElement> elements, Fit axis, bool margin)
         {
             if (axis == Fit.Width)
             {
@@ -1281,7 +1271,6 @@ namespace DotSpatial.Controls
                 LayoutElements.Insert(indexArray[i] + 1, SelectedLayoutElements[i]);
             }
 
-            OnSelectionChanged(EventArgs.Empty);
             Invalidate();
         }
 
@@ -1307,7 +1296,6 @@ namespace DotSpatial.Controls
                 LayoutElements.Insert(index - 1, le);
             }
 
-            OnSelectionChanged(EventArgs.Empty);
             Invalidate();
         }
 
@@ -1443,7 +1431,6 @@ namespace DotSpatial.Controls
         {
             SelectedLayoutElements.Clear();
             SelectedLayoutElements.InsertRange(0, LayoutElements);
-            OnSelectionChanged(EventArgs.Empty);
             Invalidate();
         }
 
@@ -1551,7 +1538,6 @@ namespace DotSpatial.Controls
         {
             SelectedLayoutElements.Add(le);
             Invalidate(new Region(PaperToScreen(le.Rectangle)));
-            OnSelectionChanged(EventArgs.Empty);
         }
 
         /// <summary>
@@ -1562,7 +1548,6 @@ namespace DotSpatial.Controls
         {
             SelectedLayoutElements.AddRange(le);
             Invalidate();
-            OnSelectionChanged(EventArgs.Empty);
         }
 
         /// <summary>
@@ -1571,9 +1556,7 @@ namespace DotSpatial.Controls
         internal void ClearLayout()
         {
             SelectedLayoutElements.Clear();
-            OnSelectionChanged(EventArgs.Empty);
             LayoutElements.Clear();
-            OnElementsChanged(EventArgs.Empty);
             Invalidate();
         }
 
@@ -1583,11 +1566,14 @@ namespace DotSpatial.Controls
         /// <param name="le">The layout element.</param>
         internal void RemoveFromLayout(LayoutElement le)
         {
-            SelectedLayoutElements.Remove(le);
-            OnSelectionChanged(EventArgs.Empty);
-            LayoutElements.Remove(le);
-            OnElementsChanged(EventArgs.Empty);
-            Invalidate(new Region(PaperToScreen(le.Rectangle)));
+            var args = new PreviewElementRemoveEventArgs(le, false);
+            PreviewElementRemove?.Invoke(this, args);
+            if (!args.Handled)
+            {
+                SelectedLayoutElements.Remove(le);
+                LayoutElements.Remove(le);
+                Invalidate(new Region(PaperToScreen(le.Rectangle)));
+            }
         }
 
         /// <summary>
@@ -1598,7 +1584,6 @@ namespace DotSpatial.Controls
         {
             SelectedLayoutElements.Remove(le);
             Invalidate(new Region(PaperToScreen(le.Rectangle)));
-            OnSelectionChanged(EventArgs.Empty);
         }
 
         /// <summary>
@@ -2265,7 +2250,6 @@ namespace DotSpatial.Controls
                             }
                         }
 
-                        OnSelectionChanged(EventArgs.Empty);
                         MouseMode = MouseMode.Default;
                         Invalidate();
                         break;
@@ -2406,15 +2390,6 @@ namespace DotSpatial.Controls
         }
 
         /// <summary>
-        /// Call this to indicate elements were added or removed.
-        /// </summary>
-        /// <param name="e">The event args.</param>
-        private void OnElementsChanged(EventArgs e)
-        {
-            ElementsChanged?.Invoke(this, e);
-        }
-
-        /// <summary>
         /// Call this to indicate the fileName has been changed.
         /// </summary>
         /// <param name="e">The event args.</param>
@@ -2441,31 +2416,34 @@ namespace DotSpatial.Controls
             MouseModeChanged?.Invoke(this, e);
         }
 
-        /// <summary>
-        /// Call this to indicate the selection has changed.
-        /// </summary>
-        /// <param name="e">The event args.</param>
-        private void OnSelectionChanged(EventArgs e)
+        private void SelectedLayoutElements_ListChanged(object sender, ListChangedEventArgs e)
         {
-            if (_layoutMapToolStrip != null)
+            switch (e.ListChangedType)
             {
-                if (SelectedLayoutElements.Count == 1 && SelectedLayoutElements[0] is LayoutMap)
-                {
-                    _layoutMapToolStrip.Enabled = true;
-                }
-                else
-                {
-                    _layoutMapToolStrip.Enabled = false;
-                    if (MouseMode == MouseMode.StartPanMap || MouseMode == MouseMode.PanMap)
+                case ListChangedType.ItemAdded:
+                case ListChangedType.ItemDeleted:
+                case ListChangedType.Reset:
+                    if (_layoutMapToolStrip != null)
+                    {
+                        if (SelectedLayoutElements.Count == 1 && SelectedLayoutElements[0] is LayoutMap)
+                        {
+                            _layoutMapToolStrip.Enabled = true;
+                        }
+                        else
+                        {
+                            _layoutMapToolStrip.Enabled = false;
+                            if (MouseMode == MouseMode.StartPanMap || MouseMode == MouseMode.PanMap)
+                                MouseMode = MouseMode.Default;
+                        }
+                    }
+
+                    if (SelectedLayoutElements.Count == 0 && (MouseMode == MouseMode.ResizeSelected || MouseMode == MouseMode.MoveSelection))
                         MouseMode = MouseMode.Default;
-                }
+                    break;
             }
-
-            if (SelectedLayoutElements.Count == 0 && (MouseMode == MouseMode.ResizeSelected || MouseMode == MouseMode.MoveSelection))
-                MouseMode = MouseMode.Default;
-
-            SelectionChanged?.Invoke(this, e);
+            Invalidate();
         }
+
 
         /// <summary>
         /// Calls this to indicate the zoom has been changed.

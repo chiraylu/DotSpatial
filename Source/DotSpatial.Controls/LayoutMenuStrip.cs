@@ -71,9 +71,10 @@ namespace DotSpatial.Controls
                     _docToolbar.Checked = _layoutControl.LayoutDocToolStrip.Visible;
                 }
 
-                _layoutControl.SelectionChanged += LayoutControlSelectionChanged;
+                _layoutControl.SelectedLayoutElements.ListChanged += SelectedLayoutElements_ListChanged;
             }
         }
+
 
         #endregion
 
@@ -199,10 +200,16 @@ namespace DotSpatial.Controls
             _layoutControl.LayoutZoomToolStrip.Visible = _zoomToolbar.Checked;
         }
 
-        // Enables and disables the convert selected to bitmap option if the selection changes above or below 1
-        private void LayoutControlSelectionChanged(object sender, EventArgs e)
+        private void SelectedLayoutElements_ListChanged(object sender, ListChangedEventArgs e)
         {
-            _selectConvert.Enabled = _layoutControl.SelectedLayoutElements.Count == 1;
+            switch (e.ListChangedType)
+            {
+                case ListChangedType.ItemAdded:
+                case ListChangedType.ItemDeleted:
+                case ListChangedType.Reset:
+                    _selectConvert.Enabled = _layoutControl.SelectedLayoutElements.Count == 1;
+                    break;
+            }
         }
 
         #endregion

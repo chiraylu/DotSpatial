@@ -72,6 +72,7 @@
     <Compile Include="..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
+    <Compile Include="BindingListExtensions.cs" />
     <Compile Include="DatelineCrossingExtentExtension.cs" />
     <Compile Include="DatelineCrossingMap.cs">
       <SubType>UserControl</SubType>
@@ -140,6 +141,7 @@
     <Compile Include="PageSetupForm.Designer.cs">
       <DependentUpon>PageSetupForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="PreviewElementRemoveEventArgs.cs" />
     <Compile Include="ShowExtensionsDialogMode.cs" />
     <Compile Include="AppManager.cs">
       <SubType>Component</SubType>

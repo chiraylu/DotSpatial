@@ -143,14 +143,27 @@ namespace DotSpatial.Controls
             {
                 if (_layoutControl != null)
                 {
-                    _layoutControl.ElementsChanged -= LayoutControlElementsChanged;
+                    _layoutControl.LayoutElements.ListChanged -= LayoutElements_ListChanged;
                 }
 
                 _layoutControl = value;
                 if (_layoutControl != null)
                 {
-                    _layoutControl.ElementsChanged += LayoutControlElementsChanged;
+                    _layoutControl.LayoutElements.ListChanged += LayoutElements_ListChanged;
                 }
+            }
+        }
+
+        private void LayoutElements_ListChanged(object sender, ListChangedEventArgs e)
+        {
+            switch (e.ListChangedType)
+            {
+                case ListChangedType.ItemAdded:
+                case ListChangedType.ItemDeleted:
+                case ListChangedType.Reset:
+                    if (!_layoutControl.LayoutElements.Contains(_layoutMap))
+                        Map = null;
+                    break;
             }
         }
 
@@ -320,17 +333,6 @@ namespace DotSpatial.Controls
                     DrawLegendList(g, item.LegendItems, itemSize, ref col, ref row, ref maxCol, ref maxRow);
                 }
             }
-        }
-
-        /// <summary>
-        /// Updates the scale bar if the map is deleted.
-        /// </summary>
-        /// <param name="sender">Sender that raised the event.</param>
-        /// <param name="e">The event args.</param>
-        private void LayoutControlElementsChanged(object sender, EventArgs e)
-        {
-            if (!_layoutControl.LayoutElements.Contains(_layoutMap))
-                Map = null;
         }
 
         #endregion

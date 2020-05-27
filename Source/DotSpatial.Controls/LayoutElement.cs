@@ -108,8 +108,11 @@ namespace DotSpatial.Controls
 
             set
             {
-                _location = new PointF(value.X, value.Y);
-                OnInvalidate();
+                if (!IsFixedPosition)
+                {
+                    _location = new PointF(value.X, value.Y);
+                    OnInvalidate();
+                }
             }
         }
 
@@ -126,8 +129,11 @@ namespace DotSpatial.Controls
 
             set
             {
-                _location = value;
-                OnInvalidate();
+                if (!IsFixedPosition)
+                {
+                    _location = value;
+                    OnInvalidate();
+                }
             }
         }
 
@@ -232,13 +238,16 @@ namespace DotSpatial.Controls
 
             set
             {
-                if (value.Width < 10)
-                    value.Width = 10;
-                if (value.Height < 10)
-                    value.Height = 10;
-                _size = value;
+                if (!IsFixedSize)
+                {
+                    if (value.Width < 10)
+                        value.Width = 10;
+                    if (value.Height < 10)
+                        value.Height = 10;
+                    _size = value;
 
-                RefreshElement();
+                    RefreshElement();
+                }
             }
         }
 

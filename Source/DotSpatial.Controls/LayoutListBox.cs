@@ -52,16 +52,32 @@ namespace DotSpatial.Controls
             {
                 if (value == null) return;
                 _layoutControl = value;
-                _layoutControl.SelectionChanged += LayoutControlSelectionChanged;
-                _layoutControl.ElementsChanged += LayoutControlElementsChanged;
+                _layoutControl.SelectedLayoutElements.ListChanged += SelectedLayoutElements_ListChanged;
+                _layoutControl.LayoutElements.ListChanged += LayoutElements_ListChanged;
                 RefreshList();
             }
         }
+
+
 
         #endregion
 
         #region Methods
 
+        private void LayoutElements_ListChanged(object sender, ListChangedEventArgs e)
+        {
+            switch (e.ListChangedType)
+            {
+                case ListChangedType.ItemAdded:
+                case ListChangedType.ItemDeleted:
+                case ListChangedType.Reset:
+                    if (_suppressSelectionChange) return;
+                    _suppressSelectionChange = true;
+                    RefreshList();
+                    _suppressSelectionChange = false;
+                    break;
+            }
+        }
         /// <summary>
         /// Refreshes the items in the list to accurately reflect the current collection
         /// </summary>
@@ -86,20 +102,19 @@ namespace DotSpatial.Controls
             _lbxItems.ResumeLayout();
         }
 
-        private void LayoutControlElementsChanged(object sender, EventArgs e)
+        private void SelectedLayoutElements_ListChanged(object sender, ListChangedEventArgs e)
         {
-            if (_suppressSelectionChange) return;
-            _suppressSelectionChange = true;
-            RefreshList();
-            _suppressSelectionChange = false;
-        }
-
-        private void LayoutControlSelectionChanged(object sender, EventArgs e)
-        {
-            if (_suppressSelectionChange) return;
-            _suppressSelectionChange = true;
-            RefreshList();
-            _suppressSelectionChange = false;
+            switch (e.ListChangedType)
+            {
+                case ListChangedType.ItemAdded:
+                case ListChangedType.ItemDeleted:
+                case ListChangedType.Reset:
+                    if (_suppressSelectionChange) return;
+                    _suppressSelectionChange = true;
+                    RefreshList();
+                    _suppressSelectionChange = false;
+                    break;
+            }
         }
 
         private void BtnDownClick(object sender, EventArgs e)
