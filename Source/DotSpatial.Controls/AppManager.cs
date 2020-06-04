@@ -112,6 +112,11 @@ namespace DotSpatial.Controls
         #region Properties
 
         /// <summary>
+        /// Gets or sets a value indicating whether gets or sets IgnoreRequiredImports
+        /// </summary>
+        public bool IgnoreRequiredImports { get; set; }
+
+        /// <summary>
         /// Gets a known directory from where extensions will be loaded, in addition to the configurable Directories list.
         /// Assemblies placed directly in this directory will not be loaded, but rather those nested inside of a folder
         /// more than one level deep.
@@ -300,7 +305,6 @@ namespace DotSpatial.Controls
             // report progress
             ProgressHandler?.Progress(MessageStrings.LoadingPlugins, 0, string.Empty);
         }
-
         /// <summary>
         /// Ensures the required imports are available for IExtension implementors. We guarantee DockManager, HeaderControl and ProgressHandler
         /// are available when an IExtension loads, so that the developer of an IExtension doesn't need to check to see whether they are null.
@@ -309,23 +313,25 @@ namespace DotSpatial.Controls
         /// <returns>True, if all required imports are available.</returns>
         public bool EnsureRequiredImportsAreAvailable()
         {
-            if (DockManager == null)
+            if (!IgnoreRequiredImports)
             {
-                DockManager = GetRequiredImport<IDockManager>();
+                if (DockManager == null)
+                {
+                    DockManager = GetRequiredImport<IDockManager>();
+                }
+
+                if (HeaderControl == null)
+                {
+                    HeaderControl = GetRequiredImport<IHeaderControl>();
+                }
+
+                if (ProgressHandler == null)
+                {
+                    ProgressHandler = GetRequiredImport<IStatusControl>();
+                }
+
+                if (DockManager == null || HeaderControl == null || ProgressHandler == null) return false;
             }
-
-            if (HeaderControl == null)
-            {
-                HeaderControl = GetRequiredImport<IHeaderControl>();
-            }
-
-            if (ProgressHandler == null)
-            {
-                ProgressHandler = GetRequiredImport<IStatusControl>();
-            }
-
-            if (DockManager == null || HeaderControl == null || ProgressHandler == null) return false;
-
             return true;
         }
 

@@ -21,11 +21,14 @@ namespace DotSpatial.Plugins.ShapeEditor
         /// <inheritdoc/>
         public override void Activate()
         {
-            _myHandler = new ButtonHandler(App)
-                         {
-                             Map = App.Map
-                         };
-            base.Activate();
+            if (App.HeaderControl != null)
+            {
+                _myHandler = new ButtonHandler(App)
+                {
+                    Map = App.Map
+                };
+                base.Activate();
+            }
         }
 
         /// <inheritdoc/>

@@ -59,37 +59,40 @@ namespace DotSpatial.Plugins.WebMap
         public override void Activate()
         {
             // Add Menu or Ribbon buttons.
-            AddServiceDropDown(App.HeaderControl);
-
-            _optionsAction = new SimpleActionItem("Configure", (sender, args) =>
-                                 {
-                                     var p = CurrentProvider;
-                                     if (p == null) return;
-                                     var cf = p.Configure;
-                                     if (cf != null)
-                                     {
-                                         if (cf())
-                                         {
-                                             // Update map if configuration changed
-                                             EnableBasemapFetching(p);
-                                         }
-                                     }
-                                 })
+            if (App.HeaderControl != null)
             {
-                Key = "kOptions",
-                RootKey = HeaderControl.HomeRootItemKey,
-                GroupCaption = Resources.Panel_Name,
-                Enabled = false,
-            };
-            App.HeaderControl.Add(_optionsAction);
-            _serviceDropDown.SelectedValueChanged += ServiceSelected;
-            _serviceDropDown.SelectedItem = _emptyProvider;
+                AddServiceDropDown(App.HeaderControl);
 
-            // Add handlers for saving/restoring settings
-            App.SerializationManager.Deserializing += SerializationManagerDeserializing;
-            App.SerializationManager.NewProjectCreated += SerializationManagerNewProject;
+                _optionsAction = new SimpleActionItem("Configure", (sender, args) =>
+                {
+                    var p = CurrentProvider;
+                    if (p == null) return;
+                    var cf = p.Configure;
+                    if (cf != null)
+                    {
+                        if (cf())
+                        {
+                            // Update map if configuration changed
+                            EnableBasemapFetching(p);
+                        }
+                    }
+                })
+                {
+                    Key = "kOptions",
+                    RootKey = HeaderControl.HomeRootItemKey,
+                    GroupCaption = Resources.Panel_Name,
+                    Enabled = false,
+                };
+                App.HeaderControl.Add(_optionsAction);
+                _serviceDropDown.SelectedValueChanged += ServiceSelected;
+                _serviceDropDown.SelectedItem = _emptyProvider;
 
-            base.Activate();
+                // Add handlers for saving/restoring settings
+                App.SerializationManager.Deserializing += SerializationManagerDeserializing;
+                App.SerializationManager.NewProjectCreated += SerializationManagerNewProject;
+
+                base.Activate();
+            }
         }
 
         /// <summary>
@@ -118,6 +121,10 @@ namespace DotSpatial.Plugins.WebMap
 
         private void AddServiceDropDown(IHeaderControl header)
         {
+            if (header == null)
+            {
+                return;
+            }
             _serviceDropDown = new DropDownActionItem
             {
                 Key = StrKeyServiceDropDown,
