@@ -426,7 +426,7 @@ namespace DotSpatial.Plugins.WebMap
                     else if (Map.Projection.Equals(ServiceProviderFactory.Wgs84Proj.Value))
                     {
                         #region 测试
-                        if (TileManager.ServiceProvider.Projection.Equals(ServiceProviderFactory.WebMercProj.Value))
+                        if (TileManager.ServiceProvider.Projection?.Equals(ServiceProviderFactory.WebMercProj.Value)==true)
                         {
                             //var r = ServiceProviderFactory.WebMercProj.Value.GeographicInfo.Datum.Spheroid.EquatorialRadius;
                             //var metersPerDegree = Math.PI * r / 180;
