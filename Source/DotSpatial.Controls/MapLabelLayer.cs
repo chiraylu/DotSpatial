@@ -178,25 +178,15 @@ namespace DotSpatial.Controls
 
             IGeometry geo = f.Geometry.Copy();
 
-            if (geo is LineString)
-            {
-                var firstCoordinate = geo.Coordinates.FirstOrDefault();
-                var lastCoordinate = geo.Coordinates.LastOrDefault();
-
-                if (firstCoordinate.X > lastCoordinate.X)
-                {
-                    var resortedCoordinates = new List<Coordinate>();
-                    for (var i = geo.Coordinates.Length - 1; i >= 0; i--)
-                        resortedCoordinates.Add(geo.Coordinates[i]);
-                    geo = new LineString(resortedCoordinates.ToArray());
-                }
-            }
-
             if (geo.NumGeometries == 1)
             {
                 var angle = GetAngleToRotate(symb, f, geo);
-                RectangleF labelBounds = PlaceLineLabel(geo, e, labelSize, symb, angle, symbolizer);
-                CollisionDraw(txt, g, symb, f, e, labelBounds, existingLabels, angle);
+                var tempAngle = angle % 360;
+                if ((tempAngle >= 90 && tempAngle < 270) || (tempAngle >= -270 && tempAngle < 90))
+                    tempAngle += 180;
+
+                RectangleF labelBounds = PlaceLineLabel(geo, e, labelSize, symb, tempAngle, symbolizer);
+                CollisionDraw(txt, g, symb, f, e, labelBounds, existingLabels, tempAngle);
             }
             else
             {
@@ -206,8 +196,12 @@ namespace DotSpatial.Controls
                     for (int n = 0; n < geo.NumGeometries; n++)
                     {
                         var angle = GetAngleToRotate(symb, f, geo.GetGeometryN(n));
-                        RectangleF labelBounds = PlaceLineLabel(geo.GetGeometryN(n), e, labelSize, symb, angle, symbolizer);
-                        CollisionDraw(txt, g, symb, f, e, labelBounds, existingLabels, angle);
+                        var tempAngle = angle % 360;
+                        if ((tempAngle >= 90 && tempAngle < 270) || (tempAngle >= -270 && tempAngle < 90))
+                            tempAngle += 180;
+
+                        RectangleF labelBounds = PlaceLineLabel(geo.GetGeometryN(n), e, labelSize, symb, tempAngle, symbolizer);
+                        CollisionDraw(txt, g, symb, f, e, labelBounds, existingLabels, tempAngle);
                     }
                 }
                 else
@@ -227,8 +221,12 @@ namespace DotSpatial.Controls
                     }
 
                     var angle = GetAngleToRotate(symb, f, geo.GetGeometryN(longestIndex));
-                    RectangleF labelBounds = PlaceLineLabel(geo.GetGeometryN(longestIndex), e, labelSize, symb, angle, symbolizer);
-                    CollisionDraw(txt, g, symb, f, e, labelBounds, existingLabels, angle);
+                    var tempAngle = angle % 360;
+                    if ((tempAngle >= 90 && tempAngle < 270) || (tempAngle >= -270 && tempAngle < 90))
+                        tempAngle += 180;
+
+                    RectangleF labelBounds = PlaceLineLabel(geo.GetGeometryN(longestIndex), e, labelSize, symb, tempAngle, symbolizer);
+                    CollisionDraw(txt, g, symb, f, e, labelBounds, existingLabels, tempAngle);
                 }
             }
         }
