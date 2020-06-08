@@ -176,6 +176,20 @@ namespace DotSpatial.Controls
 
             SizeF labelSize = g.MeasureString(txt, CacheList.GetFont(symb));
 
+            if (f.Geometry is LineString)
+            {
+                var firstCoordinate = f.Geometry.Coordinates.FirstOrDefault();
+                var lastCoordinate = f.Geometry.Coordinates.LastOrDefault();
+
+                if (firstCoordinate.X > lastCoordinate.X)
+                {
+                    var resortedCoordinates = new List<Coordinate>();
+                    for (var i = f.Geometry.Coordinates.Length - 1; i >= 0; i--)
+                        resortedCoordinates.Add(f.Geometry.Coordinates[i]);
+                    f.Geometry = new LineString(resortedCoordinates.ToArray());
+                }
+            }
+
             IGeometry geo = f.Geometry;
 
             if (geo.NumGeometries == 1)
