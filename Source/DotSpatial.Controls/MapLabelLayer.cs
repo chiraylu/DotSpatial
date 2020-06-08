@@ -176,26 +176,26 @@ namespace DotSpatial.Controls
 
             SizeF labelSize = g.MeasureString(txt, CacheList.GetFont(symb));
 
-            if (f.Geometry is LineString)
+            IGeometry geo = f.Geometry.Copy();
+
+            if (geo is LineString)
             {
-                var firstCoordinate = f.Geometry.Coordinates.FirstOrDefault();
-                var lastCoordinate = f.Geometry.Coordinates.LastOrDefault();
+                var firstCoordinate = geo.Coordinates.FirstOrDefault();
+                var lastCoordinate = geo.Coordinates.LastOrDefault();
 
                 if (firstCoordinate.X > lastCoordinate.X)
                 {
                     var resortedCoordinates = new List<Coordinate>();
-                    for (var i = f.Geometry.Coordinates.Length - 1; i >= 0; i--)
-                        resortedCoordinates.Add(f.Geometry.Coordinates[i]);
-                    f.Geometry = new LineString(resortedCoordinates.ToArray());
+                    for (var i = geo.Coordinates.Length - 1; i >= 0; i--)
+                        resortedCoordinates.Add(geo.Coordinates[i]);
+                    geo = new LineString(resortedCoordinates.ToArray());
                 }
             }
 
-            IGeometry geo = f.Geometry;
-
             if (geo.NumGeometries == 1)
             {
-                var angle = GetAngleToRotate(symb, f, f.Geometry);
-                RectangleF labelBounds = PlaceLineLabel(f.Geometry, e, labelSize, symb, angle, symbolizer);
+                var angle = GetAngleToRotate(symb, f, geo);
+                RectangleF labelBounds = PlaceLineLabel(geo, e, labelSize, symb, angle, symbolizer);
                 CollisionDraw(txt, g, symb, f, e, labelBounds, existingLabels, angle);
             }
             else
