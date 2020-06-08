@@ -24,7 +24,7 @@ namespace DotSpatial.Controls
     /// <summary>
     /// The Map Control for 2D applications.
     /// </summary>
-    public partial class Map : UserControl, IMap, IMessageFilter
+    public partial class Map : UserControl, IMap/*, IMessageFilter*/
     {
         #region Fields
 
@@ -54,7 +54,7 @@ namespace DotSpatial.Controls
         {
             InitializeComponent();
             Configure();
-            Application.AddMessageFilter(this);
+            //Application.AddMessageFilter(this);
         }
 
         #endregion
@@ -875,28 +875,28 @@ namespace DotSpatial.Controls
             return _geoMapFrame.PixelToProj(rect);
         }
 
-        /// <inheritdoc />
-        public bool PreFilterMessage(ref Message m)
-        {
-            if (m.Msg == 0x0100)
-            {
-                if (ContainsFocus)
-                {
-                    OnKeyDown(new KeyEventArgs((Keys)m.WParam.ToInt32()));
-                    return true;
-                }
-            }
-            else if (m.Msg == 0x0101)
-            {
-                if (ContainsFocus)
-                {
-                    OnKeyUp(new KeyEventArgs((Keys)m.WParam.ToInt32()));
-                    return true;
-                }
-            }
+        ///// <inheritdoc />
+        //public bool PreFilterMessage(ref Message m)
+        //{
+        //    if (m.Msg == 0x0100)
+        //    {
+        //        if (ContainsFocus)
+        //        {
+        //            OnKeyDown(new KeyEventArgs((Keys)m.WParam.ToInt32()));
+        //            return true;
+        //        }
+        //    }
+        //    else if (m.Msg == 0x0101)
+        //    {
+        //        if (ContainsFocus)
+        //        {
+        //            OnKeyUp(new KeyEventArgs((Keys)m.WParam.ToInt32()));
+        //            return true;
+        //        }
+        //    }
 
-            return false; // 导致调用两次keydown
-        }
+        //    return false; // 导致调用两次keydown
+        //}
 
         /// <summary>
         /// Instead of using the usual buffers, this bypasses any buffering and instructs the layers
