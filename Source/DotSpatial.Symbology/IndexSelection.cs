@@ -481,20 +481,22 @@ namespace DotSpatial.Symbology
             Extent affected = new Extent();
             IPolygon reg = region.ToPolygon();
             ShapeRange env = new ShapeRange(region);
-
+            Shape envShape = new Shape(env.FeatureType) { Range = env };
+            IGeometry envGeometry = envShape.ToGeometry();
             for (int shp = 0; shp < _layer.DrawnStates.Length; shp++)
             {
                 if (RegionCategory != null && _layer.DrawnStates[shp].Category != RegionCategory) continue;
 
                 bool doAction = false;
                 ShapeRange shape = _shapes[shp];
-
+                Shape numShape = new Shape(shape.FeatureType) { Range = shape };
+                IGeometry numGeometry = numShape.ToGeometry();
                 switch (SelectionMode)
                 {
                     case SelectionMode.Intersects:
-
                         // Prevent geometry creation (which is slow) and use ShapeRange instead
-                        doAction = env.Intersects(shape);
+                        //doAction = env.Intersects(shape);
+                        doAction = envGeometry.Intersects(numGeometry);
                         break;
 
                     case SelectionMode.IntersectsExtent:

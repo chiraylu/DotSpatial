@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using DotSpatial.NTSExtension;
 using DotSpatial.Serialization;
 using GeoAPI.Geometries;
 using NetTopologySuite.Algorithm;
@@ -31,7 +32,10 @@ namespace DotSpatial.Data
         public Shape()
         {
         }
-
+        public Shape(ShapeRange shapeRange)
+        {
+            Range = shapeRange;
+        }
         /// <summary>
         /// Initializes a new instance of the <see cref="Shape"/> class where the shaperange exists and has a type specified.
         /// </summary>
@@ -555,6 +559,12 @@ namespace DotSpatial.Data
             foreach (var part in Range.Parts)
             {
                 var coords = GetCoordinates(part);
+                var firstCoord = coords.FirstOrDefault();
+                var lastCoord = coords.LastOrDefault();
+                if (!firstCoord.Equals2D(lastCoord))
+                {
+                    coords.Add(firstCoord);
+                }
                 var ring = factory.CreateLinearRing(coords.ToArray());
                 if (Range.Parts.Count == 1)
                 {

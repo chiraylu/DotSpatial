@@ -370,20 +370,22 @@ namespace DotSpatial.Data
         {
             // Extent check first. If the extents don't intersect, then this doesn't intersect.
             if (!Extent.Intersects(shape.Extent)) return false;
-
-            switch (FeatureType)
-            {
-                case FeatureType.Polygon:
-                    PolygonShape.Epsilon = Epsilon;
-                    return PolygonShape.Intersects(this, shape);
-                case FeatureType.Line:
-                    LineShape.Epsilon = Epsilon;
-                    return LineShape.Intersects(this, shape);
-                case FeatureType.Point:
-                    PointShape.Epsilon = Epsilon;
-                    return PointShape.Intersects(this, shape);
-                default: return false;
-            }
+            Shape shape0 = new Shape(this);
+            Shape shape1 = new Shape(shape);
+            return shape0.ToGeometry().Intersects(shape1.ToGeometry());
+            //switch (FeatureType)
+            //{
+            //    case FeatureType.Polygon:
+            //        PolygonShape.Epsilon = Epsilon;
+            //        return PolygonShape.Intersects(this, shape);
+            //    case FeatureType.Line:
+            //        LineShape.Epsilon = Epsilon;
+            //        return LineShape.Intersects(this, shape);
+            //    case FeatureType.Point:
+            //        PointShape.Epsilon = Epsilon;
+            //        return PointShape.Intersects(this, shape);
+            //    default: return false;
+            //}
         }
 
         /// <summary>
