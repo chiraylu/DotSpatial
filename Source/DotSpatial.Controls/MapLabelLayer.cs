@@ -182,7 +182,7 @@ namespace DotSpatial.Controls
             {
                 var angle = GetAngleToRotate(symb, f, geo);
                 var tempAngle = angle % 360;
-                if ((tempAngle >= 90 && tempAngle < 270) || (tempAngle >= -270 && tempAngle < 90))
+                if ((tempAngle >= 90 && tempAngle < 270) || (tempAngle >= -270 && tempAngle < -90))
                     tempAngle += 180;
 
                 RectangleF labelBounds = PlaceLineLabel(geo, e, labelSize, symb, tempAngle, symbolizer);
@@ -197,7 +197,7 @@ namespace DotSpatial.Controls
                     {
                         var angle = GetAngleToRotate(symb, f, geo.GetGeometryN(n));
                         var tempAngle = angle % 360;
-                        if ((tempAngle >= 90 && tempAngle < 270) || (tempAngle >= -270 && tempAngle < 90))
+                        if ((tempAngle >= 90 && tempAngle < 270) || (tempAngle >= -270 && tempAngle < -90))
                             tempAngle += 180;
 
                         RectangleF labelBounds = PlaceLineLabel(geo.GetGeometryN(n), e, labelSize, symb, tempAngle, symbolizer);
@@ -222,7 +222,7 @@ namespace DotSpatial.Controls
 
                     var angle = GetAngleToRotate(symb, f, geo.GetGeometryN(longestIndex));
                     var tempAngle = angle % 360;
-                    if ((tempAngle >= 90 && tempAngle < 270) || (tempAngle >= -270 && tempAngle < 90))
+                    if ((tempAngle >= 90 && tempAngle < 270) || (tempAngle >= -270 && tempAngle < -90))
                         tempAngle += 180;
 
                     RectangleF labelBounds = PlaceLineLabel(geo.GetGeometryN(longestIndex), e, labelSize, symb, tempAngle, symbolizer);
