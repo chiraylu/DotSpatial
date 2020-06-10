@@ -440,10 +440,10 @@ namespace DotSpatial.Controls
 
                 foreach (int index in indices)
                 {
-                    double rotate = AttachRotateExpression(index, ps);
+                    var clockwiseAngle = -GetAngleFromExpression(index, ps);
                     if (featureType == FeatureType.Point)
                     {
-                        DrawPoint(vertices[index * 2], vertices[(index * 2) + 1], e, ps, g, origTransform);
+                        DrawPoint(vertices[index * 2], vertices[(index * 2) + 1], e, ps, g, origTransform, clockwiseAngle);
                     }
                     else
                     {
@@ -451,10 +451,9 @@ namespace DotSpatial.Controls
                         ShapeRange range = DataSet.ShapeIndices[index];
                         for (int i = range.StartIndex; i <= range.EndIndex(); i++)
                         {
-                            DrawPoint(vertices[i * 2], vertices[(i * 2) + 1], e, ps, g, origTransform);
+                            DrawPoint(vertices[i * 2], vertices[(i * 2) + 1], e, ps, g, origTransform, clockwiseAngle);
                         }
                     }
-                    DetachRotateExpression(ps, rotate);
                 }
             }
             else
@@ -483,55 +482,36 @@ namespace DotSpatial.Controls
                     IPointSymbolizer ps = selected ? pc.SelectionSymbolizer : pc.Symbolizer;
                     if (ps == null) continue;
 
-                    double rotate = AttachRotateExpression(index, ps);
+                    var clockwiseAngle = -GetAngleFromExpression(index, ps);
                     if (featureType == FeatureType.Point)
                     {
-                        DrawPoint(vertices[index * 2], vertices[(index * 2) + 1], e, ps, g, origTransform);
+                        DrawPoint(vertices[index * 2], vertices[(index * 2) + 1], e, ps, g, origTransform, clockwiseAngle);
                     }
                     else
                     {
                         ShapeRange range = DataSet.ShapeIndices[index];
                         for (int i = range.StartIndex; i <= range.EndIndex(); i++)
                         {
-                            DrawPoint(vertices[i * 2], vertices[(i * 2) + 1], e, ps, g, origTransform);
+                            DrawPoint(vertices[i * 2], vertices[(i * 2) + 1], e, ps, g, origTransform, clockwiseAngle);
                         }
                     }
-                    DetachRotateExpression(ps, rotate);
                 }
             }
 
             if (e.Device == null) g.Dispose();
             else g.Transform = origTransform;
         }
-        private double AttachRotateExpression(int fid, IPointSymbolizer ps)
+        private float GetAngleFromExpression(int fid, IPointSymbolizer ps)
         {
-            double rotate = 0;
+            float angle = 0;
             if (_expression == null || fid >= DataSet.DataTable.Rows.Count)
             {
-                return rotate;
+                return angle;
             }
             var row = DataSet.DataTable.Rows[fid];
             string value = _expression.CalculateRowValue(row, fid);
-            bool convertRet = double.TryParse(value, out rotate);
-            if (convertRet)
-            {
-                foreach (var symbol in ps.Symbols)
-                {
-                    symbol.Angle -= rotate;
-                }
-            }
-            return rotate;
-        }
-        private void DetachRotateExpression(IPointSymbolizer ps, double rotate)
-        {
-            if (_expression == null)
-            {
-                return;
-            }
-            foreach (var symbol in ps.Symbols)
-            {
-                symbol.Angle += rotate;
-            }
+            bool convertRet = float.TryParse(value, out angle);
+            return angle;
         }
 
         // This draws the individual point features
@@ -557,12 +537,11 @@ namespace DotSpatial.Controls
 
                 IPointSymbolizer ps = selected ? pc.SelectionSymbolizer : pc.Symbolizer;
                 if (ps == null) continue;
-                double rotate = AttachRotateExpression(feature.Fid, ps);
+                var clockwiseAngle = -GetAngleFromExpression(feature.Fid, ps);
                 foreach (Coordinate c in feature.Geometry.Coordinates)
                 {
-                    DrawPoint(c.X, c.Y, e, ps, g, origTransform);
+                    DrawPoint(c.X, c.Y, e, ps, g, origTransform, clockwiseAngle);
                 }
-                DetachRotateExpression(ps, rotate);
             }
 
 
@@ -579,7 +558,8 @@ namespace DotSpatial.Controls
         /// <param name="ps">PointSymbolizer with which the point gets drawn.</param>
         /// <param name="g">Graphics-Object that should be used by the PointSymbolizer.</param>
         /// <param name="origTransform">The original transformation that is used to position the point.</param>
-        private void DrawPoint(double ptX, double ptY, MapArgs e, IPointSymbolizer ps, Graphics g, Matrix origTransform)
+        /// <param name="clockwiseAngle">clockwiseAngle.</param>
+        private void DrawPoint(double ptX, double ptY, MapArgs e, IPointSymbolizer ps, Graphics g, Matrix origTransform,float clockwiseAngle)
         {
             var pt = new PointF
             {
@@ -589,10 +569,10 @@ namespace DotSpatial.Controls
             double scaleSize = ps.GetScale(e);
             Matrix shift = origTransform.Clone();
             shift.Translate(pt.X, pt.Y);
+            shift.Rotate(clockwiseAngle);
             g.Transform = shift;
             ps.Draw(g, scaleSize);
         }
-
         #endregion
     }
 }
