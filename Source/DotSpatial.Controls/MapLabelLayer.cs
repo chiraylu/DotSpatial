@@ -176,13 +176,17 @@ namespace DotSpatial.Controls
 
             SizeF labelSize = g.MeasureString(txt, CacheList.GetFont(symb));
 
-            IGeometry geo = f.Geometry;
+            IGeometry geo = f.Geometry.Copy();
 
             if (geo.NumGeometries == 1)
             {
-                var angle = GetAngleToRotate(symb, f, f.Geometry);
-                RectangleF labelBounds = PlaceLineLabel(f.Geometry, e, labelSize, symb, angle, symbolizer);
-                CollisionDraw(txt, g, symb, f, e, labelBounds, existingLabels, angle);
+                var angle = GetClockwiseAngleToRotate(symb, f, geo);
+                var tempAngle = angle % 360;
+                if ((tempAngle >= 90 && tempAngle < 270) || (tempAngle >= -270 && tempAngle < -90))
+                    tempAngle += 180;
+
+                RectangleF labelBounds = PlaceLineLabel(geo, e, labelSize, symb, tempAngle, symbolizer);
+                CollisionDraw(txt, g, symb, f, e, labelBounds, existingLabels, tempAngle);
             }
             else
             {
@@ -191,9 +195,13 @@ namespace DotSpatial.Controls
                 {
                     for (int n = 0; n < geo.NumGeometries; n++)
                     {
-                        var angle = GetAngleToRotate(symb, f, geo.GetGeometryN(n));
-                        RectangleF labelBounds = PlaceLineLabel(geo.GetGeometryN(n), e, labelSize, symb, angle, symbolizer);
-                        CollisionDraw(txt, g, symb, f, e, labelBounds, existingLabels, angle);
+                        var angle = GetClockwiseAngleToRotate(symb, f, geo.GetGeometryN(n));
+                        var tempAngle = angle % 360;
+                        if ((tempAngle >= 90 && tempAngle < 270) || (tempAngle >= -270 && tempAngle < -90))
+                            tempAngle += 180;
+
+                        RectangleF labelBounds = PlaceLineLabel(geo.GetGeometryN(n), e, labelSize, symb, tempAngle, symbolizer);
+                        CollisionDraw(txt, g, symb, f, e, labelBounds, existingLabels, tempAngle);
                     }
                 }
                 else
@@ -212,9 +220,13 @@ namespace DotSpatial.Controls
                         }
                     }
 
-                    var angle = GetAngleToRotate(symb, f, geo.GetGeometryN(longestIndex));
-                    RectangleF labelBounds = PlaceLineLabel(geo.GetGeometryN(longestIndex), e, labelSize, symb, angle, symbolizer);
-                    CollisionDraw(txt, g, symb, f, e, labelBounds, existingLabels, angle);
+                    var angle = GetClockwiseAngleToRotate(symb, f, geo.GetGeometryN(longestIndex));
+                    var tempAngle = angle % 360;
+                    if ((tempAngle >= 90 && tempAngle < 270) || (tempAngle >= -270 && tempAngle < -90))
+                        tempAngle += 180;
+
+                    RectangleF labelBounds = PlaceLineLabel(geo.GetGeometryN(longestIndex), e, labelSize, symb, tempAngle, symbolizer);
+                    CollisionDraw(txt, g, symb, f, e, labelBounds, existingLabels, tempAngle);
                 }
             }
         }
@@ -236,7 +248,7 @@ namespace DotSpatial.Controls
             // Gets the features text and calculate the label size
             string txt = category.CalculateExpression(f.DataRow, selected, f.Fid);
             if (txt == null) return;
-            var angle = GetAngleToRotate(symb, f);
+            var angle = GetClockwiseAngleToRotate(symb, f);
             SizeF labelSize = g.MeasureString(txt, CacheList.GetFont(symb));
             // Depending on the labeling strategy we do different things
             if (symb.PartsLabelingMethod == PartLabelingMethod.LabelAllParts)
@@ -270,7 +282,7 @@ namespace DotSpatial.Controls
             // Gets the features text and calculate the label size
             string txt = category.CalculateExpression(f.DataRow, selected, f.Fid);
             if (txt == null) return;
-            var angle = GetAngleToRotate(symb, f);
+            var angle = GetClockwiseAngleToRotate(symb, f);
             SizeF labelSize = g.MeasureString(txt, CacheList.GetFont(symb));
 
             IGeometry geo = f.Geometry;
@@ -688,19 +700,22 @@ namespace DotSpatial.Controls
         /// <param name="symb">LabelSymbolizer that indicates the angle to use.</param>
         /// <param name="feature">Feature whose label gets rotated.</param>
         /// <param name="lineString">Line string to get the angle from if line orientation should be used.</param>
-        /// <returns>Resulting angle in degree.</returns>
-        private static float GetAngleToRotate(ILabelSymbolizer symb, IFeature feature, IGeometry lineString = null)
+        /// <returns>Resulting clockwise angle in degree.</returns>
+        private static float GetClockwiseAngleToRotate(ILabelSymbolizer symb, IFeature feature, IGeometry lineString = null)
         {
+            float angle = 0;
             if (symb.UseAngle)
             {
-                return ToSingle(symb.Angle);
+                angle = -ToSingle(symb.Angle);
             }
 
             if (symb.UseLabelAngleField)
             {
                 var angleField = symb.LabelAngleField;
-                if (string.IsNullOrEmpty(angleField)) return 0;
-                return ToSingle(feature.DataRow[angleField]);
+                if (!string.IsNullOrEmpty(angleField))
+                {
+                    angle = -ToSingle(feature.DataRow[angleField]);
+                }
             }
 
             if (symb.UseLineOrientation)
@@ -709,14 +724,21 @@ namespace DotSpatial.Controls
                 if (ls != null)
                 {
                     ls = GetSegment(ls, symb);
-                    if (ls == null) return 0;
-                    if (symb.LineOrientation == LineOrientation.Parallel)
-                        return ToSingle(-Angle(ls));
-                    return ToSingle(-ls.Angle - 90);
+                    if (ls != null)
+                    {
+                        if (symb.LineOrientation == LineOrientation.Parallel)
+                        {
+                            angle = -ToSingle(Angle(ls));
+                        }
+                        else
+                        {
+                            angle = ToSingle(-ls.Angle - 90);
+                        }
+                    }
                 }
             }
 
-            return 0;
+            return angle;
         }
 
         private static double Angle(LineString lineString)
