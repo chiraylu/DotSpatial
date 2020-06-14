@@ -189,9 +189,9 @@ namespace DotSpatial.Plugins.WebMap
             double dx = rectangle.Width / extent.Width;
             double dy = rectangle.Height / extent.Height;
             destRect.X = (int)Math.Floor(rectangle.X + (xmin - extent.MinX) * dx);
-            destRect.X = (int)Math.Floor(rectangle.Y + (extent.MaxY - ymax) * dy);
+            destRect.Y = (int)Math.Floor(rectangle.Y + (extent.MaxY - ymax) * dy);
             destRect.Width = (int)Math.Ceiling((xmax - xmin) * dx);
-            destRect.Height = (int)Math.Ceiling((ymax - ymin) * dx);
+            destRect.Height = (int)Math.Ceiling((ymax - ymin) * dy);
             return destRect;
         }
         private Rectangle GetRectangle(Extent extent, Rectangle rectangle, Extent newExtent)
@@ -416,40 +416,54 @@ namespace DotSpatial.Plugins.WebMap
                     int height = stitchedBasemap.Height;
                     if (Map.Projection.Equals(ServiceProviderFactory.WebMercProj.Value))
                     {
-                        if (TileManager.ServiceProvider.Projection.Equals(ServiceProviderFactory.WebMercProj.Value))
+                        if (TileManager.ServiceProvider.Projection?.Equals(ServiceProviderFactory.WebMercProj.Value) == true)
                         {
                             var tileVertices = new[] { tiles.TopLeftTile.MinX, tiles.TopLeftTile.MaxY, tiles.BottomRightTile.MaxX, tiles.BottomRightTile.MinY };
                             Projections.Reproject.ReprojectPoints(tileVertices, z, ServiceProviderFactory.Wgs84Proj.Value, ServiceProviderFactory.WebMercProj.Value, 0, tileVertices.Length / 2);
                             bmpExtent = new Extent(tileVertices[0], tileVertices[3], tileVertices[2], tileVertices[1]);
                         }
+
+                        tileImage = new InRamImageData(stitchedBasemap)
+                        {
+                            Name = WebMapName,
+                            Projection = TileManager.ServiceProvider.Projection,
+                            Bounds = new RasterBounds(height, width, bmpExtent)
+                        };
+                        if (TileManager.ServiceProvider.Projection != null && !TileManager.ServiceProvider.Projection.Equals(Map.Projection))
+                        {
+                            tileImage.Reproject(Map.Projection);
+                            tileImage.Projection = Map.Projection;
+                        }
                     }
                     else if (Map.Projection.Equals(ServiceProviderFactory.Wgs84Proj.Value))
                     {
                         #region 测试
-                        if (TileManager.ServiceProvider.Projection?.Equals(ServiceProviderFactory.WebMercProj.Value)==true)
+                        if (TileManager.ServiceProvider.Projection?.Equals(ServiceProviderFactory.WebMercProj.Value) == true)
                         {
-                            //var r = ServiceProviderFactory.WebMercProj.Value.GeographicInfo.Datum.Spheroid.EquatorialRadius;
-                            //var metersPerDegree = Math.PI * r / 180;
-                            //var tileVertices = new[] { tiles.TopLeftTile.MinX, tiles.TopLeftTile.MaxY, tiles.BottomRightTile.MaxX, tiles.BottomRightTile.MinY };
-                            //Projections.Reproject.ReprojectPoints(tileVertices, z, ServiceProviderFactory.Wgs84Proj.Value, ServiceProviderFactory.WebMercProj.Value, 0, tileVertices.Length / 2);
-                            //var metersWidth = tileVertices[2] - tileVertices[0];
-                            //var metersPerPixel = metersWidth / width;
-
-                            ////metersPerPixel = TileCalculator.GroundResolution(Map.ViewExtents.Center.Y,tiles.Zoom);
-
-                            //var degreesPerPixel = metersPerPixel / metersPerDegree;
-                            //width = (int)Math.Ceiling(bmpExtent.Width / degreesPerPixel);
-                            //height = (int)Math.Ceiling(bmpExtent.Height / degreesPerPixel);
+                            var tileVertices = new[] { tiles.TopLeftTile.MinX, tiles.TopLeftTile.MaxY, tiles.BottomRightTile.MaxX, tiles.BottomRightTile.MinY };
+                            Projections.Reproject.ReprojectPoints(tileVertices, z, ServiceProviderFactory.Wgs84Proj.Value, ServiceProviderFactory.WebMercProj.Value, 0, tileVertices.Length / 2);
+                            bmpExtent = new Extent(tileVertices[0], tileVertices[3], tileVertices[2], tileVertices[1]);
+                        }
+                        tileImage = new InRamImageData(stitchedBasemap)
+                        {
+                            Name = WebMapName,
+                            Projection = TileManager.ServiceProvider.Projection,
+                            Bounds = new RasterBounds(height, width, bmpExtent)
+                        };
+                        if (TileManager.ServiceProvider.Projection != null && !TileManager.ServiceProvider.Projection.Equals(Map.Projection))
+                        {
+                            tileImage.Reproject(Map.Projection);
+                            tileImage.Projection = Map.Projection;
                         }
                         #endregion
                     }
 
-                    tileImage = new InRamImageData(stitchedBasemap)
-                    {
-                        Name = WebMapName,
-                        Projection = Map.Projection,
-                        Bounds = new RasterBounds(height, width, bmpExtent)
-                    };
+                    //tileImage = new InRamImageData(stitchedBasemap)
+                    //{
+                    //    Name = WebMapName,
+                    //    Projection = Map.Projection,
+                    //    Bounds = new RasterBounds(height, width, bmpExtent)
+                    //};
 
                     if (!bwProgress(90)) return tileImage;
                 }
