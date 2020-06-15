@@ -24,7 +24,7 @@ namespace DotSpatial.Symbology.Forms
                 File.WriteAllText(dg.FileName, value);
             }
         }
-        public static void SaveSymbolizer(IFeatureSymbolizer symbolizer)
+        public static void SaveFeatureSymbolizer(IFeatureSymbolizer symbolizer)
         {
             Save(symbolizer, "*.dsst|*.dsst");
         }
@@ -47,7 +47,7 @@ namespace DotSpatial.Symbology.Forms
             }
             return t;
         }
-        public static IFeatureSymbolizer OpenSymbolizer()
+        public static IFeatureSymbolizer OpenFeatureSymbolizer()
         {
             IFeatureSymbolizer featureSymbolizer = Open<IFeatureSymbolizer>("*.dsst|*.dsst");
             return featureSymbolizer;
@@ -63,5 +63,16 @@ namespace DotSpatial.Symbology.Forms
         {
             Save(newScheme, "*.dsly|*.dsly");
         }
+
+        public static void SaveLabelSymbolizer(ILabelSymbolizer labelSymbolizer)
+        {
+            Save(labelSymbolizer, "*.lbst|*.lbst");
+        }
+        public static ILabelSymbolizer OpenLabelSymbolizer()
+        {
+            ILabelSymbolizer labelSymbolizer = Open<ILabelSymbolizer>("*.lbst|*.lbst");
+            return labelSymbolizer;
+        }
+
     }
 }

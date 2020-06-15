@@ -117,7 +117,121 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="importBtn.Text" xml:space="preserve">
+    <value>导入</value>
+  </data>
+  <data name="saveBtn.Text" xml:space="preserve">
+    <value>保存</value>
+  </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="lblSymbolGroups.Size" type="System.Drawing.Size, System.Drawing">
+    <value>31, 13</value>
+  </data>
+  <data name="lblSymbolGroups.Text" xml:space="preserve">
+    <value>&amp;分类</value>
+  </data>
+  <data name="tabExpression.Text" xml:space="preserve">
+    <value>表达式</value>
+  </data>
+  <data name="tabBasic.Text" xml:space="preserve">
+    <value>基本</value>
+  </data>
+  <data name="label13.Size" type="System.Drawing.Size, System.Drawing">
+    <value>65, 12</value>
+  </data>
+  <data name="label13.Text" xml:space="preserve">
+    <value>浮动格式：</value>
+  </data>
+  <data name="grbLabelRotation.Text" xml:space="preserve">
+    <value>标注旋转</value>
+  </data>
+  <data name="rbLineBasedAngle.Size" type="System.Drawing.Size, System.Drawing">
+    <value>71, 16</value>
+  </data>
+  <data name="rbLineBasedAngle.Text" xml:space="preserve">
+    <value>基于线段</value>
+  </data>
+  <data name="rbIndividualAngle.Size" type="System.Drawing.Size, System.Drawing">
+    <value>59, 16</value>
+  </data>
+  <data name="rbIndividualAngle.Text" xml:space="preserve">
+    <value>按字段</value>
+  </data>
+  <data name="rbCommonAngle.Size" type="System.Drawing.Size, System.Drawing">
+    <value>47, 16</value>
+  </data>
+  <data name="rbCommonAngle.Text" xml:space="preserve">
+    <value>角度</value>
+  </data>
+  <data name="chkPrioritizeLow.Text" xml:space="preserve">
+    <value>优先较小值</value>
+  </data>
+  <data name="chkPreventCollision.Size" type="System.Drawing.Size, System.Drawing">
+    <value>60, 16</value>
+  </data>
+  <data name="chkPreventCollision.Text" xml:space="preserve">
+    <value>防压盖</value>
+  </data>
+  <data name="lblPriorityField.Size" type="System.Drawing.Size, System.Drawing">
+    <value>53, 12</value>
+  </data>
+  <data name="lblPriorityField.Text" xml:space="preserve">
+    <value>优先字段</value>
+  </data>
+  <data name="chkBorder.Size" type="System.Drawing.Size, System.Drawing">
+    <value>48, 16</value>
+  </data>
+  <data name="chkBorder.Text" xml:space="preserve">
+    <value>边框</value>
+  </data>
+  <data name="gpbFont.Text" xml:space="preserve">
+    <value>字体：</value>
+  </data>
+  <data name="lblFontColor.Size" type="System.Drawing.Size, System.Drawing">
+    <value>65, 12</value>
+  </data>
+  <data name="lblFontColor.Text" xml:space="preserve">
+    <value>字体颜色：</value>
+  </data>
+  <data name="lblFamily.Size" type="System.Drawing.Size, System.Drawing">
+    <value>41, 12</value>
+  </data>
+  <data name="lblFamily.Text" xml:space="preserve">
+    <value>名称：</value>
+  </data>
+  <data name="label2.Text" xml:space="preserve">
+    <value>样式：</value>
+  </data>
+  <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
+    <value>41, 12</value>
+  </data>
+  <data name="label1.Text" xml:space="preserve">
+    <value>大小：</value>
+  </data>
+  <data name="lblPreview.Text" xml:space="preserve">
+    <value>字体预览</value>
+  </data>
+  <data name="chkBackgroundColor.Size" type="System.Drawing.Size, System.Drawing">
+    <value>72, 16</value>
+  </data>
+  <data name="chkBackgroundColor.Text" xml:space="preserve">
+    <value>&amp;背景色：</value>
+  </data>
+  <data name="tabAdvanced.Text" xml:space="preserve">
+    <value>高级</value>
+  </data>
+  <data name="tabMembers.Text" xml:space="preserve">
+    <value>成员</value>
+  </data>
+  <data name="cmdOK.Text" xml:space="preserve">
+    <value>确定</value>
+  </data>
+  <data name="cmdCancel.Text" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="cmdApply.Text" xml:space="preserve">
+    <value>应用</value>
+  </data>
   <data name="$this.Icon" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         AAABAAEAEBAAAAAAGABoAwAAFgAAACgAAAAQAAAAIAAAAAEAGAAAAAAAAAMAAAAAAAAAAAAAAAAAAAAA
@@ -136,5 +250,8 @@
         AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD//wAA//8AAP//
         AAD//wAAAD8AAAAPAAAABwAAAAcAAAADAAAABwAAAAcAAAAPAAAAHwAA//8AAP//AAD//wAA
 </value>
+  </data>
+  <data name="$this.Text" xml:space="preserve">
+    <value>要素标注器</value>
   </data>
 </root>

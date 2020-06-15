@@ -36,6 +36,8 @@ namespace DotSpatial.Symbology.Forms
             this.splitContainer1 = new System.Windows.Forms.SplitContainer();
             this.lbCategories = new System.Windows.Forms.ListBox();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.importBtn = new System.Windows.Forms.Button();
+            this.saveBtn = new System.Windows.Forms.Button();
             this.btnCategoryDown = new System.Windows.Forms.Button();
             this.btnCategoryUp = new System.Windows.Forms.Button();
             this.btnSubtract = new System.Windows.Forms.Button();
@@ -163,12 +165,28 @@ namespace DotSpatial.Symbology.Forms
             // 
             // panel3
             // 
+            this.panel3.Controls.Add(this.importBtn);
+            this.panel3.Controls.Add(this.saveBtn);
             this.panel3.Controls.Add(this.btnCategoryDown);
             this.panel3.Controls.Add(this.btnCategoryUp);
             this.panel3.Controls.Add(this.btnSubtract);
             this.panel3.Controls.Add(this.btnAdd);
             resources.ApplyResources(this.panel3, "panel3");
             this.panel3.Name = "panel3";
+            // 
+            // importBtn
+            // 
+            resources.ApplyResources(this.importBtn, "importBtn");
+            this.importBtn.Name = "importBtn";
+            this.importBtn.UseVisualStyleBackColor = true;
+            this.importBtn.Click += new System.EventHandler(this.importBtn_Click);
+            // 
+            // saveBtn
+            // 
+            resources.ApplyResources(this.saveBtn, "saveBtn");
+            this.saveBtn.Name = "saveBtn";
+            this.saveBtn.UseVisualStyleBackColor = true;
+            this.saveBtn.Click += new System.EventHandler(this.saveBtn_Click);
             // 
             // btnCategoryDown
             // 
@@ -464,7 +482,7 @@ namespace DotSpatial.Symbology.Forms
             this.sldFontOpacity.NumberFormat = null;
             this.sldFontOpacity.Orientation = System.Windows.Forms.Orientation.Horizontal;
             this.sldFontOpacity.RampRadius = 10F;
-            this.sldFontOpacity.RampText = "Opacity";
+            this.sldFontOpacity.RampText = "不透明度";
             this.sldFontOpacity.RampTextAlignment = System.Drawing.ContentAlignment.MiddleCenter;
             this.sldFontOpacity.RampTextBehindRamp = true;
             this.sldFontOpacity.RampTextColor = System.Drawing.Color.Black;
@@ -1072,5 +1090,7 @@ namespace DotSpatial.Symbology.Forms
         private ExpressionControl sqlExpression;
         private RadioButton rbLineBasedAngle;
         private ComboBox cmbLineAngle;
+        private Button saveBtn;
+        private Button importBtn;
     }
 }
