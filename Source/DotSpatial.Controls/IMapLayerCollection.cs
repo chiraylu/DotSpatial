@@ -90,6 +90,14 @@ namespace DotSpatial.Controls
         IMapImageLayer Add(IImageData image);
 
         /// <summary>
+        /// Insert the specified fileName to the map as a new layer.
+        /// </summary>
+        /// <param name="index">The index to insert a layer.</param>
+        /// <param name="fileName">The string fileName to add as a layer.</param>
+        /// <returns>An IMapLayer that is the layer handle for the specified file.</returns>
+        IMapLayer Insert(int index, string fileName);
+
+        /// <summary>
         /// Moves the given layer to the new position.
         /// </summary>
         /// <param name="layer">Layer that is moved.</param>

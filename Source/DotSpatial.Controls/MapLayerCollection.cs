@@ -190,6 +190,57 @@ namespace DotSpatial.Controls
             return Add(dataSet);
         }
 
+        public virtual IMapFeatureLayer GetMapFeatureLayer(IFeatureSet featureSet)
+        {
+            if (featureSet == null) return null;
+
+            featureSet.ProgressHandler = ProgressHandler;
+            IMapFeatureLayer res = null;
+            if (featureSet.FeatureType == FeatureType.Point || featureSet.FeatureType == FeatureType.MultiPoint)
+            {
+                res = new MapPointLayer(featureSet);
+            }
+            else if (featureSet.FeatureType == FeatureType.Line)
+            {
+                res = new MapLineLayer(featureSet);
+            }
+            else if (featureSet.FeatureType == FeatureType.Polygon)
+            {
+                res = new MapPolygonLayer(featureSet);
+            }
+            return res;
+        }
+        public virtual IMapLayer GetMapLayer(IDataSet dataSet)
+        {
+            IMapLayer mapLayer = null;
+            var ss = dataSet as ISelfLoadSet;
+            if (ss != null) mapLayer= ss.GetLayer();
+
+            var fs = dataSet as IFeatureSet;
+            if (fs != null) mapLayer = GetMapFeatureLayer(fs);
+
+            var r = dataSet as IRaster;
+            if (r != null) mapLayer = new MapRasterLayer(r);
+
+            var id = dataSet as IImageData;
+            if (id != null)
+            {
+                if (id.Height == 0 || id.Width == 0) return null;
+                mapLayer = new MapImageLayer(id);
+            }
+            return mapLayer;
+        }
+        public virtual IMapLayer GetMapLayer(string fileName)
+        {
+            IDataSet dataSet = DataManager.DefaultDataManager.OpenFile(fileName);
+            IMapLayer mapLayer = null;
+            if (dataSet != null)
+            {
+                mapLayer = GetMapLayer(dataSet);
+            }
+            return mapLayer;
+        }
+
         /// <summary>
         /// Adds the dataset specified to the file. Depending on whether this is a featureSet,
         /// Raster, or ImageData, this will return the appropriate layer for the map.
@@ -396,6 +447,17 @@ namespace DotSpatial.Controls
         protected virtual void OnBufferChanged(object sender, ClipArgs e)
         {
             BufferChanged?.Invoke(sender, e);
+        }
+
+        /// <inheritdoc/>
+        public IMapLayer Insert(int index, string fileName)
+        {
+            IMapLayer mapLayer = GetMapLayer(fileName);
+            if (mapLayer != null)
+            {
+                Insert(index, mapLayer);
+            }
+            return mapLayer;
         }
 
         #endregion

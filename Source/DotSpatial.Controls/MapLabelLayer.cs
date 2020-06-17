@@ -421,11 +421,6 @@ namespace DotSpatial.Controls
         public void DrawRegions(MapArgs args, List<Extent> regions, bool selected)
         {
             if (FeatureSet == null || selected) return;
-#if DEBUG
-            var sw = new Stopwatch();
-            sw.Start();
-#endif
-
             if (FeatureSet.IndexMode)
             {
                 // First determine the number of features we are talking about based on region.
@@ -466,11 +461,6 @@ namespace DotSpatial.Controls
                 List<Rectangle> clipRects = args.ProjToPixel(regions);
                 DrawFeatures(args, drawList, clipRects, true);
             }
-
-#if DEBUG
-            sw.Stop();
-            Debug.WriteLine("MapLabelLayer {0} DrawRegions: {1} ms", FeatureSet.Name, sw.ElapsedMilliseconds);
-#endif
         }
 
         /// <inheritdoc/>
