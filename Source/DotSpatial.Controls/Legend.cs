@@ -1172,12 +1172,13 @@ namespace DotSpatial.Controls
             {
                 _ignoreHide = true;
                 _previousMouseDown.Item.LegendText = _editBox.Text;
-                _previousMouseDown = null;
+                //_previousMouseDown = null;
                 _editBox.Visible = false;
                 _editBox.Text = string.Empty;
                 _ignoreHide = false;
                 if (refreshNodes) RefreshNodes();
             }
+            _previousMouseDown = null;
         }
 
         // a good selectionHighlight color: 215, 238, 252
