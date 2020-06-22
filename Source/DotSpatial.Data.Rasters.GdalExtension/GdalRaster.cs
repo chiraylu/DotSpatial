@@ -18,7 +18,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
     /// A GDAL raster.
     /// </summary>
     /// <typeparam name="T">Type of the contained items.</typeparam>
-    internal class GdalRaster<T> : Raster<T>
+    public class GdalRaster<T> : Raster<T>
         where T : IEquatable<T>, IComparable<T>
     {
         #region Fields
@@ -76,6 +76,11 @@ namespace DotSpatial.Data.Rasters.GdalExtension
         #endregion
 
         #region Properties
+
+        /// <summary>
+        /// Gets the dataset
+        /// </summary>
+        public Dataset Dataset => _dataset;
 
         /// <summary>
         /// Gets the GDAL data type.
