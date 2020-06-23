@@ -72,7 +72,7 @@ namespace DotSpatial.Symbology
         /// <summary>
         /// Gets or sets the drawing layers. Drawing layers are tracked separately, and do not appear in the legend.
         /// </summary>
-        public List<ILayer> DrawingLayers { get; set; }
+        public ILayerCollection DrawingLayers { get; set; }
 
         /// <summary>
         /// Gets the extent. Overrides the default behavior for groups, which should return null in the
@@ -288,7 +288,7 @@ namespace DotSpatial.Symbology
             LegendType = LegendType.Group;
             MapFrame = this;
             ParentGroup = this;
-            DrawingLayers = new List<ILayer>();
+            DrawingLayers = new LayerCollection();
         }
 
         private void CreateGroupClick(object sender, EventArgs e)

@@ -33,7 +33,7 @@ namespace DotSpatial.Symbology
         /// <summary>
         /// Gets or sets the drawing layers. Drawing layers are tracked separately, and do not appear in the legend.
         /// </summary>
-        List<ILayer> DrawingLayers { get; set; }
+        ILayerCollection DrawingLayers { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether or not a newly added layer
