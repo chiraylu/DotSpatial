@@ -414,7 +414,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
             {
                 nbY = (int)Math.Ceiling(h / blockYsize);
             }
-            int redundancy = (int)Math.Ceiling(1 / Math.Min(m11, m22));
+            int redundancy = (int)Math.Ceiling(Math.Abs(1 / Math.Min(m11, m22)));
             for (var i = 0; i < nbX; i++)
             {
                 for (var j = 0; j < nbY; j++)
@@ -1112,6 +1112,21 @@ namespace DotSpatial.Data.Rasters.GdalExtension
 
             double[] affine = new double[6];
             _dataset.GetGeoTransform(affine);
+            if (_dataset.GetGCPCount() > 0)
+            {
+                var gcps = _dataset.GetGCPs();
+                var ret = Gdal.GCPsToGeoTransform(gcps, affine, 1);
+                projString = _dataset.GetGCPProjection();
+                Projection = ProjectionInfo.FromEsriString(projString);
+            }
+            else
+            {
+                // 解决无投影的栅格影像的反转显示问题
+                if (affine[5] > 0)
+                {
+                    affine[5] = -affine[5];
+                }
+            }
 
             // in gdal (row,col) coordinates are defined relative to the top-left corner of the top-left cell
             // shift them by half a cell to give coordinates relative to the center of the top-left cell

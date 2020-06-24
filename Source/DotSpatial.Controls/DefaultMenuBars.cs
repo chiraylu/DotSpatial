@@ -443,8 +443,11 @@ namespace DotSpatial.Controls
         {
             try
             {
-                IMapGroup selectedLayerParent = (IMapGroup)App.Map.Layers.SelectedLayer.GetParentItem();
-                selectedLayerParent.Remove(App.Map.Layers.SelectedLayer);
+                if (App.Map.Layers.SelectedLayer != null)
+                {
+                    IMapGroup selectedLayerParent = (IMapGroup)App.Map.Layers.SelectedLayer.GetParentItem();
+                    selectedLayerParent.Remove(App.Map.Layers.SelectedLayer);
+                }
             }
             catch
             {
