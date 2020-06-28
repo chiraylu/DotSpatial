@@ -25,7 +25,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
         public GdalRasterProvider()
         {
             // Add ourself in for these extensions, unless another provider is registered for them.
-            string[] extensions = { ".tif", ".tiff", ".adf", ".img", ".jpg" };
+            string[] extensions = { ".tif", ".tiff", ".adf", ".img", ".jpg", ".png" };
             foreach (string extension in extensions)
             {
                 if (!DataManager.DefaultDataManager.PreferredProviders.ContainsKey(extension))
@@ -152,7 +152,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
         {
             return Open(fileName);
         }
-        
+
         private static IRaster GetBand(string fileName, Dataset dataset)
         {
             Raster result = null;
