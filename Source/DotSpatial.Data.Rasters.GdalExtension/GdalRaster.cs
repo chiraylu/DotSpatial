@@ -607,6 +607,50 @@ namespace DotSpatial.Data.Rasters.GdalExtension
             Bitmap result = GetBitmap(width, height, rBuffer, gBuffer, bBuffer, aBuffer);
             return result;
         }
+
+        private Bitmap ReadRgba(int xOffset, int yOffset, int xSize, int ySize)
+        {
+            if (Bands.Count < 4)
+            {
+                throw new GdalException("ARGB Format was indicated but there are only " + Bands.Count + " bands!");
+            }
+            Band aBand;
+            Band rBand;
+            Band gBand;
+            Band bBand;
+            var disposeBand = false;
+            if (_overview >= 0 && _overviewCount > 0)
+            {
+                rBand = (Bands[0] as GdalRaster<T>)._band.GetOverview(_overview);
+                gBand = (Bands[1] as GdalRaster<T>)._band.GetOverview(_overview);
+                bBand = (Bands[2] as GdalRaster<T>)._band.GetOverview(_overview);
+                aBand = (Bands[3] as GdalRaster<T>)._band.GetOverview(_overview);
+                disposeBand = true;
+            }
+            else
+            {
+                rBand = (Bands[0] as GdalRaster<T>)._band;
+                gBand = (Bands[1] as GdalRaster<T>)._band;
+                bBand = (Bands[2] as GdalRaster<T>)._band;
+                aBand = (Bands[3] as GdalRaster<T>)._band;
+            }
+
+            int width, height;
+            GdalImage.NormalizeSizeToBand(xOffset, yOffset, xSize, ySize, rBand, out width, out height);
+            byte[] aBuffer = GdalImage.ReadBand(aBand, xOffset, yOffset, xSize, ySize, width, height);
+            byte[] rBuffer = GdalImage.ReadBand(rBand, xOffset, yOffset, xSize, ySize, width, height);
+            byte[] gBuffer = GdalImage.ReadBand(gBand, xOffset, yOffset, xSize, ySize, width, height);
+            byte[] bBuffer = GdalImage.ReadBand(bBand, xOffset, yOffset, xSize, ySize, width, height);
+            if (disposeBand)
+            {
+                aBand.Dispose();
+                rBand.Dispose();
+                gBand.Dispose();
+                bBand.Dispose();
+            }
+            Bitmap result = GetBitmap(width, height, rBuffer, gBuffer, bBuffer, aBuffer);
+            return result;
+        }
         private Bitmap ReadPaletteBuffered(int xOffset, int yOffset, int xSize, int ySize)
         {
             ColorTable ct = _band.GetRasterColorTable();
@@ -691,7 +735,15 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                         result = ReadRgb(xOffset, yOffset, xSize, ySize);
                         break;
                     default:
-                        result = ReadArgb(xOffset, yOffset, xSize, ySize);
+                        switch (_colorInterp)
+                        {
+                            case ColorInterp.GCI_RedBand:
+                                result = ReadRgba(xOffset, yOffset, xSize, ySize);
+                                break;
+                            case ColorInterp.GCI_AlphaBand:
+                                result = ReadArgb(xOffset, yOffset, xSize, ySize);
+                                break;
+                        }
                         break;
                 }
             });
@@ -704,7 +756,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                     result = ReadGrayIndex(xOffset, yOffset, xSize, ySize);
                     break;
                 case ColorInterp.GCI_RedBand:
-                    result = ReadRgb(xOffset, yOffset, xSize, ySize);
+                    action.Invoke();
                     break;
                 case ColorInterp.GCI_AlphaBand:
                     result = ReadArgb(xOffset, yOffset, xSize, ySize);

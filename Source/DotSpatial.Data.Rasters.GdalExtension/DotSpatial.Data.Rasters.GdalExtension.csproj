@@ -115,6 +115,7 @@
     </Compile>
     <Compile Include="GCHandleHelper.cs" />
     <Compile Include="GdalConfiguration.cs" />
+    <Compile Include="GdalExtensions.cs" />
     <Compile Include="GdalImageSource.cs" />
     <Compile Include="GdalTiledImage.cs" />
     <Compile Include="GdalException.cs" />
