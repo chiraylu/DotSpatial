@@ -15,7 +15,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
         /// brief Compose two geotransforms.
         /// </summary>
         /// <param name="padfGT1">geoTransform1</param>
-        /// <param name="padfGT2">geoTransform2</param>
+        /// <param name="padfGT2">geoTransform2</param> 
         /// <returns>geoTransform</returns>
         public static double[] GDALComposeGeoTransforms(double[] padfGT1, double[] padfGT2)
         {
