@@ -30,6 +30,8 @@ namespace DotSpatial.Symbology
         /// </summary>
         public ILayer Layer { get; protected set; }
 
+        public int Index { get; set; }
+
         #endregion
     }
 }

@@ -47,6 +47,11 @@ namespace DotSpatial.Symbology
         public event EventHandler<LayerMovedEventArgs> LayerMoved;
 
         /// <summary>
+        /// Occurs when a layer is removing from this item.
+        /// </summary>
+        public event EventHandler<LayerEventArgs> LayerRemovedCompleted;
+
+        /// <summary>
         /// Occurs when a layer is removed from this item.
         /// </summary>
         public event EventHandler<LayerEventArgs> LayerRemoved;
@@ -199,6 +204,11 @@ namespace DotSpatial.Symbology
             IsDisposed = true;
         }
 
+        protected override void OnRemoveComplete(int index, object value)
+        {
+            base.OnRemoveComplete(index, value);
+        }
+
         /// <summary>
         /// Removes the extended event listeners once a layer is removed from this list.
         /// </summary>
@@ -209,7 +219,7 @@ namespace DotSpatial.Symbology
             item.ZoomToLayer -= LayerZoomToLayer;
             item.VisibleChanged -= OnLayerVisibleChanged;
             item.FinishedLoading -= ItemFinishedLoading;
-            item.SelectionChanged -= SelectableSelectionChanged; 
+            item.SelectionChanged -= SelectableSelectionChanged;
             item.LayerSelected -= ItemLayerSelected;
 
             // if the layer being removed is selected, ensure that the SelectedLayer property is cleared
@@ -271,6 +281,16 @@ namespace DotSpatial.Symbology
             if (EventsSuspended) return;
 
             LayerMoved?.Invoke(sender, e);
+        }
+
+        /// <summary>
+        /// Fires the LayerRemovedCompleted event.
+        /// </summary>
+        /// <param name="item">Layer that was removed.</param>
+        protected virtual void OnLayerRemovedCompleted(int index, T item)
+        {
+            Exclude(item);
+            LayerRemovedCompleted?.Invoke(this, new LayerEventArgs(item) { Index = index });
         }
 
         /// <summary>
