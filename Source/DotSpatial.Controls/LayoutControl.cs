@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -409,7 +410,7 @@ namespace DotSpatial.Controls
             {
                 if (_printerSettings.DefaultPageSettings.Landscape)
                 {
-                    return GetPaperWidth();
+                    return GetPaperWidth(); 
                 }
 
                 return GetPaperHeight();
@@ -454,14 +455,13 @@ namespace DotSpatial.Controls
         /// <param name="le">Layout element that gets added.</param>
         public void AddToLayout(LayoutElement le)
         {
-            var leName = le.Name + " 1";
-            var i = 2;
-            while (LayoutElements.Where(o => o.Name == leName).Count() > 0)
+            var leName = le.Name;
+            int i = 1;
+            while (LayoutElements.Any(o => o.Name == leName))
             {
-                leName = le.Name + " " + i;
+                leName = $"{le.Name} {i++}";
                 i++;
             }
-
             le.Name = leName;
 
             LayoutElements.Insert(0, le);
@@ -470,6 +470,7 @@ namespace DotSpatial.Controls
             var newExtent = new RectangleF(le.Rectangle.X - buffer, le.Rectangle.Y - buffer, le.Rectangle.Width + 2 * buffer, le.Rectangle.Height + 2 * buffer);
             Invalidate(new Region(PaperToScreen(newExtent)));
         }
+
 
         /// <summary>
         /// Assigns the given toolstrip to one of the ToolStrip propertys if it is of a corresponding type, otherwise it gets added to the list of tool strips that get checked for button changes.
