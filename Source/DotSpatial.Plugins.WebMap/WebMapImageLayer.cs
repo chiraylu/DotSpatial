@@ -492,7 +492,10 @@ namespace DotSpatial.Plugins.WebMap
                 var imageData = GetTilesFromMapView(bwProgress);
                 if (!_bw.CancellationPending)
                 {
-                    Image = imageData;
+                    if (IsVisible)
+                    {
+                        Image = imageData;
+                    }
                 }
             }
             // report progress and check for cancel

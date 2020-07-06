@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
@@ -143,24 +144,25 @@ namespace DotSpatial.Controls
             {
                 if (_layoutControl != null)
                 {
-                    _layoutControl.LayoutElements.ListChanged -= LayoutElements_ListChanged;
+                    _layoutControl.LayoutElements.CollectionChanged -= LayoutElements_CollectionChanged;
                 }
 
                 _layoutControl = value;
                 if (_layoutControl != null)
                 {
-                    _layoutControl.LayoutElements.ListChanged += LayoutElements_ListChanged;
+                    _layoutControl.LayoutElements.CollectionChanged += LayoutElements_CollectionChanged;
                 }
             }
         }
 
-        private void LayoutElements_ListChanged(object sender, ListChangedEventArgs e)
+        private void LayoutElements_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            switch (e.ListChangedType)
+            switch (e.Action)
             {
-                case ListChangedType.ItemAdded:
-                case ListChangedType.ItemDeleted:
-                case ListChangedType.Reset:
+                case NotifyCollectionChangedAction.Add:
+                case  NotifyCollectionChangedAction.Remove:
+                case NotifyCollectionChangedAction.Replace:
+                case NotifyCollectionChangedAction.Reset:
                     if (!_layoutControl.LayoutElements.Contains(_layoutMap))
                         Map = null;
                     break;

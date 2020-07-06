@@ -17,7 +17,7 @@ namespace DotSpatial.Controls
     /// The interface for all elements that can be added to the layout control
     /// </summary>
     [Serializable]
-    public abstract class LayoutElement
+    public abstract class LayoutElement : NotifyClass
     {
         #region Fields
 
@@ -64,15 +64,35 @@ namespace DotSpatial.Controls
 
         #region Properties
 
+        private bool _isFixedSize;
+
         /// <summary>
         /// Gets or sets a value indicating whether the element can resize
         /// </summary>
-        public bool IsFixedSize { get; set; }
+        public bool IsFixedSize
+        {
+            get { return _isFixedSize; }
+            set
+            {
+                _isFixedSize = value;
+                OnPropertyChanged("IsFixedSize");
+            }
+        }
+
+        private bool _isFixedPosition;
 
         /// <summary>
         /// Gets or sets a value indicating whether the element can move
         /// </summary>
-        public bool IsFixedPosition { get; set; }
+        public bool IsFixedPosition
+        {
+            get { return _isFixedPosition; }
+            set
+            {
+                _isFixedPosition = value;
+                OnPropertyChanged("IsFixedPosition");
+            }
+        }
 
         /// <summary>
         /// Gets or sets the line symbolizer that draws the outline
@@ -91,6 +111,7 @@ namespace DotSpatial.Controls
             set
             {
                 _background = value;
+                OnPropertyChanged("Background");
             }
         }
 
@@ -112,6 +133,7 @@ namespace DotSpatial.Controls
                 {
                     _location = new PointF(value.X, value.Y);
                     OnInvalidate();
+                    OnPropertyChanged("Location");
                 }
             }
         }
@@ -133,6 +155,7 @@ namespace DotSpatial.Controls
                 {
                     _location = value;
                     OnInvalidate();
+                    OnPropertyChanged("LocationF");
                 }
             }
         }
@@ -153,6 +176,7 @@ namespace DotSpatial.Controls
             {
                 _name = value;
                 OnInvalidate();
+                OnPropertyChanged("Name");
             }
         }
 
@@ -187,6 +211,7 @@ namespace DotSpatial.Controls
                 _size = value.Size;
 
                 RefreshElement();
+                OnPropertyChanged("Rectangle");
             }
         }
 
@@ -204,6 +229,7 @@ namespace DotSpatial.Controls
             set
             {
                 _resizeStyle = value;
+                OnPropertyChanged("ResizeStyle");
             }
         }
 
@@ -221,6 +247,7 @@ namespace DotSpatial.Controls
             set
             {
                 _resizing = value;
+                OnPropertyChanged("Resizing");
             }
         }
 
@@ -247,6 +274,7 @@ namespace DotSpatial.Controls
                     _size = value;
 
                     RefreshElement();
+                    OnPropertyChanged("Size");
                 }
             }
         }
@@ -267,6 +295,7 @@ namespace DotSpatial.Controls
                 _thumbNail?.Dispose();
                 _thumbNail = value;
                 OnThumbnailChanged();
+                OnPropertyChanged("ThumbNail");
             }
         }
 

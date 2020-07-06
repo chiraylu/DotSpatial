@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See License.txt file in the project root for full license information.
 
 using System;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
@@ -44,7 +45,7 @@ namespace DotSpatial.Controls
             {
                 _layoutControl = value;
                 if (_layoutControl == null) return;
-                _layoutControl.SelectedLayoutElements.ListChanged += SelectedLayoutElements_ListChanged;
+                _layoutControl.SelectedLayoutElements.CollectionChanged += SelectedLayoutElements_CollectionChanged; ;
             }
         }
 
@@ -53,13 +54,13 @@ namespace DotSpatial.Controls
 
         #region Methods
 
-        private void SelectedLayoutElements_ListChanged(object sender, ListChangedEventArgs e)
+        private void SelectedLayoutElements_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            switch (e.ListChangedType)
+            switch (e.Action)
             {
-                case ListChangedType.ItemAdded:
-                case ListChangedType.ItemDeleted:
-                case ListChangedType.Reset:
+                case NotifyCollectionChangedAction.Add :
+                case NotifyCollectionChangedAction.Remove:
+                case NotifyCollectionChangedAction.Reset:
                     // This code is so that the property grid gets updates if one of the properties changes
                     foreach (LayoutElement selecteElement in _layoutControl.LayoutElements)
                         selecteElement.Invalidated -= SelecteElementInvalidated;
@@ -71,6 +72,7 @@ namespace DotSpatial.Controls
                     break;
             }
         }
+
         private void LayoutPropertyGridKeyUp(object sender, KeyEventArgs e)
         {
             switch (e.KeyCode)
