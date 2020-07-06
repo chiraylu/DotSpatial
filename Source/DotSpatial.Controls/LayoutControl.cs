@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -58,7 +59,8 @@ namespace DotSpatial.Controls
         public LayoutControl()
         {
             InitializeComponent();
-            SelectedLayoutElements.ListChanged += SelectedLayoutElements_ListChanged;
+            LayoutElements.CollectionChanged += LayoutElements_CollectionChanged;
+            SelectedLayoutElements.CollectionChanged += SelectedLayoutElements_CollectionChanged;
             SelectionPen = new Pen(Color.Cyan, 2F);
             _otherToolStrips = new List<ToolStrip>();
             _printerSettings = new PrinterSettings();
@@ -79,6 +81,130 @@ namespace DotSpatial.Controls
             else
             {
                 MessageBox.Show(MessageStrings.LayoutControl_NoPrinterFound);
+            }
+            ContextMenu = _contextMenuRight;
+            ContextMenu.Popup += ContextMenu_Popup;
+        }
+
+        private void ContextMenu_Popup(object sender, EventArgs e)
+        {
+            if (SelectedLayoutElements.Count < 1)
+            {
+                for (var i = 0; i < _contextMenuRight.MenuItems.Count; i++)
+                    _contextMenuRight.MenuItems[i].Enabled = false;
+            }
+            else if (SelectedLayoutElements.Count == 1)
+            {
+                foreach (MenuItem item in _contextMenuRight.MenuItems)
+                {
+                    if (item == _cMnuSelAli || item == _cMnuSelFit)
+                    {
+                        item.Enabled = false;
+                    }
+                    else
+                    {
+                        item.Enabled = true;
+                    }
+                }
+            }
+            else
+            {
+                for (var i = 0; i < _contextMenuRight.MenuItems.Count; i++)
+                    _contextMenuRight.MenuItems[i].Enabled = true;
+            }
+        }
+
+        /// <summary>
+        /// Adds a layout element to the layout.
+        /// </summary>
+        /// <param name="le">Layout element that gets added.</param>
+        public void AddToLayout(LayoutElement le)
+        {
+            var leName = le.Name;
+            int i = 1;
+            while (LayoutElements.Any(o => o.Name == leName))
+            {
+                leName = $"{le.Name} {i++}";
+                i++;
+            }
+            le.Name = leName;
+            LayoutElements.Insert(0, le);
+        }
+
+        private void SelectedLayoutElements_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                case NotifyCollectionChangedAction.Remove:
+                case NotifyCollectionChangedAction.Reset:
+                    if (_layoutMapToolStrip != null)
+                    {
+                        if (SelectedLayoutElements.Count == 1 && SelectedLayoutElements[0] is LayoutMap)
+                        {
+                            _layoutMapToolStrip.Enabled = true;
+                        }
+                        else
+                        {
+                            _layoutMapToolStrip.Enabled = false;
+                            if (MouseMode == MouseMode.StartPanMap || MouseMode == MouseMode.PanMap)
+                                MouseMode = MouseMode.Default;
+                        }
+                    }
+
+                    if (SelectedLayoutElements.Count == 0 && (MouseMode == MouseMode.ResizeSelected || MouseMode == MouseMode.MoveSelection))
+                        MouseMode = MouseMode.Default;
+                    if (e.NewItems != null)
+                    {
+                        foreach (LayoutElement item in e.NewItems)
+                        {
+                            Invalidate(new Region(PaperToScreen(item.Rectangle)));
+                        }
+                    }
+                    if (e.OldItems != null)
+                    {
+                        foreach (LayoutElement item in e.OldItems)
+                        {
+                            Invalidate(new Region(PaperToScreen(item.Rectangle)));
+                        }
+                    }
+                    break;
+            }
+            Invalidate();
+        }
+
+        private void LayoutElements_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (LayoutElement item in e.NewItems)
+                    {
+                        item.Invalidated += LeInvalidated;
+                        int buffer = 2;
+                        var newExtent = new RectangleF(item.Rectangle.X - buffer, item.Rectangle.Y - buffer, item.Rectangle.Width + 2 * buffer, item.Rectangle.Height + 2 * buffer);
+                        Invalidate(new Region(PaperToScreen(newExtent)));
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (LayoutElement item in e.OldItems)
+                    {
+                        Invalidate(new Region(PaperToScreen(item.Rectangle)));
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    foreach (LayoutElement item in e.NewItems)
+                    {
+                        Invalidate(new Region(PaperToScreen(item.Rectangle)));
+                    }
+                    foreach (LayoutElement item in e.OldItems)
+                    {
+                        Invalidate(new Region(PaperToScreen(item.Rectangle)));
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    Invalidate();
+                    break;
             }
         }
 
@@ -194,7 +320,7 @@ namespace DotSpatial.Controls
         /// <summary>
         /// Gets the list of layoutElements currently loaded in the project.
         /// </summary>
-        public BindingList<LayoutElement> LayoutElements { get; } = new BindingList<LayoutElement>();
+        public ObservableCollection<LayoutElement> LayoutElements { get; } = new ObservableCollection<LayoutElement>();
 
         /// <summary>
         /// Gets or sets the LayoutInsertToolStrip.
@@ -397,7 +523,7 @@ namespace DotSpatial.Controls
         /// <summary>
         /// Gets the list of layoutElements currently selected in the project.
         /// </summary>
-        public BindingList<LayoutElement> SelectedLayoutElements { get; } = new BindingList<LayoutElement>();
+        public ObservableCollection<LayoutElement> SelectedLayoutElements { get; } = new ObservableCollection<LayoutElement>();
 
         private Pen SelectionPen { get; set; }
 
@@ -410,7 +536,7 @@ namespace DotSpatial.Controls
             {
                 if (_printerSettings.DefaultPageSettings.Landscape)
                 {
-                    return GetPaperWidth(); 
+                    return GetPaperWidth();
                 }
 
                 return GetPaperHeight();
@@ -444,32 +570,12 @@ namespace DotSpatial.Controls
         public void AddElementWithMouse(LayoutElement le)
         {
             _elementToAddWithMouse = le;
-            ClearSelection();
+            SelectedLayoutElements.Clear();
             MouseMode = MouseMode.StartInsertNewElement;
             Cursor = Cursors.Cross;
         }
 
-        /// <summary>
-        /// Adds a layout element to the layout.
-        /// </summary>
-        /// <param name="le">Layout element that gets added.</param>
-        public void AddToLayout(LayoutElement le)
-        {
-            var leName = le.Name;
-            int i = 1;
-            while (LayoutElements.Any(o => o.Name == leName))
-            {
-                leName = $"{le.Name} {i++}";
-                i++;
-            }
-            le.Name = leName;
 
-            LayoutElements.Insert(0, le);
-            le.Invalidated += LeInvalidated;
-            int buffer = 2;
-            var newExtent = new RectangleF(le.Rectangle.X - buffer, le.Rectangle.Y - buffer, le.Rectangle.Width + 2 * buffer, le.Rectangle.Height + 2 * buffer);
-            Invalidate(new Region(PaperToScreen(newExtent)));
-        }
 
 
         /// <summary>
@@ -620,15 +726,6 @@ namespace DotSpatial.Controls
 
                     break;
             }
-        }
-
-        /// <summary>
-        /// Clears the current selection.
-        /// </summary>
-        public void ClearSelection()
-        {
-            SelectedLayoutElements.Clear();
-            Invalidate();
         }
 
         /// <summary>
@@ -909,8 +1006,7 @@ namespace DotSpatial.Controls
         {
             var unselected = LayoutElements.Where(o => !SelectedLayoutElements.Contains(o));
             SelectedLayoutElements.Clear();
-            SelectedLayoutElements.InsertRange(0,unselected);
-            Invalidate();
+            SelectedLayoutElements.InsertRange(0, unselected);
         }
 
         /// <summary>
@@ -1432,7 +1528,6 @@ namespace DotSpatial.Controls
         {
             SelectedLayoutElements.Clear();
             SelectedLayoutElements.InsertRange(0, LayoutElements);
-            Invalidate();
         }
 
         /// <summary>
@@ -1532,33 +1627,12 @@ namespace DotSpatial.Controls
         }
 
         /// <summary>
-        /// Adds the specified LayoutElement le to the selection.
-        /// </summary>
-        /// <param name="le">The layout element.</param>
-        internal void AddToSelection(LayoutElement le)
-        {
-            SelectedLayoutElements.Add(le);
-            Invalidate(new Region(PaperToScreen(le.Rectangle)));
-        }
-
-        /// <summary>
-        /// Adds the specified LayoutElement le to the selection.
-        /// </summary>
-        /// <param name="le">The layout element.</param>
-        internal void AddToSelection(List<LayoutElement> le)
-        {
-            SelectedLayoutElements.AddRange(le);
-            Invalidate();
-        }
-
-        /// <summary>
         /// Clears the the layout of all layoutElements.
         /// </summary>
         internal void ClearLayout()
         {
             SelectedLayoutElements.Clear();
             LayoutElements.Clear();
-            Invalidate();
         }
 
         /// <summary>
@@ -1573,18 +1647,7 @@ namespace DotSpatial.Controls
             {
                 SelectedLayoutElements.Remove(le);
                 LayoutElements.Remove(le);
-                Invalidate(new Region(PaperToScreen(le.Rectangle)));
             }
-        }
-
-        /// <summary>
-        /// Removes the specified layoutElement from the selection
-        /// </summary>
-        /// <param name="le">The layout element.</param>
-        internal void RemoveFromSelection(LayoutElement le)
-        {
-            SelectedLayoutElements.Remove(le);
-            Invalidate(new Region(PaperToScreen(le.Rectangle)));
         }
 
         /// <summary>
@@ -2291,7 +2354,7 @@ namespace DotSpatial.Controls
 
                         _elementToAddWithMouse.Rectangle = ScreenToPaper(_mouseBox);
                         AddToLayout(_elementToAddWithMouse);
-                        AddToSelection(_elementToAddWithMouse);
+                        SelectedLayoutElements.Add(_elementToAddWithMouse);
                         _elementToAddWithMouse = null;
                         MouseMode = MouseMode.Default;
                         _mouseBox.Inflate(5, 5);
@@ -2305,28 +2368,6 @@ namespace DotSpatial.Controls
                         break;
 
                     case MouseMode.Default:
-                        break;
-                }
-            }
-            else if (e.Button == MouseButtons.Right)
-            {
-                switch (MouseMode)
-                {
-                    case MouseMode.Default:
-                        if (SelectedLayoutElements.Count < 1)
-                        {
-                            for (var i = 0; i < _contextMenuRight.MenuItems.Count; i++)
-                                _contextMenuRight.MenuItems[i].Enabled = false;
-                        }
-                        else if (SelectedLayoutElements.Count == 1)
-                        {
-                            _cMnuSelAli.Enabled = false;
-                            _cMnuSelFit.Enabled = false;
-                        }
-
-                        _contextMenuRight.Show(this, e.Location);
-                        for (var i = 0; i < _contextMenuRight.MenuItems.Count; i++)
-                            _contextMenuRight.MenuItems[i].Enabled = true;
                         break;
                 }
             }
@@ -2415,34 +2456,6 @@ namespace DotSpatial.Controls
         private void OnMouseModeChanged(EventArgs e)
         {
             MouseModeChanged?.Invoke(this, e);
-        }
-
-        private void SelectedLayoutElements_ListChanged(object sender, ListChangedEventArgs e)
-        {
-            switch (e.ListChangedType)
-            {
-                case ListChangedType.ItemAdded:
-                case ListChangedType.ItemDeleted:
-                case ListChangedType.Reset:
-                    if (_layoutMapToolStrip != null)
-                    {
-                        if (SelectedLayoutElements.Count == 1 && SelectedLayoutElements[0] is LayoutMap)
-                        {
-                            _layoutMapToolStrip.Enabled = true;
-                        }
-                        else
-                        {
-                            _layoutMapToolStrip.Enabled = false;
-                            if (MouseMode == MouseMode.StartPanMap || MouseMode == MouseMode.PanMap)
-                                MouseMode = MouseMode.Default;
-                        }
-                    }
-
-                    if (SelectedLayoutElements.Count == 0 && (MouseMode == MouseMode.ResizeSelected || MouseMode == MouseMode.MoveSelection))
-                        MouseMode = MouseMode.Default;
-                    break;
-            }
-            Invalidate();
         }
 
 

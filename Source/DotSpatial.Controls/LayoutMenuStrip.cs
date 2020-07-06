@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See License.txt file in the project root for full license information.
 
 using System;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Windows.Forms;
 
@@ -71,14 +72,26 @@ namespace DotSpatial.Controls
                     _docToolbar.Checked = _layoutControl.LayoutDocToolStrip.Visible;
                 }
 
-                _layoutControl.SelectedLayoutElements.ListChanged += SelectedLayoutElements_ListChanged;
+                _layoutControl.SelectedLayoutElements.CollectionChanged += SelectedLayoutElements_CollectionChanged;
             }
         }
-
 
         #endregion
 
         #region Methods
+
+        private void SelectedLayoutElements_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                case NotifyCollectionChangedAction.Remove:
+                case NotifyCollectionChangedAction.Reset:
+                    _selectConvert.Enabled = _layoutControl.SelectedLayoutElements.Count == 1;
+                    break;
+            }
+        }
+
 
         private void CloseClick(object sender, EventArgs e)
         {
@@ -167,7 +180,7 @@ namespace DotSpatial.Controls
 
         private void SelectNoneClick(object sender, EventArgs e)
         {
-            _layoutControl.ClearSelection();
+            _layoutControl.SelectedLayoutElements.Clear();
         }
 
         private void SelectPrinterClick(object sender, EventArgs e)
@@ -200,17 +213,6 @@ namespace DotSpatial.Controls
             _layoutControl.LayoutZoomToolStrip.Visible = _zoomToolbar.Checked;
         }
 
-        private void SelectedLayoutElements_ListChanged(object sender, ListChangedEventArgs e)
-        {
-            switch (e.ListChangedType)
-            {
-                case ListChangedType.ItemAdded:
-                case ListChangedType.ItemDeleted:
-                case ListChangedType.Reset:
-                    _selectConvert.Enabled = _layoutControl.SelectedLayoutElements.Count == 1;
-                    break;
-            }
-        }
 
         #endregion
     }

@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
@@ -52,8 +53,8 @@ namespace DotSpatial.Controls
             {
                 if (value == null) return;
                 _layoutControl = value;
-                _layoutControl.SelectedLayoutElements.ListChanged += SelectedLayoutElements_ListChanged;
-                _layoutControl.LayoutElements.ListChanged += LayoutElements_ListChanged;
+                _layoutControl.SelectedLayoutElements.CollectionChanged += SelectedLayoutElements_CollectionChanged; ;
+                _layoutControl.LayoutElements.CollectionChanged += LayoutElements_CollectionChanged;
                 RefreshList();
             }
         }
@@ -64,13 +65,14 @@ namespace DotSpatial.Controls
 
         #region Methods
 
-        private void LayoutElements_ListChanged(object sender, ListChangedEventArgs e)
+        private void LayoutElements_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            switch (e.ListChangedType)
+            switch (e.Action)
             {
-                case ListChangedType.ItemAdded:
-                case ListChangedType.ItemDeleted:
-                case ListChangedType.Reset:
+                case NotifyCollectionChangedAction.Add:
+                case NotifyCollectionChangedAction.Remove:
+                case NotifyCollectionChangedAction.Replace:
+                case NotifyCollectionChangedAction.Reset:
                     if (_suppressSelectionChange) return;
                     _suppressSelectionChange = true;
                     RefreshList();
@@ -102,13 +104,14 @@ namespace DotSpatial.Controls
             _lbxItems.ResumeLayout();
         }
 
-        private void SelectedLayoutElements_ListChanged(object sender, ListChangedEventArgs e)
+        private void SelectedLayoutElements_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            switch (e.ListChangedType)
+            switch (e.Action)
             {
-                case ListChangedType.ItemAdded:
-                case ListChangedType.ItemDeleted:
-                case ListChangedType.Reset:
+                case NotifyCollectionChangedAction.Add:
+                case NotifyCollectionChangedAction.Remove:
+                case NotifyCollectionChangedAction.Replace:
+                case NotifyCollectionChangedAction.Reset:
                     if (_suppressSelectionChange) return;
                     _suppressSelectionChange = true;
                     RefreshList();
@@ -194,8 +197,8 @@ namespace DotSpatial.Controls
             if (_suppressSelectionChange) return;
             _suppressSelectionChange = true;
             _layoutControl.SuspendLayout();
-            _layoutControl.ClearSelection();
-            _layoutControl.AddToSelection(new List<LayoutElement>(_lbxItems.SelectedItems.OfType<LayoutElement>()));
+            _layoutControl.SelectedLayoutElements.Clear();
+            _layoutControl.SelectedLayoutElements.AddRange(new List<LayoutElement>(_lbxItems.SelectedItems.OfType<LayoutElement>()));
             _layoutControl.ResumeLayout();
             _suppressSelectionChange = false;
         }

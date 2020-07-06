@@ -779,7 +779,7 @@ namespace DotSpatial.Symbology
         /// </summary>
         protected virtual void OnZoomToLayer()
         {
-            if (!Extent.IsEmpty())
+            if (Extent!=null&& !Extent.IsEmpty())
             {
                 // changed by jany_ (2015-07-17) zooming to an empty layer makes no sense
                 ZoomToLayer?.Invoke(this, new EnvelopeArgs(Extent.ToEnvelope()));
