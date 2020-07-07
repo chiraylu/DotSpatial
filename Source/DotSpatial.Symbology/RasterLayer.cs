@@ -608,9 +608,9 @@ namespace DotSpatial.Symbology
             //    Bounds = DataSet.Bounds.Copy()
             //};
             //BitmapGetter = image;
-            //Symbolizer.Validate();
-            //OnInvalidate(this, EventArgs.Empty);
-            //OnItemChanged();
+            Symbolizer.Validate();
+            OnInvalidate(this, EventArgs.Empty);
+            OnItemChanged();
         }
 
         /// <summary>

@@ -464,7 +464,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                         byte gValue = gBuffer[bufferIndex];
                         byte rValue = rBuffer[bufferIndex];
                         byte aValue = 255;
-                        if (rValue == NoDataValue)
+                        if (rValue == NoDataValue || gValue == NoDataValue || bValue == NoDataValue)
                         {
                             aValue = 0;
                         }
@@ -489,7 +489,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                         byte gValue = gBuffer[bufferIndex];
                         byte rValue = rBuffer[bufferIndex];
                         byte aValue = aBuffer[bufferIndex];
-                        if (rValue == NoDataValue)
+                        if (rValue == NoDataValue || gValue == NoDataValue || bValue == NoDataValue)
                         {
                             aValue = 0;
                         }

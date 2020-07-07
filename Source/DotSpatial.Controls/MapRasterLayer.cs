@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using DotSpatial.Data;
 using DotSpatial.Symbology;
@@ -250,7 +251,7 @@ namespace DotSpatial.Controls
         /// <param name="clipRectangles">The clip rectangles.</param>
         private void DrawWindows(MapArgs args, IList<Extent> regions, IList<Rectangle> clipRectangles)
         {
-            if (DataSet == null)
+            if (DataSet == null || regions.Count == 0 || regions.Count != clipRectangles.Count)
             {
                 return;
             }
@@ -267,12 +268,38 @@ namespace DotSpatial.Controls
 
             int numBounds = Math.Min(regions.Count, clipRectangles.Count);
 
-            for (int i = 0; i < numBounds; i++)
+            if (Symbolizer != null && Symbolizer.Opacity < 1)
             {
-                using (Bitmap bmp = DataSet.GetBitmap(regions[i], clipRectangles[i]))
+                ColorMatrix matrix = new ColorMatrix
                 {
-                    if (bmp != null) g.DrawImage(bmp, clipRectangles[i]);
-                    //g.DrawImage(bmp, new Rectangle(0, 0, clipRectangles[i].Width, clipRectangles[i].Height));
+                    Matrix33 = Symbolizer.Opacity // draws the image not completely opaque
+                };
+                using (var attributes = new ImageAttributes())
+                {
+                    for (int i = 0; i < numBounds; i++)
+                    {
+                        using (Bitmap bmp = DataSet.GetBitmap(regions[i], clipRectangles[i]))
+                        {
+                            if (bmp != null)
+                            {
+                                attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+                                g.DrawImage(bmp, clipRectangles[i], 0, 0, bmp.Width, bmp.Height, GraphicsUnit.Pixel, attributes);
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 0; i < numBounds; i++)
+                {
+                    using (Bitmap bmp = DataSet.GetBitmap(regions[i], clipRectangles[i]))
+                    {
+                        if (bmp != null)
+                        {
+                            g.DrawImage(bmp, clipRectangles[i]);
+                        }
+                    }
                 }
             }
 
