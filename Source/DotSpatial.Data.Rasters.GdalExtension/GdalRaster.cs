@@ -351,23 +351,19 @@ namespace DotSpatial.Data.Rasters.GdalExtension
 
             // get the optimal block size to request gdal.
             // if the image is stored line by line then ask for a 100px stripe.
-            int size = 64;
             Action<Band> computeBlockSize = new Action<Band>((band) =>
-              {
-                  band.GetBlockSize(out blockXsize, out blockYsize);
-                  if (blockYsize == 1)
-                  {
-                      blockYsize = Math.Min(size, band.YSize);
-                  }
-                  //if (blockYsize < size)
-                  //{
-                  //    blockYsize = Math.Min(size, band.YSize);
-                  //}
-                  //if (blockXsize < size)
-                  //{
-                  //    blockXsize = Math.Min(size, band.XSize);
-                  //}
-              });
+            {
+                int size = 256;
+                band.GetBlockSize(out blockXsize, out blockYsize);
+                if (blockYsize < size)
+                {
+                    blockYsize = Math.Min(size, band.YSize);
+                }
+                if (blockXsize < size)
+                {
+                    blockXsize = Math.Min(size, band.XSize);
+                }
+            });
             if (_overview >= 0 && _overviewCount > 0)
             {
                 using (var overview = _band.GetOverview(_overview))
@@ -426,12 +422,19 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                     int yOffsetI = (int)Math.Floor(yOffsetD);
                     int xSize = blockXsize + redundancy;
                     int ySize = blockYsize + redundancy;
-                    using (var bitmap = GetBitmap(xOffsetI, yOffsetI, xSize, ySize))
+                    try
                     {
-                        if (bitmap != null)
+                        using (var bitmap = GetBitmap(xOffsetI, yOffsetI, xSize, ySize))
                         {
-                            g.DrawImage(bitmap, xOffsetI, yOffsetI);
+                            if (bitmap != null)
+                            {
+                                g.DrawImage(bitmap, xOffsetI, yOffsetI);
+                            }
                         }
+                    }
+                    catch (Exception e)
+                    {
+                        Trace.WriteLine($"获取图片失败，文件:{FilePath},xOffset:{xOffsetI},yOffset:{yOffsetI},xSize:{xSize},ySize:{ySize}，原因：{e.Message}");
                     }
                 }
             }
@@ -523,6 +526,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                 firstBand.Dispose();
             }
             Bitmap result = GetBitmap(width, height, rBuffer, rBuffer, rBuffer);
+            rBuffer = null;
             return result;
         }
         private Bitmap ReadRgb(int xOffset, int yOffset, int xSize, int ySize)
@@ -561,6 +565,9 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                 bBand.Dispose();
             }
             Bitmap result = GetBitmap(width, height, rBuffer, gBuffer, bBuffer);
+            rBuffer = null;
+            gBuffer = null;
+            bBuffer = null;
             return result;
         }
 
@@ -605,6 +612,10 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                 bBand.Dispose();
             }
             Bitmap result = GetBitmap(width, height, rBuffer, gBuffer, bBuffer, aBuffer);
+            rBuffer = null;
+            gBuffer = null;
+            bBuffer = null;
+            aBuffer = null;
             return result;
         }
 
@@ -649,6 +660,10 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                 bBand.Dispose();
             }
             Bitmap result = GetBitmap(width, height, rBuffer, gBuffer, bBuffer, aBuffer);
+            rBuffer = null;
+            gBuffer = null;
+            bBuffer = null;
+            aBuffer = null;
             return result;
         }
         private Bitmap ReadPaletteBuffered(int xOffset, int yOffset, int xSize, int ySize)
@@ -707,6 +722,10 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                 bBuffer[i] = colorTable[index][3];
             }
             Bitmap result = GetBitmap(width, height, rBuffer, gBuffer, gBuffer, aBuffer);
+            rBuffer = null;
+            gBuffer = null;
+            bBuffer = null;
+            aBuffer = null;
             return result;
         }
         /// <summary>
