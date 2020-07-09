@@ -178,9 +178,12 @@ namespace DotSpatial.Symbology
         /// <param name="target">The rectangle that is used to calculate the lines position and size.</param>
         public override void Draw(Graphics g, Rectangle target)
         {
-            foreach (var stroke in _strokes)
+            using (GraphicsPath path = new GraphicsPath())
             {
-                using (var p = stroke.ToPen(1)) g.DrawLine(p, new Point(target.X, target.Y + (target.Height / 2)), new Point(target.Right, target.Y + (target.Height / 2)));
+                var startPoint = new Point(target.X, target.Y + (target.Height / 2));
+                var endPoint = new Point(target.Right, target.Y + (target.Height / 2));
+                path.AddLine(startPoint, endPoint);
+                DrawPath(g, path, 1);
             }
         }
 
@@ -218,7 +221,8 @@ namespace DotSpatial.Symbology
         {
             foreach (var stroke in _strokes)
             {
-                using (var p = stroke.ToPen(scaleWidth)) g.DrawPath(p, gp);
+                //using (var p = stroke.ToPen(scaleWidth)) g.DrawPath(p, gp);
+                stroke.DrawPath(g, gp, scaleWidth);
             }
         }
 

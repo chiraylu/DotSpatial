@@ -227,6 +227,10 @@ namespace DotSpatial.Symbology
         /// <inheritdoc />
         public override void SetColor(Color color)
         {
+            if (_image == null)
+            {
+                return;
+            }
             Bitmap bm = new Bitmap(_image.Width, _image.Height);
             Graphics g = Graphics.FromImage(bm);
 
