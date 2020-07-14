@@ -1085,12 +1085,18 @@ namespace DotSpatial.Symbology
         {
             if (_editMode)
             {
-                DrawingFilter.DrawnStates[feature].SchemeCategory = category;
+                if (DrawingFilter.DrawnStates.ContainsKey(feature))
+                {
+                    DrawingFilter.DrawnStates[feature].SchemeCategory = category;
+                }
             }
             else
             {
                 int index = DataSet.Features.IndexOf(feature);
-                DrawnStates[index].Category = category;
+                if (index >= 0 && index < DrawnStates.Length)
+                {
+                    DrawnStates[index].Category = category;
+                }
             }
 
             if (!_scheme.GetCategories().Contains(category))
