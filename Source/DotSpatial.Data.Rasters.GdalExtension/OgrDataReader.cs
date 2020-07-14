@@ -708,7 +708,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                         feature.GetFieldAsDateTime(i, out year, out month, out day, out h, out m, out s, out flag);
                         try
                         {
-                            return new DateTime(year, month, day, h, m, s);
+                            return new DateTime(year, month, day, h, m,s);
                         }
                         catch (ArgumentOutOfRangeException)
                         {

@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See License.txt file in the project root for full license information.
 
 using System;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Drawing;
 using System.Drawing.Design;
@@ -125,7 +126,7 @@ namespace DotSpatial.Controls
             set
             {
                 _layoutControl = value;
-                _layoutControl.LayoutElements.ListChanged += LayoutElements_ListChanged;
+                _layoutControl.LayoutElements.CollectionChanged += LayoutElements_CollectionChanged; ;
             }
         }
 
@@ -324,13 +325,13 @@ namespace DotSpatial.Controls
         }
 
 
-        private void LayoutElements_ListChanged(object sender, ListChangedEventArgs e)
+        private void LayoutElements_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            switch (e.ListChangedType)
+            switch (e.Action)
             {
-                case ListChangedType.ItemAdded:
-                case ListChangedType.ItemDeleted:
-                case ListChangedType.Reset:
+                case NotifyCollectionChangedAction.Add:
+                case NotifyCollectionChangedAction.Remove:
+                case NotifyCollectionChangedAction.Reset:
                     if (!_layoutControl.LayoutElements.Contains(_layoutMap))
                         Map = null;
                     break;

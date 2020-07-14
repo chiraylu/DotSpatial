@@ -1,6 +1,3 @@
-// Copyright (c) DotSpatial Team. All rights reserved.
-// Licensed under the MIT license. See License.txt file in the project root for full license information.
-
 /******************************************************************************
  *
  * Name:     GdalConfiguration.cs.pp
@@ -33,21 +30,27 @@
 using System;
 using System.IO;
 using System.Reflection;
-using OSGeo.GDAL;
-using OSGeo.OGR;
+using Gdal = OSGeo.GDAL.Gdal;
+using Ogr = OSGeo.OGR.Ogr;
 
 namespace DotSpatial.Data.Rasters.GdalExtension
 {
-    /// <summary>
-    /// GDAL configuration.
-    /// </summary>
     public static partial class GdalConfiguration
     {
         private static volatile bool _configuredOgr;
         private static volatile bool _configuredGdal;
 
         /// <summary>
-        /// Initializes static members of the <see cref="GdalConfiguration"/> class.
+        /// Function to determine which platform we're on
+        /// </summary>
+        private static string GetPlatform()
+        {
+            return IntPtr.Size == 4 ? "x86" : "x64";
+        }
+
+
+        /// <summary>
+        /// Construction of Gdal/Ogr
         /// </summary>
         static GdalConfiguration()
         {
@@ -56,6 +59,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
 
             if (string.IsNullOrEmpty(executingDirectory))
                 throw new InvalidOperationException("cannot get executing directory");
+
 
             var gdalPath = Path.Combine(executingDirectory, "gdal");
             var nativePath = Path.Combine(gdalPath, GetPlatform());
@@ -108,19 +112,9 @@ namespace DotSpatial.Data.Rasters.GdalExtension
 
             // Register drivers
             Gdal.AllRegister();
-
             _configuredGdal = true;
 
             PrintDriversGdal();
-        }
-
-        /// <summary>
-        /// Function to determine which platform we're on.
-        /// </summary>
-        /// <returns>The plattform string</returns>
-        private static string GetPlatform()
-        {
-            return IntPtr.Size == 4 ? "x86" : "x64";
         }
 
         private static void PrintDriversOgr()

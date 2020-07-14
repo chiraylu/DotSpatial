@@ -72,7 +72,7 @@
     <Compile Include="..\AssemblyInfoShared.cs">
       <Link>Properties\AssemblyInfoShared.cs</Link>
     </Compile>
-    <Compile Include="BindingListExtensions.cs" />
+    <Compile Include="CollectionExtensions.cs" />
     <Compile Include="DatelineCrossingExtentExtension.cs" />
     <Compile Include="DatelineCrossingMap.cs">
       <SubType>UserControl</SubType>
@@ -89,6 +89,7 @@
     <Compile Include="FeatureIdentifier.Designer.cs">
       <DependentUpon>FeatureIdentifier.cs</DependentUpon>
     </Compile>
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="Header\ProgressStatusPanel.cs" />
     <Compile Include="Header\ToolstripPosition.cs" />
     <Compile Include="IFeatureLayerExtensions.cs" />
@@ -131,6 +132,7 @@
       <DependentUpon>ModelerToolstrip.cs</DependentUpon>
     </Compile>
     <Compile Include="NorthArrowStyle.cs" />
+    <Compile Include="NotifyClass.cs" />
     <Compile Include="OptionsForm.cs">
       <SubType>Form</SubType>
     </Compile>
