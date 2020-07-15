@@ -36,9 +36,9 @@ namespace DotSpatial.Controls
             : base(inMap)
         {
             _selectionPen = new Pen(Color.Black)
-                            {
-                                DashStyle = DashStyle.Dash
-                            };
+            {
+                DashStyle = DashStyle.Dash
+            };
             YieldStyle = YieldStyles.LeftButton | YieldStyles.RightButton;
         }
 
@@ -104,53 +104,48 @@ namespace DotSpatial.Controls
         /// <param name="e">The event args.</param>
         protected override void OnMouseUp(GeoMouseArgs e)
         {
-            if (!(e.Map.IsZoomedToMaxExtent && e.Button == MouseButtons.Right))
+            bool handled = false;
+            _currentPoint = e.Location;
+
+            Map.Invalidate();
+            if (_isDragging)
             {
-                e.Map.IsZoomedToMaxExtent = false;
-                bool handled = false;
-                _currentPoint = e.Location;
-
-                Map.Invalidate();
-                if (_isDragging)
+                if (_geoStartPoint != null && _startPoint != e.Location)
                 {
-                    if (_geoStartPoint != null && _startPoint != e.Location)
+                    Envelope env = new Envelope(_geoStartPoint.X, e.GeographicLocation.X, _geoStartPoint.Y, e.GeographicLocation.Y);
+                    if (Math.Abs(e.X - _startPoint.X) > 1 && Math.Abs(e.Y - _startPoint.Y) > 1)
                     {
-                        Envelope env = new Envelope(_geoStartPoint.X, e.GeographicLocation.X, _geoStartPoint.Y, e.GeographicLocation.Y);
-                        if (Math.Abs(e.X - _startPoint.X) > 1 && Math.Abs(e.Y - _startPoint.Y) > 1)
-                        {
-                            e.Map.ViewExtents = env.ToExtent();
-                            handled = true;
-                        }
+                        e.Map.ViewExtents = env.ToExtent();
+                        handled = true;
                     }
-                }
-
-                _isDragging = false;
-
-                if (handled == false)
-                {
-                    Rectangle r = e.Map.MapFrame.View;
-                    int w = r.Width;
-                    int h = r.Height;
-                    if (e.Button == MouseButtons.Left)
-                    {
-                        r.Inflate(-r.Width / 4, -r.Height / 4);
-
-                        // The mouse cursor should anchor the geographic location during zoom.
-                        r.X += (e.X / 2) - (w / 4);
-                        r.Y += (e.Y / 2) - (h / 4);
-                    }
-                    else if (e.Button == MouseButtons.Right)
-                    {
-                        r.Inflate(r.Width / 2, r.Height / 2);
-                        r.X += (w / 2) - e.X;
-                        r.Y += (h / 2) - e.Y;
-                    }
-
-                    e.Map.MapFrame.View = r;
-                    e.Map.MapFrame.ResetExtents();
                 }
             }
 
+            _isDragging = false;
+
+            if (handled == false)
+            {
+                Rectangle r = e.Map.MapFrame.View;
+                int w = r.Width;
+                int h = r.Height;
+                if (e.Button == MouseButtons.Left)
+                {
+                    r.Inflate(-r.Width / 4, -r.Height / 4);
+
+                    // The mouse cursor should anchor the geographic location during zoom.
+                    r.X += (e.X / 2) - (w / 4);
+                    r.Y += (e.Y / 2) - (h / 4);
+                }
+                else if (e.Button == MouseButtons.Right)
+                {
+                    r.Inflate(r.Width / 2, r.Height / 2);
+                    r.X += (w / 2) - e.X;
+                    r.Y += (h / 2) - e.Y;
+                }
+
+                e.Map.MapFrame.View = r;
+                e.Map.MapFrame.ResetExtents();
+            }
             base.OnMouseUp(e);
             Map.IsBusy = false;
         }

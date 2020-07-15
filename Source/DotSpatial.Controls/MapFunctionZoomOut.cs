@@ -33,36 +33,30 @@ namespace DotSpatial.Controls
         /// <param name="e">The event args.</param>
         protected override void OnMouseUp(GeoMouseArgs e)
         {
-            if (!(e.Map.IsZoomedToMaxExtent && e.Button == MouseButtons.Left))
+            Rectangle r = e.Map.MapFrame.View;
+            int w = r.Width;
+            int h = r.Height;
+
+            if (e.Button == MouseButtons.Left)
             {
-                e.Map.IsZoomedToMaxExtent = false;
-                Map.Invalidate();
-
-                Rectangle r = e.Map.MapFrame.View;
-                int w = r.Width;
-                int h = r.Height;
-
-                if (e.Button == MouseButtons.Left)
-                {
-                    r.Inflate(r.Width / 2, r.Height / 2);
-                    r.X += (w / 2) - e.X;
-                    r.Y += (h / 2) - e.Y;
-                    e.Map.MapFrame.View = r;
-                    e.Map.MapFrame.ResetExtents();
-                }
-                else if (e.Button == MouseButtons.Right)
-                {
-                    r.Inflate(-r.Width / 4, -r.Height / 4);
-
-                    // The mouse cursor should anchor the geographic location during zoom.
-                    r.X += (e.X / 2) - (w / 4);
-                    r.Y += (e.Y / 2) - (h / 4);
-                    e.Map.MapFrame.View = r;
-                    e.Map.MapFrame.ResetExtents();
-                }
-
-                base.OnMouseUp(e);
+                r.Inflate(r.Width / 2, r.Height / 2);
+                r.X += (w / 2) - e.X;
+                r.Y += (h / 2) - e.Y;
+                e.Map.MapFrame.View = r;
+                e.Map.MapFrame.ResetExtents();
             }
+            else if (e.Button == MouseButtons.Right)
+            {
+                r.Inflate(-r.Width / 4, -r.Height / 4);
+
+                // The mouse cursor should anchor the geographic location during zoom.
+                r.X += (e.X / 2) - (w / 4);
+                r.Y += (e.Y / 2) - (h / 4);
+                e.Map.MapFrame.View = r;
+                e.Map.MapFrame.ResetExtents();
+            }
+
+            base.OnMouseUp(e);
         }
 
         #endregion

@@ -60,12 +60,6 @@ namespace DotSpatial.Controls
         bool IsBusy { get; set; }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the Map is Zoomed out to full extent or not.
-        /// Added 1/3/2013 by Eric Hullinger
-        /// </summary>
-        bool IsZoomedToMaxExtent { get; set; }
-
-        /// <summary>
         /// Gets the screen coordinates of the
         /// </summary>
         int Left { get; }

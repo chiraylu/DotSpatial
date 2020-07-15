@@ -180,76 +180,72 @@ namespace DotSpatial.Controls
         {
             // Fix this
             _zoomTimer.Stop(); // if the timer was already started, stop it.
-            if (!(e.Map.IsZoomedToMaxExtent && (_direction * e.Delta < 0)))
+            Rectangle r = e.Map.MapFrame.View;
+            Extent extent = e.Map.MapFrame.ViewExtents;
+
+            // For multiple zoom steps before redrawing, we actually
+            // want the x coordinate relative to the screen, not
+            // the x coordinate relative to the previously modified view.
+            if (_client == Rectangle.Empty) _client = r;
+            int cw = _client.Width;
+            int ch = _client.Height;
+
+            double w = r.Width;
+            double h = r.Height;
+            double srcCenterX = r.X + r.Width / 2.0;
+            double srcCenterY = r.Y + r.Height / 2.0;
+            if (_direction * e.Delta > 0)
             {
-                e.Map.IsZoomedToMaxExtent = false;
-                Rectangle r = e.Map.MapFrame.View;
-                Extent extent = e.Map.MapFrame.ViewExtents;
+                double ratio = Sensitivity / 2;
+                double dHalfWidth = -w * ratio;
+                double dHalfHeight = -h * ratio;
+                r.Inflate(Convert.ToInt32(dHalfWidth), Convert.ToInt32(dHalfHeight));
+                double ratioWidth = r.Width / w;
+                double ratioHeight = r.Height / h;
+                double destX = e.X * ratioWidth + (1 - ratioWidth) * srcCenterX;
+                double destY = e.Y * ratioHeight + (1 - ratioHeight) * srcCenterY;
+                int xOff = Convert.ToInt32(e.X - destX);
+                int yOff = Convert.ToInt32(e.Y - destY);
+                r.X += xOff;
+                r.Y += yOff;
 
-                // For multiple zoom steps before redrawing, we actually
-                // want the x coordinate relative to the screen, not
-                // the x coordinate relative to the previously modified view.
-                if (_client == Rectangle.Empty) _client = r;
-                int cw = _client.Width;
-                int ch = _client.Height;
-
-                double w = r.Width;
-                double h = r.Height;
-                double srcCenterX = r.X + r.Width / 2.0;
-                double srcCenterY = r.Y + r.Height / 2.0;
-                if (_direction * e.Delta > 0)
-                {
-                    double ratio = Sensitivity / 2;
-                    double dHalfWidth = -w * ratio;
-                    double dHalfHeight = -h * ratio;
-                    r.Inflate(Convert.ToInt32(dHalfWidth), Convert.ToInt32(dHalfHeight));
-                    double ratioWidth = r.Width / w;
-                    double ratioHeight = r.Height / h;
-                    double destX = e.X * ratioWidth + (1 - ratioWidth) * srcCenterX;
-                    double destY = e.Y * ratioHeight + (1 - ratioHeight) * srcCenterY;
-                    int xOff = Convert.ToInt32(e.X - destX);
-                    int yOff = Convert.ToInt32(e.Y - destY);
-                    r.X += xOff;
-                    r.Y += yOff;
-
-                    //Extent destExtent = (Extent)extent.Clone();
-                    //var currentCoord = e.Map.MapFrame.BufferToProj(e.Location);
-                    //destExtent.SetCenter(currentCoord);
-                    //destExtent.ExpandBy(-extent.Width * ratio, -extent.Height * ratio);
-                    //var destCoordX = (extent.Center.X - currentCoord.X) * ((1 - Sensitivity) / 2) + currentCoord.X;
-                    //var destCoordY = (extent.Center.Y - currentCoord.Y) * ((1 - Sensitivity) / 2) + currentCoord.Y;
-                    //destExtent.SetCenter(new Coordinate(destCoordX, destCoordY));
-                    //Rectangle rect = e.Map.MapFrame.ProjToBuffer(destExtent);
-                    //r = rect;
-                }
-                else
-                {
-                    double ratio = Sensitivity / (2 * (1 - Sensitivity));
-                    double dHalfWidth = w * ratio;
-                    double dHalfHeight = h * ratio;
-                    r.Inflate(Convert.ToInt32(dHalfWidth), Convert.ToInt32(dHalfHeight));
-                    double ratioWidth = r.Width / w;
-                    double ratioHeight = r.Height / h;
-                    double destX = e.X * ratioWidth + (1 - ratioWidth) * srcCenterX;
-                    double destY = e.Y * ratioHeight + (1 - ratioHeight) * srcCenterY;
-                    int xOff = Convert.ToInt32(e.X - destX);
-                    int yOff = Convert.ToInt32(e.Y - destY);
-                    r.X += xOff;
-                    r.Y += yOff;
-                }
-
-                e.Map.MapFrame.View = r;
-                e.Map.Invalidate();
-                _zoomTimer.Start();
-                _mapFrame = e.Map.MapFrame;
-                if (!BusySet)
-                {
-                    Map.IsBusy = true;
-                    BusySet = true;
-                }
-
-                base.OnMouseWheel(e);
+                //Extent destExtent = (Extent)extent.Clone();
+                //var currentCoord = e.Map.MapFrame.BufferToProj(e.Location);
+                //destExtent.SetCenter(currentCoord);
+                //destExtent.ExpandBy(-extent.Width * ratio, -extent.Height * ratio);
+                //var destCoordX = (extent.Center.X - currentCoord.X) * ((1 - Sensitivity) / 2) + currentCoord.X;
+                //var destCoordY = (extent.Center.Y - currentCoord.Y) * ((1 - Sensitivity) / 2) + currentCoord.Y;
+                //destExtent.SetCenter(new Coordinate(destCoordX, destCoordY));
+                //Rectangle rect = e.Map.MapFrame.ProjToBuffer(destExtent);
+                //r = rect;
             }
+            else
+            {
+                double ratio = Sensitivity / (2 * (1 - Sensitivity));
+                double dHalfWidth = w * ratio;
+                double dHalfHeight = h * ratio;
+                r.Inflate(Convert.ToInt32(dHalfWidth), Convert.ToInt32(dHalfHeight));
+                double ratioWidth = r.Width / w;
+                double ratioHeight = r.Height / h;
+                double destX = e.X * ratioWidth + (1 - ratioWidth) * srcCenterX;
+                double destY = e.Y * ratioHeight + (1 - ratioHeight) * srcCenterY;
+                int xOff = Convert.ToInt32(e.X - destX);
+                int yOff = Convert.ToInt32(e.Y - destY);
+                r.X += xOff;
+                r.Y += yOff;
+            }
+
+            e.Map.MapFrame.View = r;
+            e.Map.Invalidate();
+            _zoomTimer.Start();
+            _mapFrame = e.Map.MapFrame;
+            if (!BusySet)
+            {
+                Map.IsBusy = true;
+                BusySet = true;
+            }
+
+            base.OnMouseWheel(e);
         }
 
         private void Configure()

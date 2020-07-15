@@ -307,12 +307,6 @@ namespace DotSpatial.Controls
         }
 
         /// <summary>
-        /// Gets or sets a value indicating whether the map is zoomed to its full extents.
-        /// Added by Eric Hullinger 1/3/2013
-        /// </summary>
-        public bool IsZoomedToMaxExtent { get; set; }
-
-        /// <summary>
         /// Gets the collection of layers.
         /// </summary>
         [Browsable(false)]
@@ -1123,7 +1117,6 @@ namespace DotSpatial.Controls
         {
             // to prevent exception when zoom to map with one layer with one point
             ViewExtents = GetMaxExtent(true);
-            IsZoomedToMaxExtent = true;
         }
 
         /// <summary>

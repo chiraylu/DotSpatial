@@ -100,26 +100,19 @@ namespace DotSpatial.Controls
             // Zoom Out
             if (e.KeyCode == (Keys.LButton | Keys.MButton | Keys.Back | Keys.ShiftKey | Keys.Space | Keys.F17) || e.KeyCode == Keys.Subtract)
             {
-                if (Map.IsZoomedToMaxExtent)
-                {
-                }
-                else
-                {
-                    Map.IsBusy = true;
-                    Rectangle r = Map.MapFrame.View;
+                Map.IsBusy = true;
+                Rectangle r = Map.MapFrame.View;
 
-                    r.Inflate(r.Width / 2, r.Height / 2);
-                    Map.MapFrame.View = r;
-                    Map.MapFrame.ResetExtents();
-                    Map.IsBusy = false;
-                }
+                r.Inflate(r.Width / 2, r.Height / 2);
+                Map.MapFrame.View = r;
+                Map.MapFrame.ResetExtents();
+                Map.IsBusy = false;
             }
 
             // Zoom In
             if (e.KeyCode == (Keys.LButton | Keys.RButton | Keys.Back | Keys.ShiftKey | Keys.Space | Keys.F17) || e.KeyCode == Keys.Add)
             {
                 Map.IsBusy = true;
-                Map.IsZoomedToMaxExtent = false;
                 Rectangle r = Map.MapFrame.View;
 
                 r.Inflate(-r.Width / 4, -r.Height / 4);

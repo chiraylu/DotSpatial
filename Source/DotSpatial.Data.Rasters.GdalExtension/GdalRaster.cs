@@ -247,7 +247,14 @@ namespace DotSpatial.Data.Rasters.GdalExtension
             var result = new Bitmap(window.Width, window.Height);
             using (var g = Graphics.FromImage(result))
             {
-                DrawGraphics(g, envelope, window);
+                try
+                {
+                    DrawGraphics(g, envelope, window);
+                }
+                catch (Exception e)
+                {
+                    Trace.WriteLine(e);
+                }
             }
 
             return result;
@@ -434,7 +441,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                     }
                     catch (Exception e)
                     {
-                        Trace.WriteLine($"获取图片失败，文件:{FilePath},xOffset:{xOffsetI},yOffset:{yOffsetI},xSize:{xSize},ySize:{ySize}，原因：{e.Message}");
+                        Trace.WriteLine($"获取图片失败，文件:{FilePath},xOffset:{xOffsetI},yOffset:{yOffsetI},xSize:{xSize},ySize:{ySize}，异常：{e}");
                     }
                 }
             }
