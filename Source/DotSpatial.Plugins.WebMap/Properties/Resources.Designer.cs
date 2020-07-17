@@ -366,5 +366,14 @@ namespace DotSpatial.Plugins.WebMap.Properties {
                 return ResourceManager.GetString("WMSMap", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   查找类似 WMTS 的本地化字符串。
+        /// </summary>
+        internal static string WMTS {
+            get {
+                return ResourceManager.GetString("WMTS", resourceCulture);
+            }
+        }
     }
 }

@@ -57,7 +57,14 @@ namespace DotSpatial.Plugins.WebMap
         public string WebMapName
         {
             get { return _webMapName; }
-            set { _webMapName = value; OnWebMapNameChanged(); }
+            set { _webMapName = value; OnWebMapNameOrUrlChanged(); }
+        }
+        private string _webMapUrl;
+        [Serialize("WebMapUrl")]
+        public string WebMapUrl
+        {
+            get { return _webMapUrl; }
+            set { _webMapUrl = value; OnWebMapNameOrUrlChanged(); }
         }
 
         private TileManager _tileManager;
@@ -105,10 +112,18 @@ namespace DotSpatial.Plugins.WebMap
             _bw.ProgressChanged += BwProgressChanged;
             RemoveItem += WebMapImageLayer_RemoveItem;
         }
-        private void OnWebMapNameChanged()
+        private void OnWebMapNameOrUrlChanged()
         {
-            var providers = ServiceProviderFactory.GetDefaultServiceProviders();
-            var provider = providers.FirstOrDefault(p => p.Name.Equals(WebMapName, StringComparison.InvariantCultureIgnoreCase));
+            ServiceProvider provider = null;
+            if (!string.IsNullOrEmpty(WebMapName))
+            {
+                var providers = ServiceProviderFactory.GetDefaultServiceProviders();
+                provider = providers.FirstOrDefault(p => p.Name.Equals(WebMapName, StringComparison.InvariantCultureIgnoreCase));
+                if (provider == null && !string.IsNullOrEmpty(WebMapUrl))
+                {
+                    provider = ServiceProviderFactory.Create(WebMapName, WebMapUrl);
+                }
+            }
             if (provider == null)
             {
                 TileManager = null;
@@ -414,9 +429,9 @@ namespace DotSpatial.Plugins.WebMap
                     var bmpExtent = new Extent(tiles.TopLeftTile.MinX, tiles.BottomRightTile.MinY, tiles.BottomRightTile.MaxX, tiles.TopLeftTile.MaxY);
                     int width = stitchedBasemap.Width;
                     int height = stitchedBasemap.Height;
-                    if (Map.Projection.Equals(ServiceProviderFactory.WebMercProj.Value))
+                    if (Map.Projection.AuthorityCode == ServiceProviderFactory.WebMercProj.Value.AuthorityCode)
                     {
-                        if (TileManager.ServiceProvider.Projection?.Equals(ServiceProviderFactory.WebMercProj.Value) == true)
+                        if (TileManager.ServiceProvider.Projection?.AuthorityCode == ServiceProviderFactory.WebMercProj.Value.AuthorityCode)
                         {
                             var tileVertices = new[] { tiles.TopLeftTile.MinX, tiles.TopLeftTile.MaxY, tiles.BottomRightTile.MaxX, tiles.BottomRightTile.MinY };
                             Projections.Reproject.ReprojectPoints(tileVertices, z, ServiceProviderFactory.Wgs84Proj.Value, ServiceProviderFactory.WebMercProj.Value, 0, tileVertices.Length / 2);
@@ -429,41 +444,29 @@ namespace DotSpatial.Plugins.WebMap
                             Projection = TileManager.ServiceProvider.Projection,
                             Bounds = new RasterBounds(height, width, bmpExtent)
                         };
-                        if (TileManager.ServiceProvider.Projection != null && !TileManager.ServiceProvider.Projection.Equals(Map.Projection))
+                        if (TileManager.ServiceProvider.Projection?.AuthorityCode != Map.Projection.AuthorityCode)
                         {
                             tileImage.Reproject(Map.Projection);
                             tileImage.Projection = Map.Projection;
                         }
                     }
-                    else if (Map.Projection.Equals(ServiceProviderFactory.Wgs84Proj.Value))
+                    else if (Map.Projection.AuthorityCode == ServiceProviderFactory.Wgs84Proj.Value.AuthorityCode)
                     {
-                        #region 测试
-                        if (TileManager.ServiceProvider.Projection?.Equals(ServiceProviderFactory.WebMercProj.Value) == true)
-                        {
-                            var tileVertices = new[] { tiles.TopLeftTile.MinX, tiles.TopLeftTile.MaxY, tiles.BottomRightTile.MaxX, tiles.BottomRightTile.MinY };
-                            Projections.Reproject.ReprojectPoints(tileVertices, z, ServiceProviderFactory.Wgs84Proj.Value, ServiceProviderFactory.WebMercProj.Value, 0, tileVertices.Length / 2);
-                            bmpExtent = new Extent(tileVertices[0], tileVertices[3], tileVertices[2], tileVertices[1]);
-                        }
+                        var tileVertices = new[] { tiles.TopLeftTile.MinX, tiles.TopLeftTile.MaxY, tiles.BottomRightTile.MaxX, tiles.BottomRightTile.MinY };
+                        Projections.Reproject.ReprojectPoints(tileVertices, z, ServiceProviderFactory.Wgs84Proj.Value, ServiceProviderFactory.WebMercProj.Value, 0, tileVertices.Length / 2);
+                        bmpExtent = new Extent(tileVertices[0], tileVertices[3], tileVertices[2], tileVertices[1]);
                         tileImage = new InRamImageData(stitchedBasemap)
                         {
                             Name = WebMapName,
                             Projection = TileManager.ServiceProvider.Projection,
                             Bounds = new RasterBounds(height, width, bmpExtent)
                         };
-                        if (TileManager.ServiceProvider.Projection != null && !TileManager.ServiceProvider.Projection.Equals(Map.Projection))
+                        if (TileManager.ServiceProvider.Projection?.AuthorityCode != Map.Projection.AuthorityCode)
                         {
                             tileImage.Reproject(Map.Projection);
                             tileImage.Projection = Map.Projection;
                         }
-                        #endregion
                     }
-
-                    //tileImage = new InRamImageData(stitchedBasemap)
-                    //{
-                    //    Name = WebMapName,
-                    //    Projection = Map.Projection,
-                    //    Bounds = new RasterBounds(height, width, bmpExtent)
-                    //};
 
                     if (!bwProgress(90)) return tileImage;
                 }

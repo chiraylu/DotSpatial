@@ -220,4 +220,7 @@
   <data name="GoogleSatellite" xml:space="preserve">
     <value>Google Satellite</value>
   </data>
+  <data name="WMTS" xml:space="preserve">
+    <value>WMTS</value>
+  </data>
 </root>

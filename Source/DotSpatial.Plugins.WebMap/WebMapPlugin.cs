@@ -24,6 +24,7 @@ namespace DotSpatial.Plugins.WebMap
     {
         #region Fields
         private const string Other = "Other";
+        private const string Wmts = "Wmts";
         private const string StrKeyServiceDropDown = "kServiceDropDown";
         private readonly ProjectionInfo _webMercProj;
         private ServiceProvider _emptyProvider;
@@ -142,6 +143,8 @@ namespace DotSpatial.Plugins.WebMap
             // Default providers
             _serviceDropDown.Items.AddRange(ServiceProviderFactory.GetDefaultServiceProviders());
 
+            _serviceDropDown.Items.Add(ServiceProviderFactory.Create("map", "http://someservice/WMTS/1.0.0/WMTSCapabilities.xml"));
+
             // "Other" provider
             _serviceDropDown.Items.Add(ServiceProviderFactory.Create(Other));
 
@@ -206,10 +209,10 @@ namespace DotSpatial.Plugins.WebMap
                 //App.ProgressHandler.Progress(string.Empty, 0, "Loading Basemap...");
             }
 
-            EnableBasemapLayer(provider.Name);
+            EnableBasemapLayer(provider);
         }
 
-        private void EnableBasemapLayer(string webMapName)
+        private void EnableBasemapLayer(ServiceProvider serviceProvider)
         {
             if (_baseLayer == null)
             {
@@ -219,18 +222,21 @@ namespace DotSpatial.Plugins.WebMap
                 _baseLayer = new WebMapImageLayer()
                 {
                     LegendText = Resources.Legend_Title,
-                    WebMapName = webMapName,
-                    Projection = App.Map.Projection,
+                    Projection = App.Map.Projection
                 };
-
+                _baseLayer.WebMapName = serviceProvider.Name;
+                if (serviceProvider is WmtsServiceProvider wmtsServiceProvider)
+                {
+                    _baseLayer.WebMapUrl = wmtsServiceProvider.CapabilitiesUrl;
+                }
                 _baseLayer.RemoveItem += BaseMapLayerRemoveItem;
                 AddBasemapLayerToMap();
             }
             else
             {
-                if(_baseLayer.WebMapName != webMapName)
+                if(_baseLayer.WebMapName != serviceProvider.Name)
                 {
-                    _baseLayer.WebMapName = webMapName;
+                    _baseLayer.WebMapName = serviceProvider.Name;
                 }
             }
         }
@@ -335,6 +341,7 @@ namespace DotSpatial.Plugins.WebMap
             else
             {
                 _optionsAction.Enabled = p.Configure != null;
+
                 if (p.NeedConfigure)
                 {
                     p.Configure?.Invoke();

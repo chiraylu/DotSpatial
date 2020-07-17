@@ -211,6 +211,7 @@ namespace DotSpatial.Controls
                 catch(Exception e)
                 {
                     bmp?.Dispose();
+                    System.Diagnostics.Trace.WriteLine(e);
                     continue;
                 }
 

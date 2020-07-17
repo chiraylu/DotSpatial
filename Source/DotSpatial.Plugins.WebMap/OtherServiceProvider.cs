@@ -75,8 +75,7 @@ namespace DotSpatial.Plugins.WebMap
             Bitmap bitMap = null;
             try
             {
-                var zoomS = zoom.ToString(CultureInfo.InvariantCulture);
-                var index = new TileIndex(x, y, zoomS);
+                var index = new TileIndex(x, y, zoom);
                 var bytes = TileCache?.Find(index);
                 if (bytes == null)
                 {

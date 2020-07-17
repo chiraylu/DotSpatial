@@ -13,6 +13,7 @@ using BruTile;
 using BruTile.Cache;
 using BruTile.Predefined;
 using BruTile.Web;
+using BruTile.Wmts.Generated;
 using DotSpatial.Plugins.WebMap.Configuration;
 using DotSpatial.Plugins.WebMap.Properties;
 using DotSpatial.Plugins.WebMap.WMS;
@@ -55,7 +56,7 @@ namespace DotSpatial.Plugins.WebMap
         /// <returns>The created service provider.</returns>
         public static ServiceProvider Create(string name, string url = null)
         {
-            var servEq = (Func<string, bool>)(s => name.Equals(s, StringComparison.InvariantCultureIgnoreCase));
+            var servEq = (Func<string, bool>)(s => name?.Equals(s, StringComparison.InvariantCultureIgnoreCase) == true);
 
             var fileCache = (Func<ITileCache<byte[]>>)(() => new FileCache(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TileCache", name), "jpg", new TimeSpan(30, 0, 0, 0)));
 
@@ -95,7 +96,14 @@ namespace DotSpatial.Plugins.WebMap
 
             if (GoogleMaps.Contains(name))
             {
-                return new BrutileServiceProvider(name, CreateGoogleTileSource(url), fileCache()) { Projection = WebMercProj.Value };
+                if (string.IsNullOrEmpty(url))
+                {
+                    return null;
+                }
+                else
+                {
+                    return new BrutileServiceProvider(name, CreateGoogleTileSource(url), fileCache()) { Projection = WebMercProj.Value };
+                }
             }
 
             if (servEq(Resources.OpenStreetMap))
@@ -106,6 +114,10 @@ namespace DotSpatial.Plugins.WebMap
             if (servEq(Resources.WMSMap))
             {
                 return new WmsServiceProvider(name);
+            }
+            if (url?.ToLower().Contains("wmts") == true)
+            {
+                return new WmtsServiceProvider(name, url, fileCache());
             }
 
             // No Match

@@ -499,6 +499,7 @@ namespace DotSpatial.Projections
             result += GeographicInfo.ToEsriString();
             if (IsLatLon)
             {
+                result = result.Insert(result.Length - 1, $",AUTHORITY[\"{Authority}\",{AuthorityCode}]");
                 return result;
             }
 
@@ -577,7 +578,15 @@ namespace DotSpatial.Projections
                 result += @"PARAMETER[""Auxiliary_Sphere_Type""," + ((int)AuxiliarySphereType) + ".0],";
             }
 
-            result += Unit.ToEsriString() + "]";
+            result += Unit.ToEsriString();
+            if (!string.IsNullOrEmpty(Authority))
+            {
+                result += $",AUTHORITY[\"{Authority}\",{AuthorityCode}]]";
+            }
+            else
+            {
+                result += "]";
+            }
             // changed by JK to fix the web mercator auxiliary sphere Esri string
             if (Name == "WGS_1984_Web_Mercator_Auxiliary_Sphere")
             {
@@ -610,7 +619,7 @@ namespace DotSpatial.Projections
         /// <exception cref="ArgumentOutOfRangeException">Throws when there is no projection for given authority and code</exception>
         public static ProjectionInfo FromAuthorityCode(string authority, int code)
         {
-            var pi = AuthorityCodeHandler.Instance[string.Format("{0}:{1}", authority, code)]; 
+            var pi = AuthorityCodeHandler.Instance[string.Format("{0}:{1}", authority, code)];
             if (pi != null)
             {
                 // we need to copy the projection information because the Authority Codes implementation returns its one and only
@@ -1219,7 +1228,7 @@ namespace DotSpatial.Projections
                 {
                     beginIndex = esriString.IndexOf("[", index);
                     endIndex = esriString.IndexOf("]", index);
-                    authorityStr = esriString.Substring(beginIndex + 1, endIndex - beginIndex-1).Replace("\"","");
+                    authorityStr = esriString.Substring(beginIndex + 1, endIndex - beginIndex - 1).Replace("\"", "");
                     array = authorityStr.Split(',');
                     tempAuthority = array[0];
                     tempAuthorityCode = Convert.ToInt32(array[1]);

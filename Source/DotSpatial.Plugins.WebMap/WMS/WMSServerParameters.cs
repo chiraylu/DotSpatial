@@ -128,7 +128,6 @@ namespace DotSpatial.Plugins.WebMap.WMS
             {
                 serverUrl = serverUrl + "&SERVICE=WMS";
             }
-
             WmsCapabilities capabilities;
             try
             {

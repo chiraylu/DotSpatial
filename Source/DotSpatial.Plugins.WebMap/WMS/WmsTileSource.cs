@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using BruTile;
 using BruTile.Web;
+using BruTile.Wmts;
 
 namespace DotSpatial.Plugins.WebMap.WMS
 {
@@ -38,7 +39,6 @@ namespace DotSpatial.Plugins.WebMap.WMS
             };
             const int tileWidth = 256;
             const int tileHeight = 256;
-
             var request = new WmsRequest(
                 new Uri(info.WmsCapabilities.Capability.Request.GetMap.DCPType[0].Http.Get.OnlineResource.Href),
                 schema,
@@ -48,7 +48,7 @@ namespace DotSpatial.Plugins.WebMap.WMS
                 info.Style == null ? null : new List<string> { info.Style },
                 info.CustomParameters,
                 info.WmsCapabilities.Version.VersionString);
-            return new WmsTileSource(new HttpTileProvider(request, fetchTile: d => RequestHelper.FetchImage(d, info.Credentials)), schema);
+            return new WmsTileSource(new HttpTileProvider(request, fetchTile: d => RequestHelper.FetchImage(d, info.Credentials)), schema); 
         }
 
         #endregion

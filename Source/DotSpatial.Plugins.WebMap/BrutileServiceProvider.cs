@@ -67,13 +67,12 @@ namespace DotSpatial.Plugins.WebMap
             if (ts == null) return null;
 
             Bitmap bitMap = null;
-            var zoomS = zoom.ToString(CultureInfo.InvariantCulture);
             var extent = ToBrutileExtent(envelope);
-            var tileInfo = ts.Schema.GetTileInfos(extent, zoomS).FirstOrDefault();
+            var tileInfo = ts.Schema.GetTileInfos(extent, zoom).FirstOrDefault();
 
             try
             {
-                var index = new TileIndex(x, y, zoomS);
+                var index = new TileIndex(x, y, zoom);
                 var tc = TileCache;
                 var bytes = tc?.Find(index);
                 if (bytes == null)
@@ -97,7 +96,7 @@ namespace DotSpatial.Plugins.WebMap
             {
                 if (ex is WebException || ex is TimeoutException)
                 {
-                    bitMap = ExceptionToBitmap(ex, TileSource.Schema.GetTileWidth(zoomS), TileSource.Schema.GetTileHeight(zoomS));
+                    bitMap = ExceptionToBitmap(ex, TileSource.Schema.GetTileWidth(zoom), TileSource.Schema.GetTileHeight(zoom));
                 }
                 else
                 {
@@ -114,7 +113,7 @@ namespace DotSpatial.Plugins.WebMap
                     string str = ts1.BaseUrl + "/tile/{zoom}/{y}/{x}";
                     if (!str.Contains("{key}"))
                     {
-                        str = str.Replace("{zoom}", zoomS);
+                        str = str.Replace("{zoom}", zoom.ToString());
                         str = str.Replace("{x}", x.ToString());
                         str = str.Replace("{y}", y.ToString());
 
