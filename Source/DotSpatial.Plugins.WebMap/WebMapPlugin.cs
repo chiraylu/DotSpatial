@@ -24,7 +24,6 @@ namespace DotSpatial.Plugins.WebMap
     {
         #region Fields
         private const string Other = "Other";
-        private const string Wmts = "Wmts";
         private const string StrKeyServiceDropDown = "kServiceDropDown";
         private readonly ProjectionInfo _webMercProj;
         private ServiceProvider _emptyProvider;
@@ -143,7 +142,7 @@ namespace DotSpatial.Plugins.WebMap
             // Default providers
             _serviceDropDown.Items.AddRange(ServiceProviderFactory.GetDefaultServiceProviders());
 
-            _serviceDropDown.Items.Add(ServiceProviderFactory.Create("map", "http://someservice/WMTS/1.0.0/WMTSCapabilities.xml"));
+            _serviceDropDown.Items.Add(ServiceProviderFactory.Create("Wmts", "http://someservice/WMTS/1.0.0/WMTSCapabilities.xml"));
 
             // "Other" provider
             _serviceDropDown.Items.Add(ServiceProviderFactory.Create(Other));
@@ -184,7 +183,7 @@ namespace DotSpatial.Plugins.WebMap
                 }
                 else
                 {
-                    if (App.Map.MapFrame.Projection != _webMercProj)
+                    if (!App.Map.MapFrame.Projection.Equals(_webMercProj) )
                     {
                         App.Map.MapFrame.ReprojectMapFrame(_webMercProj);
                     }
@@ -234,7 +233,7 @@ namespace DotSpatial.Plugins.WebMap
             }
             else
             {
-                if(_baseLayer.WebMapName != serviceProvider.Name)
+                if (_baseLayer.WebMapName != serviceProvider.Name)
                 {
                     _baseLayer.WebMapName = serviceProvider.Name;
                 }
@@ -246,14 +245,12 @@ namespace DotSpatial.Plugins.WebMap
             for (var i = 0; i < group.Layers.Count; i++)
             {
                 var layer = group.Layers[i];
-                var childGroup = layer as IMapGroup;
-                if (childGroup != null)
+                if (layer is IMapGroup childGroup)
                 {
                     var ins = InsertBaseMapLayer(childGroup);
                     if (ins) return true;
                 }
-
-                if (layer is IMapPointLayer || layer is IMapLineLayer)
+                else if (layer is IMapPointLayer || layer is IMapLineLayer)
                 {
                     var grp = layer.GetParentItem() as IGroup;
                     if (grp != null)
@@ -274,7 +271,7 @@ namespace DotSpatial.Plugins.WebMap
         private void RemoveBasemapLayer(IMapLayer layer)
         {
             // attempt to remove from the top-level
-            if (App.Map.Layers.Remove(layer)) return;
+            if (layer == null || App.Map.Layers.Remove(layer)) return;
 
             // Remove from other groups if the user has moved it
             foreach (var group in App.Map.Layers.OfType<IMapGroup>())
@@ -303,13 +300,15 @@ namespace DotSpatial.Plugins.WebMap
                 if (_baseLayer != null)
                 {
                     //_baseLayer.Projection = _webMercProj; // changed by jany_(2015-07-09) set the projection because if it is not set we produce a cross thread exception when DotSpatial tries to show the projection dialog
-
+                    var item= _serviceDropDown.Items.OfType<ServiceProvider>().FirstOrDefault(p => p.Name.Equals(_baseLayer.WebMapName, StringComparison.InvariantCultureIgnoreCase));
                     // hack: need to set provider to original object, not a new one.
-                    _serviceDropDown.SelectedItem = _serviceDropDown.Items.OfType<ServiceProvider>().FirstOrDefault(p => p.Name.Equals(_baseLayer.WebMapName, StringComparison.InvariantCultureIgnoreCase));
-                    var pp = CurrentProvider;
-                    if (pp != null)
+                    if (item != null)
                     {
-                        EnableBasemapFetching(pp);
+                        _serviceDropDown.SelectedItem = item;
+                        if (CurrentProvider != null)
+                        {
+                            EnableBasemapFetching(CurrentProvider);
+                        }
                     }
                 }
             }

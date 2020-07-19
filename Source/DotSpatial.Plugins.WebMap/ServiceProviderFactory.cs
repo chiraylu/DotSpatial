@@ -58,7 +58,8 @@ namespace DotSpatial.Plugins.WebMap
         {
             var servEq = (Func<string, bool>)(s => name?.Equals(s, StringComparison.InvariantCultureIgnoreCase) == true);
 
-            var fileCache = (Func<ITileCache<byte[]>>)(() => new FileCache(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TileCache", name), "jpg", new TimeSpan(30, 0, 0, 0)));
+            ITileCache<byte[]> fileCache() =>
+            new FileCache(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "TileCache", name), "jpg", new TimeSpan(30, 0, 0, 0));
 
             if (servEq(Resources.EsriHydroBaseMap))
             {

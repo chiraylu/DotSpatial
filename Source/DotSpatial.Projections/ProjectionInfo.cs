@@ -624,11 +624,12 @@ namespace DotSpatial.Projections
             {
                 // we need to copy the projection information because the Authority Codes implementation returns its one and only
                 // in memory copy of the ProjectionInfo. Passing it to the caller might introduce unintended results.
-                var info = FromProj4String(pi.ToProj4String());
-                info.Name = pi.Name;
+                var info = FromProj4String(pi.ToProj4String(), authority, code);
+                if (string.IsNullOrEmpty(info.Name))
+                {
+                    info.Name = pi.Name;
+                }
                 info.NoDefs = true;
-                info.Authority = authority;
-                info.AuthorityCode = code;
                 return info;
             }
 
@@ -679,9 +680,36 @@ namespace DotSpatial.Projections
             info.ParseProj4String(proj4String);
             if (!string.IsNullOrWhiteSpace(authority)) info.Authority = authority;
             if (authorityCode > 0) info.AuthorityCode = authorityCode;
+            if (authority == "EPSG")
+            {
+                RectifyProjectionInfo(info, authorityCode);
+            }
             return info;
         }
-
+        private static void RectifyProjectionInfo(ProjectionInfo projectionInfo, int authorityCode)
+        {
+            if (projectionInfo != null && authorityCode > 0)
+            {
+                switch (authorityCode)
+                {
+                    case 4326:
+                        projectionInfo.Name = "GCS_WGS_1984";
+                        projectionInfo.GeographicInfo.Name = "GCS_WGS_1984";
+                        projectionInfo.GeographicInfo.Datum.Name = "D_WGS_1984";
+                        break;
+                    case 3857:
+                        projectionInfo.Transform = new MercatorAuxiliarySphere();
+                        projectionInfo.ScaleFactor = 1;
+                        projectionInfo.AuxiliarySphereType = AuxiliarySphereType.SemimajorAxis;
+                        projectionInfo.GeographicInfo.Datum.Spheroid = new Spheroid(projectionInfo.GeographicInfo.Datum.Spheroid.EquatorialRadius);
+                        projectionInfo.Transform.Init(projectionInfo);
+                        projectionInfo.Name = "WGS_1984_Web_Mercator_Auxiliary_Sphere";
+                        projectionInfo.GeographicInfo.Name = "GCS_WGS_1984";
+                        projectionInfo.GeographicInfo.Datum.Name = "D_WGS_1984";
+                        break;
+                }
+            }
+        }
         /// <summary>
         /// Open a given prj fileName
         /// </summary>
@@ -711,8 +739,16 @@ namespace DotSpatial.Projections
             {
                 return false;
             }
-
-            return ToEsriString().Equals(other.ToEsriString()) || ToProj4String().Equals(other.ToProj4String());
+            bool ret = false;
+            if (!string.IsNullOrEmpty(Authority) && Authority == other.Authority && AuthorityCode == other.AuthorityCode)
+            {
+                ret = true;
+            }
+            else
+            {
+                ret = ToEsriString().Equals(other.ToEsriString()) || ToProj4String().Equals(other.ToProj4String());
+            }
+            return ret;
         }
 
         /// <summary>
@@ -1204,7 +1240,6 @@ namespace DotSpatial.Projections
                         break;
                 }
             }
-
             if (Transform != null)
             {
                 Transform.Init(this);
@@ -1277,6 +1312,21 @@ namespace DotSpatial.Projections
                 IsLatLon = true;
                 Transform = new LongLat();
                 Transform.Init(this);
+                Name = GeographicInfo.Name;
+                if (string.IsNullOrEmpty(Authority) || AuthorityCode == 0)
+                {
+                    switch (Name)
+                    {
+                        case "GCS_WGS_1984":
+                            Authority = "EPSG";
+                            AuthorityCode = 4326;
+                            break;
+                        case "WGS_1984_Web_Mercator_Auxiliary_Sphere":
+                            Authority = "EPSG";
+                            AuthorityCode = 3857;
+                            break;
+                    }
+                }
                 return true;
             }
 

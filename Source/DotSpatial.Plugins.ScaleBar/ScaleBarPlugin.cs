@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See License.txt file in the project root for full license information.
 
 using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.Windows.Forms;
 using DotSpatial.Controls;
@@ -222,14 +223,26 @@ namespace DotSpatial.Plugins.ScaleBar
                 }
                 else
                 {
-                    _combo.Items[0] = "1 : " + dMetersPerScreenMeter.ToString("n02", CultureInfo.CurrentCulture);
-                    _combo.SelectedIndex = 0;
+                    Action action = () =>
+                      {
+                          _combo.Items[0] = "1 : " + dMetersPerScreenMeter.ToString("n02", CultureInfo.CurrentCulture);
+                          _combo.SelectedIndex = 0;
+                      };
+                    if (_combo.Control.InvokeRequired)
+                    {
+                        _combo.Control.Invoke(action);
+                    }
+                    else
+                    {
+                        action.Invoke();
+                    }
                 }
 
                 _ignore = false;
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Debug.WriteLine(e);
                 // added this catch because in debug mode _combo is accessed from a different threat that causes unwanted errors
                 // can this error be removed differently?
             }

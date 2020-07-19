@@ -28,7 +28,7 @@ namespace DotSpatial.Controls
         /// </summary>
         public MapGroup()
         {
-            Layers = new MapLayerCollection();
+            Layers = new MapLayerCollection(null, this, null);
         }
 
         /// <summary>
@@ -91,7 +91,10 @@ namespace DotSpatial.Controls
 
                 HandleLayerEvents(value);
                 _layers = value;
-
+                if (_layers.ParentGroup == null)
+                {
+                    _layers.ParentGroup = this;
+                }
                 // set the MapFrame property
                 if (ParentMapFrame != null)
                 {

@@ -126,9 +126,6 @@ namespace DotSpatial.Projections.GeographicCategories
             WGS1972TBE.GeographicInfo.Datum.Name = "D_WGS_1972_BE";
 
             WGS1984 = ProjectionInfo.FromProj4String("+proj=longlat +ellps=WGS84 +datum=WGS84 +no_defs ","EPSG",4326);
-            WGS1984.Name = "GCS_WGS_1984";
-            WGS1984.GeographicInfo.Name = "GCS_WGS_1984";
-            WGS1984.GeographicInfo.Datum.Name = "D_WGS_1984";
         }
 
         #endregion

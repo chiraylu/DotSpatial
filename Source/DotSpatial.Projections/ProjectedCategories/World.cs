@@ -107,11 +107,6 @@ namespace DotSpatial.Projections.ProjectedCategories
 
             //JIRI -- Changed the web mercator projection definition
             WebMercator = ProjectionInfo.FromProj4String("+proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0.0 +k=1.0 +units=m +nadgrids=@null +no_defs ","EPSG",3857);
-            WebMercator.Transform = new MercatorAuxiliarySphere();
-            WebMercator.ScaleFactor = 1;
-            WebMercator.AuxiliarySphereType = AuxiliarySphereType.SemimajorAxis;
-            WebMercator.GeographicInfo.Datum.Spheroid = new Spheroid(WebMercator.GeographicInfo.Datum.Spheroid.EquatorialRadius);
-            WebMercator.Transform.Init(WebMercator);
             //ITransform originalTransform = WebMercator.Transform;
             //WebMercator.GeographicInfo.Datum.DatumType = DatumType.WGS84; //web mercator has a WGS84 datum type
             //WebMercator.Transform = originalTransform; //reset the transform
@@ -153,7 +148,6 @@ namespace DotSpatial.Projections.ProjectedCategories
             VerticalPerspectiveworld.Name = "World_Vertical_Perspective";
             //name changed by JK to match the esri string
             //WebMercator.Name = "WGS_1984_Web_Mercator";
-            WebMercator.Name = "WGS_1984_Web_Mercator_Auxiliary_Sphere";
             WinkelIworld.Name = "World_Winkel_II";
             WinkelTripelNGSworld.Name = "World_Winkel_Tripel_NGS";
 
@@ -192,7 +186,6 @@ namespace DotSpatial.Projections.ProjectedCategories
             WinkelTripelNGSworld.GeographicInfo.Name = "GCS_WGS_1984";
             //Jiri Kadlec - changed the 'web mercator' geographic info name
             //WebMercator.GeographicInfo.Name = "GCS_WGS_1984_Major_Auxiliary_Sphere";
-            WebMercator.GeographicInfo.Name = "GCS_WGS_1984";
 
             Aitoffworld.GeographicInfo.Datum.Name = "D_WGS_1984";
             Behrmannworld.GeographicInfo.Datum.Name = "D_WGS_1984";
@@ -230,7 +223,6 @@ namespace DotSpatial.Projections.ProjectedCategories
 
             //Jiri Kadlec - Changed the WebMercator datum name to match the EsriString
             //WebMercator.GeographicInfo.Datum.Name = "D_WGS_1984_Major_Auxiliary_Sphere";
-            WebMercator.GeographicInfo.Datum.Name = "D_WGS_1984";
         }
 
         #endregion
