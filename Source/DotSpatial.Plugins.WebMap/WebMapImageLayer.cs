@@ -298,7 +298,7 @@ namespace DotSpatial.Plugins.WebMap
                         rectangle = GetRectangle(mapViewExtent, rectangle, xmin, ymin, xmax, ymax);
                         var clipExtent = new Extent(xmin, ymin, xmax, ymax);
                         geogEnv = GetReprojectedExtent(clipExtent, Map.Projection, ServiceProviderFactory.Wgs84Proj.Value).ToEnvelope();
-                        if (!bwProgress(25)) return tileImage;
+                        if (bwProgress?.Invoke(25) == false) return tileImage;
                     }
                     else if (Map.Projection.Equals(ServiceProviderFactory.Wgs84Proj.Value))
                     {
@@ -307,15 +307,15 @@ namespace DotSpatial.Plugins.WebMap
                         ymin = TileCalculator.Clip(ymin, TileCalculator.MinLatitude, TileCalculator.MaxLatitude);
                         ymax = TileCalculator.Clip(ymax, TileCalculator.MinLatitude, TileCalculator.MaxLatitude);
                         rectangle = GetRectangle(mapViewExtent, rectangle, xmin, ymin, xmax, ymax);
-                        if (!bwProgress(25)) return tileImage;
+                        if (bwProgress?.Invoke(25) == false) return tileImage;
 
                         geogEnv = new Envelope(xmin, xmax, ymin, ymax);
                     }
-                    if (!bwProgress(40)) return tileImage;
+                    if (bwProgress?.Invoke(40) == false) return tileImage;
 
                     // Grab the tiles
                     Tiles tiles = TileManager.GetTiles(geogEnv, rectangle, _bw);
-                    if (!bwProgress(50)) return tileImage;
+                    if (bwProgress?.Invoke(50) == false) return tileImage;
 
                     // Stitch them into a single image
                     var stitchedBasemap = TileCalculator.StitchTiles(tiles.Bitmaps, _opacity);
@@ -359,7 +359,7 @@ namespace DotSpatial.Plugins.WebMap
                         }
                     }
 
-                    if (!bwProgress(90)) return tileImage;
+                    if (bwProgress?.Invoke(90) == false) return tileImage;
                 }
             }
             return tileImage;
