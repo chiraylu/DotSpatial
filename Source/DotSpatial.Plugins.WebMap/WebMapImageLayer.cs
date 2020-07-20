@@ -8,6 +8,7 @@ using System.Drawing.Imaging;
 using System.Linq;
 using DotSpatial.Controls;
 using DotSpatial.Data;
+using DotSpatial.Plugins.WebMap.Properties;
 using DotSpatial.Plugins.WebMap.Tiling;
 using DotSpatial.Projections;
 using DotSpatial.Serialization;
@@ -123,7 +124,7 @@ namespace DotSpatial.Plugins.WebMap
         }
         public WebMapImageLayer(KnownMaps knownMap) : this()
         {
-            WebMapName = knownMap.ToString();
+            WebMapName = Resources.ResourceManager.GetString(knownMap.ToString());
         }
         private void OnWebMapNameOrUrlChanged()
         {
@@ -135,25 +136,25 @@ namespace DotSpatial.Plugins.WebMap
                 if (provider == null && !string.IsNullOrEmpty(WebMapUrl))
                 {
                     provider = ServiceProviderFactory.Create(WebMapName, WebMapUrl);
-                    if (provider == null)
+                }
+                if (provider == null)
+                {
+                    WebMapExtent = new Extent();
+                }
+                else
+                {
+                    if (provider is BrutileServiceProvider brutileServiceProvider)
                     {
-                        WebMapExtent = new Extent();
+                        var extent = brutileServiceProvider.TileSource.Schema.Extent;
+                        WebMapExtent = new Extent(extent.MinX, extent.MinY, extent.MaxX, extent.MaxY);
                     }
                     else
                     {
-                        if (provider is BrutileServiceProvider brutileServiceProvider)
-                        {
-                            var extent = brutileServiceProvider.TileSource.Schema.Extent;
-                            WebMapExtent = new Extent(extent.MinX, extent.MinY, extent.MaxX, extent.MaxY);
-                        }
-                        else
-                        {
-                            var xmin = TileCalculator.MinWebMercX;
-                            var ymin = TileCalculator.MinWebMercY;
-                            var xmax = TileCalculator.MaxWebMercX;
-                            var ymax = TileCalculator.MaxWebMercY;
-                            WebMapExtent = new Extent(xmin, ymin, xmax, ymax);
-                        }
+                        var xmin = TileCalculator.MinWebMercX;
+                        var ymin = TileCalculator.MinWebMercY;
+                        var xmax = TileCalculator.MaxWebMercX;
+                        var ymax = TileCalculator.MaxWebMercY;
+                        WebMapExtent = new Extent(xmin, ymin, xmax, ymax);
                     }
                 }
             }
@@ -397,7 +398,7 @@ namespace DotSpatial.Plugins.WebMap
         private void BwProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             // Do we know what what our progress completion percent is (instead of 50)?
-            ProgressHandler.Progress("Loading Basemap ...", e.ProgressPercentage, "Loading Basemap ...");
+            ProgressHandler?.Progress("Loading Basemap ...", e.ProgressPercentage, "Loading Basemap ...");
         }
 
         private void BwRunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
@@ -416,7 +417,7 @@ namespace DotSpatial.Plugins.WebMap
                     Map.IsBusy = false;
                     MapFrame.Invalidate();
                 }
-                ProgressHandler.Progress(string.Empty, 0, string.Empty);
+                ProgressHandler?.Progress(string.Empty, 0, string.Empty);
             }
         }
         public override void Print(MapArgs args, List<Extent> regions, bool selected)
