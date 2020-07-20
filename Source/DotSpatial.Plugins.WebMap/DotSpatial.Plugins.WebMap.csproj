@@ -81,6 +81,7 @@
     <Compile Include="Configuration\ServiceProviderElement.cs" />
     <Compile Include="Configuration\ServiceProviderElementCollection.cs" />
     <Compile Include="Configuration\WebMapConfigurationSection.cs" />
+    <Compile Include="KnownMaps.cs" />
     <Compile Include="OtherServiceProvider.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

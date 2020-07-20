@@ -1,6 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 using System.Linq;
 using DotSpatial.Controls;
 using DotSpatial.Data;
@@ -106,11 +110,6 @@ namespace DotSpatial.Plugins.WebMap
 
         public WebMapImageLayer()
         {
-            var xmin = TileCalculator.MinWebMercX;
-            var ymin = TileCalculator.MinWebMercY;
-            var xmax = TileCalculator.MaxWebMercX;
-            var ymax = TileCalculator.MaxWebMercY;
-            WebMapExtent = new Extent(xmin, ymin, xmax, ymax);
             // Setup the background worker
             _bw = new BackgroundWorker
             {
@@ -122,6 +121,10 @@ namespace DotSpatial.Plugins.WebMap
             _bw.ProgressChanged += BwProgressChanged;
             RemoveItem += WebMapImageLayer_RemoveItem;
         }
+        public WebMapImageLayer(KnownMaps knownMap) : this()
+        {
+            WebMapName = knownMap.ToString();
+        }
         private void OnWebMapNameOrUrlChanged()
         {
             ServiceProvider provider = null;
@@ -132,6 +135,26 @@ namespace DotSpatial.Plugins.WebMap
                 if (provider == null && !string.IsNullOrEmpty(WebMapUrl))
                 {
                     provider = ServiceProviderFactory.Create(WebMapName, WebMapUrl);
+                    if (provider == null)
+                    {
+                        WebMapExtent = new Extent();
+                    }
+                    else
+                    {
+                        if (provider is BrutileServiceProvider brutileServiceProvider)
+                        {
+                            var extent = brutileServiceProvider.TileSource.Schema.Extent;
+                            WebMapExtent = new Extent(extent.MinX, extent.MinY, extent.MaxX, extent.MaxY);
+                        }
+                        else
+                        {
+                            var xmin = TileCalculator.MinWebMercX;
+                            var ymin = TileCalculator.MinWebMercY;
+                            var xmax = TileCalculator.MaxWebMercX;
+                            var ymax = TileCalculator.MaxWebMercY;
+                            WebMapExtent = new Extent(xmin, ymin, xmax, ymax);
+                        }
+                    }
                 }
             }
             if (provider == null)
@@ -219,164 +242,6 @@ namespace DotSpatial.Plugins.WebMap
             destRect.Height = (int)Math.Ceiling((ymax - ymin) * dy);
             return destRect;
         }
-        private Rectangle GetRectangle(Extent extent, Rectangle rectangle, Extent newExtent)
-        {
-            return GetRectangle(extent, rectangle, newExtent.MinX, newExtent.MinY, newExtent.MaxX, newExtent.MaxY);
-        }
-        private Bitmap GetNewBitmap(Bitmap bmp, int width, int height, RectangleF destRectangle)
-        {
-            Bitmap destBmp = null;
-            if (bmp != null && width > 0 && height > 0)
-            {
-                destBmp = new Bitmap(width, height);
-                using (Graphics g = Graphics.FromImage(destBmp))
-                {
-                    g.Clear(Color.Transparent);
-                    GraphicsUnit unit = GraphicsUnit.Pixel;
-                    var srcRect = bmp.GetBounds(ref unit);
-                    g.DrawImage(bmp, destRectangle, srcRect, unit);
-                }
-            }
-            return destBmp;
-        }
-        private Bitmap GetNewBitmap(Bitmap bmp, int width, int height)
-        {
-            Bitmap destBmp = null;
-            if (bmp != null && width > 0 && height > 0)
-            {
-                destBmp = new Bitmap(width, height);
-                using (Graphics g = Graphics.FromImage(destBmp))
-                {
-                    g.Clear(Color.Transparent);
-                    GraphicsUnit unit = GraphicsUnit.Pixel;
-                    var srcRect = bmp.GetBounds(ref unit);
-                    g.DrawImage(bmp, new RectangleF(0, 0, width, height), srcRect, unit);
-                }
-            }
-            return destBmp;
-        }
-        private InRamImageData GetTilesFromMapView0(Func<int, bool> bwProgress)
-        {
-            InRamImageData tileImage = null;
-            if (Map != null)
-            {
-                Extent mapViewExtent = Map.ViewExtents?.Clone() as Extent;
-                Rectangle rectangle = Map.Bounds;
-                if (Map.Projection != null)
-                {
-                    if (mapViewExtent == null)
-                    {
-                        return tileImage;
-                    }
-                    // If ExtendBuffer, correct the displayed extent
-                    if (Map.ExtendBuffer)
-                    {
-                        mapViewExtent.ExpandBy(-mapViewExtent.Width / _extendBufferCoeff, -mapViewExtent.Height / _extendBufferCoeff);
-                    }
-                    var xmin = mapViewExtent.MinX;
-                    var xmax = mapViewExtent.MaxX;
-                    var ymin = mapViewExtent.MinY;
-                    var ymax = mapViewExtent.MaxY;
-                    Tiles tiles = null;
-                    double[] z = { 0, 0 };
-                    if (Map.Projection.Equals(ServiceProviderFactory.WebMercProj.Value))
-                    {
-                        xmin = TileCalculator.Clip(xmin, TileCalculator.MinWebMercX, TileCalculator.MaxWebMercX);
-                        xmax = TileCalculator.Clip(xmax, TileCalculator.MinWebMercX, TileCalculator.MaxWebMercX);
-                        ymin = TileCalculator.Clip(ymin, TileCalculator.MinWebMercY, TileCalculator.MaxWebMercY);
-                        ymax = TileCalculator.Clip(ymax, TileCalculator.MinWebMercY, TileCalculator.MaxWebMercY);
-                        rectangle = GetRectangle(mapViewExtent, rectangle, xmin, ymin, xmax, ymax);
-                        if (!bwProgress(25)) return tileImage;
-
-                        // Get the web mercator vertices of the current map view
-                        var mapVertices = new[] { xmin, ymax, xmax, ymin };
-
-                        // Reproject from web mercator to WGS1984 geographic
-                        Projections.Reproject.ReprojectPoints(mapVertices, z, ServiceProviderFactory.WebMercProj.Value, ServiceProviderFactory.Wgs84Proj.Value, 0, mapVertices.Length / 2);
-                        var geogEnv = new Envelope(mapVertices[0], mapVertices[2], mapVertices[1], mapVertices[3]);
-
-                        if (!bwProgress(40)) return tileImage;
-
-                        // Grab the tiles
-                        tiles = TileManager.GetTiles(geogEnv, rectangle, _bw);
-                        if (!bwProgress(50)) return tileImage;
-                    }
-                    else if (Map.Projection.Equals(ServiceProviderFactory.Wgs84Proj.Value))
-                    {
-                        xmin = TileCalculator.Clip(xmin, TileCalculator.MinLongitude, TileCalculator.MaxLongitude);
-                        xmax = TileCalculator.Clip(xmax, TileCalculator.MinLongitude, TileCalculator.MaxLongitude);
-                        ymin = TileCalculator.Clip(ymin, TileCalculator.MinLatitude, TileCalculator.MaxLatitude);
-                        ymax = TileCalculator.Clip(ymax, TileCalculator.MinLatitude, TileCalculator.MaxLatitude);
-                        rectangle = GetRectangle(mapViewExtent, rectangle, xmin, ymin, xmax, ymax);
-                        if (!bwProgress(25)) return tileImage;
-
-                        var geogEnv = new Envelope(xmin, xmax, ymin, ymax);
-
-                        if (!bwProgress(40)) return tileImage;
-
-                        // Grab the tiles
-                        tiles = TileManager.GetTiles(geogEnv, rectangle, _bw);
-                        if (!bwProgress(50)) return tileImage;
-                    }
-                    // Stitch them into a single image
-                    var stitchedBasemap = TileCalculator.StitchTiles(tiles.Bitmaps, _opacity);
-                    var bmpExtent = new Extent(tiles.TopLeftTile.MinX, tiles.BottomRightTile.MinY, tiles.BottomRightTile.MaxX, tiles.TopLeftTile.MaxY);
-                    if (Map.Projection.Equals(ServiceProviderFactory.Wgs84Proj.Value) && TileManager.ServiceProvider.Projection.Equals(ServiceProviderFactory.WebMercProj.Value))
-                    {
-                        double dx0 = mapViewExtent.Width / Map.Bounds.Width;
-                        double dy0 = mapViewExtent.Height / Map.Bounds.Height;
-
-                        var destWidth = bmpExtent.Width / dx0;
-                        var destHeight = bmpExtent.Height / dy0;
-                        double srcRatio = (double)stitchedBasemap.Width / stitchedBasemap.Height;
-                        double destRatio = destWidth / destHeight;
-                        int widthOfPixel = stitchedBasemap.Width;
-                        int heightOfPixel = stitchedBasemap.Height;
-                        if (srcRatio > destRatio)
-                        {
-                            widthOfPixel = (int)Math.Ceiling(heightOfPixel * destRatio);
-                        }
-                        else
-                        {
-                            heightOfPixel = (int)Math.Ceiling(widthOfPixel / destRatio);
-                        }
-                        var destExtent = new Extent();
-                        destExtent.SetCenter(bmpExtent.Center, widthOfPixel * dx0, heightOfPixel * dy0);
-                        double dx = destExtent.Width / widthOfPixel;
-                        double dy = destExtent.Height / heightOfPixel;
-                        RectangleF destRectangleF = new RectangleF()
-                        {
-                            X = Convert.ToSingle((bmpExtent.MinX - destExtent.MinX) / dx),
-                            Y = Convert.ToSingle((destExtent.MaxY - bmpExtent.MaxY) / dy),
-                            Width = Convert.ToSingle(bmpExtent.Width / dx),
-                            Height = Convert.ToSingle(bmpExtent.Height / dy)
-                        };
-                        stitchedBasemap = GetNewBitmap(stitchedBasemap, widthOfPixel, heightOfPixel);
-                        //stitchedBasemap = GetNewBitmap(stitchedBasemap, widthOfPixel, heightOfPixel, destRectangleF);
-                        //bmpExtent = destExtent;
-                    }
-                    else if (Map.Projection.Equals(ServiceProviderFactory.WebMercProj.Value))
-                    {
-                        if (TileManager.ServiceProvider.Projection.Equals(ServiceProviderFactory.WebMercProj.Value))
-                        {
-                            var tileVertices = new[] { tiles.TopLeftTile.MinX, tiles.TopLeftTile.MaxY, tiles.BottomRightTile.MaxX, tiles.BottomRightTile.MinY };
-                            Projections.Reproject.ReprojectPoints(tileVertices, z, ServiceProviderFactory.Wgs84Proj.Value, ServiceProviderFactory.WebMercProj.Value, 0, tileVertices.Length / 2);
-                            bmpExtent = new Extent(tileVertices[0], tileVertices[3], tileVertices[2], tileVertices[1]);
-                        }
-                    }
-
-                    tileImage = new InRamImageData(stitchedBasemap)
-                    {
-                        Name = WebMapName,
-                        Projection = Map.Projection,
-                        Bounds = new RasterBounds(stitchedBasemap.Height, stitchedBasemap.Width, bmpExtent)
-                    };
-
-                    if (!bwProgress(90)) return tileImage;
-                }
-            }
-            return tileImage;
-        }
         private Extent GetReprojectedExtent(Extent extent, ProjectionInfo srcProjection, ProjectionInfo destProjection)
         {
             Extent destExtent = CloneableEm.Copy(extent);
@@ -400,13 +265,12 @@ namespace DotSpatial.Plugins.WebMap
             destExtent.MaxY = mapVertices[1];
             return destExtent;
         }
-        private InRamImageData GetTilesFromMapView(Func<int, bool> bwProgress)
+        private InRamImageData GetImageData(Extent extent, Rectangle rectangle, Func<int, bool> bwProgress)
         {
             InRamImageData tileImage = null;
             if (Map != null)
             {
-                Extent mapViewExtent = Map.ViewExtents?.Clone() as Extent;
-                Rectangle rectangle = Map.Bounds;
+                Extent mapViewExtent = extent.Clone() as Extent;
                 if (Map.Projection != null)
                 {
                     if (mapViewExtent == null)
@@ -518,7 +382,7 @@ namespace DotSpatial.Plugins.WebMap
             });
             if (Map != null && TileManager != null)
             {
-                var imageData = GetTilesFromMapView(bwProgress);
+                var imageData = GetImageData(Map.ViewExtents, Map.Bounds, bwProgress);
                 if (!_bw.CancellationPending)
                 {
                     if (IsVisible)
@@ -555,6 +419,86 @@ namespace DotSpatial.Plugins.WebMap
                 ProgressHandler.Progress(string.Empty, 0, string.Empty);
             }
         }
+        public override void Print(MapArgs args, List<Extent> regions, bool selected)
+        {
+            if (selected) return;
+            var dataset = GetImageData(args.GeographicExtents, args.ImageRectangle, null);
+            DrawRegions(dataset, args, regions, selected);
+        }
+        private void DrawRegions(IImageData dataset, MapArgs args, List<Extent> regions, bool selected)
+        {
+            if (selected) return;
+            List<Rectangle> clipRects = args.ProjToPixel(regions);
+            for (int i = clipRects.Count - 1; i >= 0; i--)
+            {
+                if (clipRects[i].Width != 0 && clipRects[i].Height != 0) continue;
+                regions.RemoveAt(i);
+                clipRects.RemoveAt(i);
+            }
+            DrawWindows(dataset, args, regions, clipRects);
+        }
+        private void DrawWindows(IImageData dataSet, MapArgs args, List<Extent> regions, List<Rectangle> clipRectangles)
+        {
+            if (dataSet == null)
+            {
+                return;
+            }
+            Graphics g = null;
+            if (args.Device != null)
+            {
+                g = args.Device; // A device on the MapArgs is optional, but overrides the normal buffering behaviors.
+            }
+            int numBounds = Math.Min(regions.Count, clipRectangles.Count);
+            Matrix originMatrix = g.Transform;
+            for (int i = 0; i < numBounds; i++)
+            {
+                // For panning tiles, the region needs to be expanded.
+                // This is not always 1 pixel. When very zoomed in, this could be many pixels,
+                // but should correspond to 1 pixel in the source image.
+                int dx = (int)Math.Ceiling(dataSet.Bounds.AffineCoefficients[1] * clipRectangles[i].Width / regions[i].Width);
+                int dy = (int)Math.Ceiling(-dataSet.Bounds.AffineCoefficients[5] * clipRectangles[i].Height / regions[i].Height);
 
+                Rectangle r = clipRectangles[i].ExpandBy(dx * 2, dy * 2);
+                if (r.X < 0) r.X = 0;
+                if (r.Y < 0) r.Y = 0;
+                if (r.Width > 2 * clipRectangles[i].Width) r.Width = 2 * clipRectangles[i].Width;
+                if (r.Height > 2 * clipRectangles[i].Height) r.Height = 2 * clipRectangles[i].Height;
+                Extent env = regions[i].Reproportion(clipRectangles[i], r);
+
+                Bitmap bmp = null;
+                try
+                {
+                    bmp = dataSet.GetBitmap(env, r);
+                }
+                catch (Exception e)
+                {
+                    Debug.WriteLine($"绘制失败：{e}");
+                    bmp?.Dispose();
+                    continue;
+                }
+
+                if (bmp == null) continue;
+
+                if (Symbolizer != null && Symbolizer.Opacity < 1)
+                {
+                    ColorMatrix matrix = new ColorMatrix
+                    {
+                        Matrix33 = Symbolizer.Opacity // draws the image not completely opaque
+                    };
+                    using (var attributes = new ImageAttributes())
+                    {
+                        attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+                        g.DrawImage(bmp, new Rectangle(0, 0, r.Width, r.Height), 0, 0, bmp.Width, bmp.Height, GraphicsUnit.Pixel, attributes);
+                    }
+                }
+                else
+                {
+                    g.DrawImage(bmp, new Rectangle(0, 0, r.Width, r.Height));
+                }
+                bmp.Dispose();
+            }
+            g.Transform = originMatrix;
+            if (args.Device == null) g.Dispose();
+        }
     }
 }
