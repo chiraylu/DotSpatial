@@ -3,6 +3,7 @@
 
 using System;
 using System.Diagnostics;
+//using System.Drawing;
 using System.Globalization;
 using System.Windows.Forms;
 using DotSpatial.Controls;
@@ -23,9 +24,31 @@ namespace DotSpatial.Plugins.ScaleBar
 
         private const string StrKeyScaleBarDropDown = "kScaleBarDropDown";
         private ToolStripComboBox _combo;
-        private bool _ignore;
 
         private DropDownActionItem _scaleDropDown;
+        private double _dpiX;
+
+        private static int _ignoreCount;
+
+        private static bool Ignore
+        {
+            get => _ignoreCount > 0;
+            set
+            {
+                if (value)
+                {
+                    _ignoreCount++;
+                }
+                else
+                {
+                    _ignoreCount--;
+                    if (_ignoreCount < 0)
+                    {
+                        _ignoreCount = 0;
+                    }
+                }
+            }
+        }
 
         #endregion
 
@@ -37,6 +60,10 @@ namespace DotSpatial.Plugins.ScaleBar
         public ScaleBarPlugin()
         {
             DeactivationAllowed = false;
+            using (var g = System.Drawing.Graphics.FromHwnd(IntPtr.Zero))
+            {
+                _dpiX = g.DpiX;
+            }
         }
 
         #endregion
@@ -49,13 +76,13 @@ namespace DotSpatial.Plugins.ScaleBar
         public override void Activate()
         {
             _scaleDropDown = new DropDownActionItem
-                             {
-                                 AllowEditingText = true,
-                                 Caption = Resources.ScaleBar_Box_Text,
-                                 ToolTipText = Resources.ScaleBar_Box_ToolTip,
-                                 Width = 45,
-                                 Key = StrKeyScaleBarDropDown
-                             };
+            {
+                AllowEditingText = true,
+                Caption = Resources.ScaleBar_Box_Text,
+                ToolTipText = Resources.ScaleBar_Box_ToolTip,
+                Width = 45,
+                Key = StrKeyScaleBarDropDown
+            };
             _scaleDropDown.Items.Add("[" + Resources.Custom + "]");
 
             foreach (int k in new[] { 100, 250, 500, 1000, 1500, 2250 })
@@ -163,7 +190,7 @@ namespace DotSpatial.Plugins.ScaleBar
         /// <param name="e">The event args.</param>
         private void ComboKeyPress(object sender, KeyPressEventArgs e)
         {
-            if (_ignore) return;
+            if (Ignore) return;
 
             if (e.KeyChar == 13)
             {
@@ -212,33 +239,33 @@ namespace DotSpatial.Plugins.ScaleBar
 
                 // Get the number of pixels in one screen inch.
                 // get resolution, most screens are 96 dpi, but you never know...
-                double dScreenWidthInMeters = (Convert.ToDouble(App.Map.BufferedImage.Width) / App.Map.BufferedImage.HorizontalResolution) / DInchesPerMeter;
+                double dScreenWidthInMeters = (Convert.ToDouble(App.Map.Width) / _dpiX) / DInchesPerMeter;
                 double dMetersPerScreenMeter = dMapWidthInMeters / dScreenWidthInMeters;
                 string res = "1 : " + dMetersPerScreenMeter.ToString("n0", CultureInfo.CurrentCulture);
                 int index = _combo.Items.IndexOf(res);
-                _ignore = true;
-                if (index > -1)
+                Ignore = true;
+                Action action = () =>
                 {
-                    _combo.SelectedIndex = index;
-                }
-                else
-                {
-                    Action action = () =>
-                      {
-                          _combo.Items[0] = "1 : " + dMetersPerScreenMeter.ToString("n02", CultureInfo.CurrentCulture);
-                          _combo.SelectedIndex = 0;
-                      };
-                    if (_combo.Control.InvokeRequired)
+                    if (index > -1)
                     {
-                        _combo.Control.Invoke(action);
+                        _combo.SelectedIndex = index;
                     }
                     else
                     {
-                        action.Invoke();
+                        _combo.Items[0] = "1 : " + dMetersPerScreenMeter.ToString("n02", CultureInfo.CurrentCulture);
+                        _combo.SelectedIndex = 0;
                     }
+                };
+                if (_combo.Control.InvokeRequired)
+                {
+                    _combo.Control.Invoke(action);
+                }
+                else
+                {
+                    action.Invoke();
                 }
 
-                _ignore = false;
+                Ignore = false;
             }
             catch (Exception e)
             {
@@ -293,8 +320,8 @@ namespace DotSpatial.Plugins.ScaleBar
                 Point centerpoint = new Point((ext.MinX + ext.MaxX) / 2, (ext.MinY + ext.MaxY) / 2);
                 const double DInchesPerMeter = 39.3700787401575;
                 double dScreenWidthInMeters = (App.Map.BufferedImage.Width / App.Map.BufferedImage.HorizontalResolution) / DInchesPerMeter;
-                double newwidth = ((scale * dScreenWidthInMeters) / App.Map.Projection.Unit.Meters) / 2;
-                double newheight = ((App.Map.ViewExtents.Height * newwidth) / App.Map.ViewExtents.Width) / 2;
+                double newwidth = (scale * dScreenWidthInMeters / App.Map.Projection.Unit.Meters) / 2;
+                double newheight = (App.Map.ViewExtents.Height * newwidth / App.Map.ViewExtents.Width) / 2;
                 App.Map.ViewExtents = new Extent(centerpoint.X - newwidth, centerpoint.Y - newheight, centerpoint.X + newwidth, centerpoint.Y + newheight);
             }
 
@@ -308,7 +335,7 @@ namespace DotSpatial.Plugins.ScaleBar
         /// <param name="e">The event args.</param>
         private void ScaleToSelected(object sender, SelectedValueChangedEventArgs e)
         {
-            if (_ignore) return;
+            if (Ignore) return;
             string str = e.SelectedItem.ToString();
             if (!str.Contains("["))
             {

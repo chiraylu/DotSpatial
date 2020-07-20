@@ -30,6 +30,7 @@ namespace DotSpatial.Plugins.WebMap
         private WebMapImageLayer _baseLayer;
         private SimpleActionItem _optionsAction;
         private DropDownActionItem _serviceDropDown;
+        private bool _ignoreServiceChanged;
         #endregion
 
         #region  Constructors
@@ -111,14 +112,6 @@ namespace DotSpatial.Plugins.WebMap
             base.Deactivate();
         }
 
-        private void AddBasemapLayerToMap()
-        {
-            if (!InsertBaseMapLayer(App.Map.MapFrame))
-            {
-                App.Map.Layers.Add(_baseLayer);
-            }
-        }
-
         private void AddServiceDropDown(IHeaderControl header)
         {
             if (header == null)
@@ -183,7 +176,7 @@ namespace DotSpatial.Plugins.WebMap
                 }
                 else
                 {
-                    if (!App.Map.MapFrame.Projection.Equals(_webMercProj) )
+                    if (!App.Map.MapFrame.Projection.Equals(_webMercProj))
                     {
                         App.Map.MapFrame.ReprojectMapFrame(_webMercProj);
                     }
@@ -229,7 +222,7 @@ namespace DotSpatial.Plugins.WebMap
                     _baseLayer.WebMapUrl = wmtsServiceProvider.CapabilitiesUrl;
                 }
                 _baseLayer.RemoveItem += BaseMapLayerRemoveItem;
-                AddBasemapLayerToMap();
+                App.Map.Layers.Insert(0, _baseLayer);
             }
             else
             {
@@ -238,30 +231,6 @@ namespace DotSpatial.Plugins.WebMap
                     _baseLayer.WebMapName = serviceProvider.Name;
                 }
             }
-        }
-
-        private bool InsertBaseMapLayer(IMapGroup group)
-        {
-            for (var i = 0; i < group.Layers.Count; i++)
-            {
-                var layer = group.Layers[i];
-                if (layer is IMapGroup childGroup)
-                {
-                    var ins = InsertBaseMapLayer(childGroup);
-                    if (ins) return true;
-                }
-                else if (layer is IMapPointLayer || layer is IMapLineLayer)
-                {
-                    var grp = layer.GetParentItem() as IGroup;
-                    if (grp != null)
-                    {
-                        grp.Insert(i, _baseLayer);
-                        return true;
-                    }
-                }
-            }
-
-            return false;
         }
 
         /// <summary>
@@ -300,11 +269,25 @@ namespace DotSpatial.Plugins.WebMap
                 if (_baseLayer != null)
                 {
                     //_baseLayer.Projection = _webMercProj; // changed by jany_(2015-07-09) set the projection because if it is not set we produce a cross thread exception when DotSpatial tries to show the projection dialog
-                    var item= _serviceDropDown.Items.OfType<ServiceProvider>().FirstOrDefault(p => p.Name.Equals(_baseLayer.WebMapName, StringComparison.InvariantCultureIgnoreCase));
+                    var item = _serviceDropDown.Items.OfType<ServiceProvider>().FirstOrDefault(p => p.Name.Equals(_baseLayer.WebMapName, StringComparison.InvariantCultureIgnoreCase));
+                    if (item == null)
+                    {
+                        if (_baseLayer.WebMapUrl?.ToLower().Contains("wmts") == true)
+                        {
+                            item = _serviceDropDown.Items.OfType<ServiceProvider>().FirstOrDefault(p => p.Name.Equals("Wmts", StringComparison.InvariantCultureIgnoreCase));
+                            if (item is WmtsServiceProvider wmtsServiceProvider)
+                            {
+                                wmtsServiceProvider.Name = _baseLayer.WebMapName;
+                                wmtsServiceProvider.CapabilitiesUrl = _baseLayer.WebMapUrl;
+                            }
+                        }
+                    }
                     // hack: need to set provider to original object, not a new one.
                     if (item != null)
                     {
+                        _ignoreServiceChanged = true;
                         _serviceDropDown.SelectedItem = item;
+                        _ignoreServiceChanged = false;
                         if (CurrentProvider != null)
                         {
                             EnableBasemapFetching(CurrentProvider);
@@ -317,7 +300,6 @@ namespace DotSpatial.Plugins.WebMap
                 Debug.Print(ex.StackTrace);
             }
         }
-
         /// <summary>
         /// Deactivates the WebMap when a new project is created.
         /// </summary>
@@ -332,21 +314,23 @@ namespace DotSpatial.Plugins.WebMap
 
         private void ServiceSelected(object sender, SelectedValueChangedEventArgs e)
         {
-            var p = CurrentProvider;
-            if (p == null || p.Name == Resources.None)
+            _optionsAction.Enabled = CurrentProvider?.Configure != null && CurrentProvider?.Name != Resources.None;
+            if (_ignoreServiceChanged)
+            {
+                return;
+            }
+            if (CurrentProvider == null || CurrentProvider.Name == Resources.None)
             {
                 DisableBasemapLayer();
             }
             else
             {
-                _optionsAction.Enabled = p.Configure != null;
-
-                if (p.NeedConfigure)
+                if (CurrentProvider.NeedConfigure)
                 {
-                    p.Configure?.Invoke();
+                    CurrentProvider.Configure?.Invoke();
                 }
 
-                EnableBasemapFetching(p);
+                EnableBasemapFetching(CurrentProvider);
             }
         }
         #endregion

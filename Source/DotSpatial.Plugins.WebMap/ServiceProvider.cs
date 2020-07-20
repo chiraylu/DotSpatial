@@ -48,7 +48,7 @@ namespace DotSpatial.Plugins.WebMap
         /// <summary>
         /// Gets or sets the name of the service provider.
         /// </summary>
-        public string Name { get; set; }
+        public virtual string Name { get; set; }
 
         /// <summary>
         /// Gets or sets a value indicating whether configuration is needed.

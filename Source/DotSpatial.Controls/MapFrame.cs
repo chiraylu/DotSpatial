@@ -52,6 +52,7 @@ namespace DotSpatial.Controls
         private bool _resizing;
         private Rectangle _view;
         private int _width;
+        private object _lockObj = new object();
 
         #endregion
 
@@ -69,7 +70,7 @@ namespace DotSpatial.Controls
             }
 
             _backBuffer = CreateBuffer();
-            Layers = new MapLayerCollection(this); 
+            Layers = new MapLayerCollection(this);
 
             IsSelected = true; // by default allow the map frame to be selected
 
@@ -623,7 +624,6 @@ namespace DotSpatial.Controls
             IMapLayer ml = item as IMapLayer;
             return ml != null && _layers.Contains(ml);
         }
-
         /// <summary>
         /// Draws from the buffer.
         /// </summary>
@@ -639,10 +639,14 @@ namespace DotSpatial.Controls
             if (clipView.Width == 0 || clipView.Height == 0) return;
             try
             {
-                pe.Graphics.DrawImage(_buffer, clip, clipView, GraphicsUnit.Pixel);
+                lock (_lockObj)
+                {
+                    pe.Graphics.DrawImage(_buffer, clip, clipView, GraphicsUnit.Pixel);
+                }
             }
-            catch
+            catch (Exception e)
             {
+                Debug.WriteLine(e);
                 // There was an exception (probably because of sizing issues) so don't bother with the chunk timer.
             }
 
@@ -747,8 +751,11 @@ namespace DotSpatial.Controls
                 }
             }
 
-            if (_buffer != null && _buffer != _backBuffer) _buffer.Dispose();
-            _buffer = _backBuffer;
+            lock (_lockObj)
+            {
+                if (_buffer != null && _buffer != _backBuffer) _buffer.Dispose();
+                _buffer = _backBuffer;
+            }
             if (setView)
                 _view = _backView;
 

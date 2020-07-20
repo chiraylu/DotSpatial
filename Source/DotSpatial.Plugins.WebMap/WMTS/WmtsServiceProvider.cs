@@ -25,13 +25,32 @@ namespace DotSpatial.Plugins.WebMap
         private static readonly ProjectionInfo Wgs84Proj = ProjectionInfo.FromEsriString(KnownCoordinateSystems.Geographic.World.WGS1984.ToEsriString());
 
         #endregion
-        public string CapabilitiesUrl { get; private set; }
+        private string _capabilitiesUrl;
+
+        public string CapabilitiesUrl
+        {
+            get { return _capabilitiesUrl; }
+            set
+            {
+                _capabilitiesUrl = value;
+                OnNameOrCapabilitiesUrlChanged();
+            }
+        }
+        public override string Name
+        {
+            get => base.Name;
+            set
+            {
+                base.Name = value;
+                OnNameOrCapabilitiesUrlChanged();
+            }
+        }
         #region  Constructors
 
         public WmtsServiceProvider(string name, string capabilitiesUrl, ITileCache<byte[]> tileCache)
                : base(name, null, tileCache)
         {
-            SetHttpTileSource(name, capabilitiesUrl);
+            CapabilitiesUrl = capabilitiesUrl;
             Configure = () =>
             {
                 var dialogDefault = string.IsNullOrEmpty(capabilitiesUrl) ? "http://someservice/WMTS/1.0.0/WMTSCapabilities.xml" : capabilitiesUrl;
@@ -45,7 +64,7 @@ namespace DotSpatial.Plugins.WebMap
                         if (layerType != null)
                         {
                             Name = layerType.Identifier.Value;
-                            SetHttpTileSource(Name, guiUrl);
+                            CapabilitiesUrl = guiUrl;
                             return true;
                         }
                     }
@@ -53,19 +72,22 @@ namespace DotSpatial.Plugins.WebMap
                 return false;
             };
         }
-        private void SetHttpTileSource(string name, string capabilitiesUrl)
+        private void OnNameOrCapabilitiesUrlChanged()
         {
             HttpTileSource tileSource = null;
+            if (string.IsNullOrEmpty(Name) || string.IsNullOrEmpty(CapabilitiesUrl))
+            {
+                return;
+            }
             try
             {
-                var myRequest = WebRequest.Create(capabilitiesUrl); 
+                var myRequest = WebRequest.Create(CapabilitiesUrl);
                 using (var myResponse = myRequest.GetResponse())
                 using (var stream = myResponse.GetResponseStream())
                 {
                     var tileSources = WmtsParser.Parse(stream);
-                    tileSource = tileSources.First(s => s.Name == name);
-                    CapabilitiesUrl = capabilitiesUrl;
-                    Projection = tileSource.Schema.Srs.ToProjectionInfo();
+                    tileSource = tileSources.FirstOrDefault(s => s.Name == Name);
+                    Projection = tileSource?.Schema.Srs.ToProjectionInfo();
                 }
             }
             catch (Exception e)
