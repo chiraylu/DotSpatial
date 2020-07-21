@@ -107,7 +107,17 @@ namespace DotSpatial.Plugins.ShapeEditor
                         // If the mouse envelope contains the current coordinate, we found a snap location.
                         if (env.Contains(c))
                         {
-                            snappedCoord = c;
+                            if (snappedCoord == null)
+                            {
+                                snappedCoord = new Coordinate(c);
+                            }
+                            else
+                            {
+                                snappedCoord.X = c.X;
+                                snappedCoord.Y = c.Y;
+                                snappedCoord.Z = c.Z;
+                                snappedCoord.M = c.M;
+                            }
                             SnappedFeature = feat;
                             return true;
                         }

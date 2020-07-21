@@ -22,6 +22,7 @@ namespace DotSpatial.Data
         /// The _my image.
         /// </summary>
         private Bitmap _myImage;
+        private object _lockObj = new object();
 
         #endregion
 
@@ -213,7 +214,6 @@ namespace DotSpatial.Data
         {
             return _myImage;
         }
-
         /// <summary>
         /// The geographic envelope gives the region that the image should be created for.
         /// The window gives the corresponding pixel dimensions for the image, so that images matching the resolution of the screen can be used.
@@ -253,7 +253,10 @@ namespace DotSpatial.Data
                 {
                     try
                     {
-                        g.DrawImageUnscaled(_myImage, 0, 0);
+                        lock (_lockObj)
+                        {
+                            g.DrawImageUnscaled(_myImage, 0, 0);
+                        }
                     }
                     catch (OverflowException)
                     {
