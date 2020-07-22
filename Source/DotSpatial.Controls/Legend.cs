@@ -539,7 +539,7 @@ namespace DotSpatial.Controls
                 IFeatureLayer fl = lb.Item as IFeatureLayer;
                 if (fl != null)
                 {
-                    using (var layDialog = new LayerDialog(fl, new FeatureCategoryControl()))
+                    using (var layDialog = new LayerDialog(fl, new FeatureCategoryControl() { Dock= DockStyle.Fill}))
                     {
                         layDialog.ShowDialog(); 
                     }

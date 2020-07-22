@@ -742,7 +742,7 @@ namespace DotSpatial.Symbology
         /// <returns>True, if an allowed operator was passed in.</returns>
         private bool CalculateStringOperation(TkOperation oper, Element elLeft, ExpressionValue valLeft, ExpressionValue valRight)
         {
-            int res = string.Compare(valLeft.Str.ToLower(), valRight.Str.ToLower());
+            int res = string.Compare(valLeft.Str?.ToLower(), valRight.Str?.ToLower());
             elLeft.CalcValue.Bln = false;
             elLeft.CalcValue.Type = TkValueType.VtBoolean;
             switch (oper)
