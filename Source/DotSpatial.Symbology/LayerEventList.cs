@@ -218,7 +218,6 @@ namespace DotSpatial.Symbology
             item.UnlockDispose();
             item.ZoomToLayer -= LayerZoomToLayer;
             item.VisibleChanged -= OnLayerVisibleChanged;
-            item.FinishedLoading -= ItemFinishedLoading;
             item.SelectionChanged -= SelectableSelectionChanged;
             item.LayerSelected -= ItemLayerSelected;
 
@@ -246,7 +245,6 @@ namespace DotSpatial.Symbology
             item.LockDispose();
             item.ZoomToLayer += LayerZoomToLayer;
             item.VisibleChanged += OnLayerVisibleChanged;
-            item.FinishedLoading += ItemFinishedLoading;
             item.SelectionChanged += SelectableSelectionChanged;
             item.LayerSelected += ItemLayerSelected;
             base.OnInclude(item);
@@ -378,11 +376,6 @@ namespace DotSpatial.Symbology
         {
             // Just forward the event
             ZoomToLayer?.Invoke(sender, e);
-        }
-
-        private void ItemFinishedLoading(object sender, EventArgs e)
-        {
-            OnLayerAdded(this, new LayerEventArgs(sender as ILayer));
         }
 
         private void ItemLayerSelected(object sender, LayerSelectedEventArgs e)

@@ -145,8 +145,11 @@ namespace DotSpatial.Plugins.WebMap
                 {
                     if (provider is BrutileServiceProvider brutileServiceProvider)
                     {
-                        var extent = brutileServiceProvider.TileSource.Schema.Extent;
-                        WebMapExtent = new Extent(extent.MinX, extent.MinY, extent.MaxX, extent.MaxY);
+                        if (brutileServiceProvider.TileSource != null)
+                        {
+                            var extent = brutileServiceProvider.TileSource.Schema.Extent;
+                            WebMapExtent = new Extent(extent.MinX, extent.MinY, extent.MaxX, extent.MaxY);
+                        }
                     }
                     else
                     {
@@ -166,10 +169,6 @@ namespace DotSpatial.Plugins.WebMap
             {
                 TileManager = new TileManager(provider);
             }
-        }
-        protected override void OnDataSetChanged(IImageData value)
-        {
-            base.OnDataSetChanged(value);
         }
         private void OnTileManagerChanged()
         {
