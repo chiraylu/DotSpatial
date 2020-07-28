@@ -304,13 +304,10 @@ namespace DotSpatial.Plugins.ShapeEditor
                 return;
             }
 
-            // Begin snapping changes
-            DoSnapDrawing(e.Graphics, _mousePosition);
-
             // End snapping changes
             if (_featureSet.FeatureType == FeatureType.Point)
             {
-                return;
+                //return;
             }
 
             // Draw any completed parts first so that they are behind my active drawing content.
@@ -391,13 +388,6 @@ namespace DotSpatial.Plugins.ShapeEditor
                 return;
             }
 
-            // Begin snapping changes
-            Coordinate snappedCoord = e.GeographicLocation;
-            bool prevWasSnapped = IsSnapped;
-            IsSnapped = ComputeSnappedLocation(e, ref snappedCoord);
-            _coordinateDialog.X = snappedCoord.X;
-            _coordinateDialog.Y = snappedCoord.Y;
-
             // End snapping changes
             if (_coordinates != null && _coordinates.Count > 0)
             {
@@ -406,15 +396,15 @@ namespace DotSpatial.Plugins.ShapeEditor
                 Rectangle newRect = SymbologyGlobal.GetRectangle(e.Location, points[points.Count - 1]);
                 Rectangle invalid = Rectangle.Union(newRect, oldRect);
                 invalid.Inflate(20, 20);
-                Map.Invalidate(invalid); 
+                Map.Invalidate(invalid);
             }
-
-            // Begin snapping changes
-            _mousePosition = IsSnapped ? Map.ProjToPixel(snappedCoord) : e.Location;
-            DoMouseMoveForSnapDrawing(prevWasSnapped, _mousePosition);
 
             // End snapping changes
             base.OnMouseMove(e);
+
+            _coordinateDialog.X = e.GeographicLocation.X;
+            _coordinateDialog.Y = e.GeographicLocation.Y;
+            _mousePosition = SnapInfo?.Coordinate!=null ? Map.ProjToPixel(SnapInfo.Coordinate) : e.Location;
         }
 
         /// <summary>
@@ -440,7 +430,7 @@ namespace DotSpatial.Plugins.ShapeEditor
                 {
                     // Begin snapping changes
                     Coordinate snappedCoord = _coordinateDialog.Coordinate;
-                    ComputeSnappedLocation(e, ref snappedCoord);
+                    ComputeSnappedLocation(e, snappedCoord);
 
                     // End snapping changes
                     Feature f = new Feature(snappedCoord);
@@ -465,7 +455,7 @@ namespace DotSpatial.Plugins.ShapeEditor
 
                     // Begin snapping changes
                     Coordinate snappedCoord = e.GeographicLocation;
-                    ComputeSnappedLocation(e, ref snappedCoord);
+                    ComputeSnappedLocation(e, snappedCoord);
 
                     // End snapping changes
                     _coordinates.Add(snappedCoord); // Snapping changes

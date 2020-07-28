@@ -21,7 +21,7 @@ namespace DotSpatial.Plugins.ShapeEditor
             InitializeComponent();
             List<SnapLayer> snaplist = new List<SnapLayer>();
 
-            foreach (var layer in map.GetFeatureLayers())
+            foreach (var layer in map.MapFrame.GetAllFeatureLayers())
             {
                 snaplist.Add(new SnapLayer(layer));
             }

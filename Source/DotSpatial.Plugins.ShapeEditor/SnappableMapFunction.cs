@@ -1,6 +1,7 @@
 // Copyright (c) DotSpatial Team. All rights reserved.
 // Licensed under the MIT license. See License.txt file in the project root for full license information.
 
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -16,6 +17,8 @@ namespace DotSpatial.Plugins.ShapeEditor
     /// </summary>
     public abstract class SnappableMapFunction : MapFunctionZoom
     {
+        private Point _mousePosition;
+        private Coordinate _mouseLocation;
         #region  Constructors
 
         /// <summary>
@@ -25,7 +28,7 @@ namespace DotSpatial.Plugins.ShapeEditor
         protected SnappableMapFunction(IMap map)
             : base(map)
         {
-            DoSnapping = false;
+            SnapMode = SnapMode.Point | SnapMode.End | SnapMode.Vertex | SnapMode.Edege;
         }
 
         #endregion
@@ -33,19 +36,14 @@ namespace DotSpatial.Plugins.ShapeEditor
         #region Properties
 
         /// <summary>
-        /// Gets or sets a value indicating whether snapping is performed or not.
+        /// Gets or sets a value of Snap mode.
         /// </summary>
-        public bool DoSnapping { get; set; }
+        public SnapMode SnapMode { get; set; }
 
         /// <summary>
-        /// Gets the feature the computed snappedCoord belongs to.
+        /// Gets or sets SnapInfo
         /// </summary>
-        public IFeature SnappedFeature { get; private set; }
-
-        /// <summary>
-        /// Gets or sets a value indicating whether the current mouse position has been snapped.
-        /// </summary>
-        protected bool IsSnapped { get; set; } = false;
+        protected SnapInfo SnapInfo { get; set; }
 
         /// <summary>
         /// Gets or sets a list of layers that will be snapped to.
@@ -74,7 +72,149 @@ namespace DotSpatial.Plugins.ShapeEditor
         {
             if (SnapLayers == null)
                 InitializeSnapLayers();
-            SnapLayers.Add(layer);
+            if (!SnapLayers.Contains(layer))
+            {
+                SnapLayers.Add(layer);
+            }
+        }
+
+        private Tuple<IFeature, Coordinate> ComputSnapPointModeFeature(IFeatureLayer layer, Extent extent)
+        {
+            Tuple<IFeature, Coordinate> tuple = null;
+            if (SnapMode == SnapMode.None || layer == null || extent == null)
+            {
+                return tuple;
+            }
+            if ((SnapMode & SnapMode.Point) > 0 && (layer.DataSet.FeatureType == FeatureType.Point || layer.DataSet.FeatureType == FeatureType.MultiPoint))
+            {
+                var features = layer.DataSet.Select(extent);
+                foreach (var feature in features)
+                {
+                    foreach (var coordinate in feature.Geometry.Coordinates)
+                    {
+                        if (extent.Contains(coordinate))
+                        {
+                            tuple = new Tuple<IFeature, Coordinate>(feature, coordinate);
+                            break;
+                        }
+                    }
+                    if (tuple != null)
+                    {
+                        break;
+                    }
+                }
+            }
+            return tuple;
+        }
+
+        private Tuple<IFeature, Coordinate> ComputSnapEndModeFeature(IFeatureLayer layer, Extent extent)
+        {
+            Tuple<IFeature, Coordinate> tuple = null;
+            if (SnapMode == SnapMode.None || layer == null || extent == null)
+            {
+                return tuple;
+            }
+            if ((SnapMode & SnapMode.End) > 0 && (layer.DataSet.FeatureType == FeatureType.Line || layer.DataSet.FeatureType == FeatureType.Polygon))
+            {
+                var features = layer.DataSet.Select(extent);
+                foreach (var feature in features)
+                {
+                    for (int i = 0; i < feature.Geometry.NumGeometries; i++)
+                    {
+                        var geoItem = feature.Geometry.GetGeometryN(i);
+                        var firstCoord = geoItem.Coordinates.FirstOrDefault();
+                        if (extent.Contains(firstCoord))
+                        {
+                            tuple = new Tuple<IFeature, Coordinate>(feature, firstCoord);
+                        }
+                        else
+                        {
+                            var lastCoord = geoItem.Coordinates.LastOrDefault();
+                            if (extent.Contains(lastCoord))
+                            {
+                                tuple = new Tuple<IFeature, Coordinate>(feature, lastCoord);
+                            }
+                        }
+                        if (tuple != null)
+                        {
+                            break;
+                        }
+                    }
+                    if (tuple != null)
+                    {
+                        break;
+                    }
+                }
+            }
+            return tuple;
+        }
+
+        private Tuple<IFeature, Coordinate> ComputSnapVertexModeFeature(IFeatureLayer layer, Extent extent)
+        {
+            Tuple<IFeature, Coordinate> tuple = null;
+            if (SnapMode == SnapMode.None || layer == null || extent == null)
+            {
+                return tuple;
+            }
+            if ((SnapMode & SnapMode.Vertex) > 0 && (layer.DataSet.FeatureType == FeatureType.Line || layer.DataSet.FeatureType == FeatureType.Polygon))
+            {
+                var features = layer.DataSet.Select(extent);
+                foreach (var feature in features)
+                {
+                    for (int i = 0; i < feature.Geometry.NumGeometries; i++)
+                    {
+                        var geoItem = feature.Geometry.GetGeometryN(i);
+                        for (int j = 1; j < geoItem.NumPoints - 1; j++)
+                        {
+                            var coord = geoItem.Coordinates[j];
+                            if (extent.Contains(coord))
+                            {
+                                tuple = new Tuple<IFeature, Coordinate>(feature, coord);
+                                break;
+                            }
+                        }
+                        if (tuple != null)
+                        {
+                            break;
+                        }
+                    }
+                    if (tuple != null)
+                    {
+                        break;
+                    }
+                }
+            }
+            return tuple;
+        }
+
+        private Tuple<IFeature, Coordinate> ComputSnapEdegeModeFeature(IFeatureLayer layer, Extent extent, Coordinate mouseCoord)
+        {
+            Tuple<IFeature, Coordinate> tuple = null;
+            if (SnapMode == SnapMode.None || layer == null || mouseCoord == null)
+            {
+                return tuple;
+            }
+            var point0 = new NetTopologySuite.Geometries.Point(mouseCoord);
+            if ((SnapMode & SnapMode.Edege) > 0 && (layer.DataSet.FeatureType == FeatureType.Line || layer.DataSet.FeatureType == FeatureType.Polygon))
+            {
+                var features = layer.DataSet.Select(extent);
+                double minDistance = extent.Width / 2;
+                foreach (var feature in features)
+                {
+                    IGeometry geo = feature.Geometry;
+                    var distance = geo.Distance(point0);
+                    if (distance < minDistance)
+                    {
+                        var coord = NetTopologySuite.Operation.Distance.DistanceOp.NearestPoints(geo, point0)?.FirstOrDefault();
+                        if (coord != null)
+                        {
+                            tuple = new Tuple<IFeature, Coordinate>(feature, coord);
+                            break;
+                        }
+                    }
+                }
+            }
+            return tuple;
         }
 
         /// <summary>
@@ -83,77 +223,115 @@ namespace DotSpatial.Plugins.ShapeEditor
         /// mouse coords.
         /// </summary>
         /// <param name="e">The event args.</param>
-        /// <param name="snappedCoord">set if a coordinate is found</param>
-        /// <returns>true if snap found</returns>
-        protected virtual bool ComputeSnappedLocation(GeoMouseArgs e, ref Coordinate snappedCoord)
+        /// <returns>SnapInfo</returns>
+        protected virtual SnapInfo ComputeSnappedLocation(GeoMouseArgs e)
         {
-            if (SnapLayers == null || e == null || Map == null)
-                return false;
+            SnapInfo snapInfo = null;
+            if (SnapLayers == null || e == null || Map == null || SnapMode == SnapMode.None)
+                return snapInfo;
 
             Rectangle mouseRect = new Rectangle(e.X - SnapTol, e.Y - SnapTol, SnapTol * 2, SnapTol * 2);
 
-            Extent pix = Map.PixelToProj(mouseRect);
-            if (pix == null)
-                return false;
-
-            Envelope env = pix.ToEnvelope();
-
-            foreach (IFeatureLayer layer in SnapLayers.Where(_ => _.Snappable && _.IsVisible))
+            Extent extent = Map.PixelToProj(mouseRect);
+            if (extent == null)
+                return snapInfo;
+            if (SnapMode == SnapMode.None)
             {
-                foreach (IFeature feat in layer.DataSet.Features)
+                return snapInfo;
+            }
+            Tuple<IFeature, Coordinate> tuple = null;
+            SnapMode snapMode = SnapMode.None;
+            if ((SnapMode & SnapMode.Point) > 0)
+            {
+                foreach (IFeatureLayer layer in SnapLayers.Where(_ => _.Snappable && _.IsVisible))
                 {
-                    foreach (Coordinate c in feat.Geometry.Coordinates)
+                    tuple = ComputSnapPointModeFeature(layer, extent);
+                    if (tuple != null)
                     {
-                        // If the mouse envelope contains the current coordinate, we found a snap location.
-                        if (env.Contains(c))
-                        {
-                            if (snappedCoord == null)
-                            {
-                                snappedCoord = new Coordinate(c);
-                            }
-                            else
-                            {
-                                snappedCoord.X = c.X;
-                                snappedCoord.Y = c.Y;
-                                snappedCoord.Z = c.Z;
-                                snappedCoord.M = c.M;
-                            }
-                            SnappedFeature = feat;
-                            return true;
-                        }
+                        snapMode = SnapMode.Point;
+                        goto Success;
                     }
                 }
             }
+            if ((SnapMode & SnapMode.End) > 0)
+            {
+                foreach (IFeatureLayer layer in SnapLayers.Where(_ => _.Snappable && _.IsVisible))
+                {
+                    tuple = ComputSnapEndModeFeature(layer, extent);
+                    if (tuple != null)
+                    {
+                        snapMode = SnapMode.End;
+                        goto Success;
+                    }
+                }
+            }
+            if ((SnapMode & SnapMode.Vertex) > 0)
+            {
+                foreach (IFeatureLayer layer in SnapLayers.Where(_ => _.Snappable && _.IsVisible))
+                {
+                    tuple = ComputSnapVertexModeFeature(layer, extent);
+                    if (tuple != null)
+                    {
+                        snapMode = SnapMode.Vertex;
+                        goto Success;
+                    }
+                }
+            }
+            if ((SnapMode & SnapMode.Edege) > 0)
+            {
+                foreach (IFeatureLayer layer in SnapLayers.Where(_ => _.Snappable && _.IsVisible))
+                {
+                    tuple = ComputSnapEdegeModeFeature(layer, extent, e.GeographicLocation);
+                    if (tuple != null)
+                    {
+                        snapMode = SnapMode.Edege;
+                        goto Success;
+                    }
+                }
+            }
+        Success:
+            if (tuple != null)
+            {
+                snapInfo = new SnapInfo()
+                {
+                    Feature = tuple.Item1,
+                    Coordinate = tuple.Item2,
+                    SnapMode = snapMode
+                };
+            }
+            return snapInfo;
+        }
 
-            SnappedFeature = null;
-            return false;
+        protected virtual SnapInfo ComputeSnappedLocation(GeoMouseArgs e, Coordinate coordinate)
+        {
+            SnapInfo snapInfo = null;
+            if (coordinate == null)
+            {
+                return snapInfo;
+            }
+            snapInfo = ComputeSnappedLocation(e);
+            if (snapInfo == null)
+            {
+                return snapInfo;
+            }
+            coordinate.X = snapInfo.Coordinate.X;
+            coordinate.Y = snapInfo.Coordinate.Y;
+            coordinate.Z = snapInfo.Coordinate.Z;
+            coordinate.M = snapInfo.Coordinate.M;
+            return snapInfo;
         }
 
         /// <summary>
         /// Perform any actions in the OnMouseMove event that are necessary for snap drawing.
         /// </summary>
-        /// <param name="prevWasSnapped">Indicates whether the mouse was snapped to a point before.</param>
+        /// <param name="snapMode">snapMode</param>
         /// <param name="pos">Current position.</param>
-        protected virtual void DoMouseMoveForSnapDrawing(bool prevWasSnapped, Point pos)
+        protected virtual void DoMouseMoveForSnapDrawing(SnapMode snapMode, Point pos)
         {
-            // Invalidate the region around the mouse so that the previous snap colors are erased.
-            if ((prevWasSnapped || IsSnapped) && DoSnapping)
+            if (snapMode != SnapMode.None)
             {
-                Rectangle invalid = new Rectangle(pos.X - 30, pos.Y - 30, 60, 60);
+                Rectangle invalid = new Rectangle((int)(pos.X - SnapTol - SnapPen.Width), (int)(pos.Y - SnapTol - SnapPen.Width),(int)(SnapTol + SnapPen.Width) * 2, (int)((SnapTol + SnapPen.Width) * 2));
                 Map.Invalidate(invalid);
-            }
-        }
-
-        /// <summary>
-        /// Perform any drawing necessary for snapping (e.g. draw a circle around snapped location).
-        /// </summary>
-        /// <param name="graphics">graphics to draw on</param>
-        /// <param name="pos">point where the circles center will be</param>
-        protected virtual void DoSnapDrawing(Graphics graphics, Point pos)
-        {
-            if (IsSnapped)
-            {
-                graphics.DrawEllipse(SnapPen, pos.X - 5, pos.Y - 5, 10, 10);
             }
         }
 
@@ -166,6 +344,62 @@ namespace DotSpatial.Plugins.ShapeEditor
             SnapLayers = new List<IFeatureLayer>();
         }
 
+        protected override void OnDraw(MapDrawArgs e)
+        {
+            if (SnapMode != SnapMode.None && SnapInfo != null)
+            {
+                int left, top, width, height;
+                Rectangle rectangle;
+                switch (SnapInfo.SnapMode)
+                {
+                    case SnapMode.Point:
+                    case SnapMode.End:
+                    case SnapMode.Vertex:
+                        left = _mousePosition.X - SnapTol;
+                        top = _mousePosition.Y - SnapTol;
+                        width = SnapTol * 2;
+                        height = width;
+                        rectangle = new Rectangle(left, top, width, height);
+                        e.Graphics.DrawRectangle(SnapPen, rectangle);
+                        e.Graphics.DrawLine(SnapPen, rectangle.Left, _mousePosition.Y, rectangle.Right, _mousePosition.Y);
+                        e.Graphics.DrawLine(SnapPen, _mousePosition.X, rectangle.Top, _mousePosition.X, rectangle.Bottom);
+                        break;
+                    case SnapMode.Edege:
+                        left = _mousePosition.X - 4;
+                        top = _mousePosition.Y - 4;
+                        width = 4 * 2;
+                        height = width;
+                        rectangle = new Rectangle(left, top, width, height);
+                        e.Graphics.DrawRectangle(SnapPen, rectangle);
+                        break;
+                }
+            }
+            base.OnDraw(e);
+        }
+        protected override void OnMouseMove(GeoMouseArgs e)
+        {
+            Coordinate snappedCoord = e.GeographicLocation;
+            var preSnapInfo = SnapInfo;
+            SnapInfo = ComputeSnappedLocation(e, snappedCoord);
+            if (preSnapInfo != null)
+            {
+                DoMouseMoveForSnapDrawing(preSnapInfo.SnapMode, _mousePosition);
+            }
+
+            _mousePosition = Map.ProjToPixel(snappedCoord);
+            _mouseLocation = snappedCoord;
+
+            if (SnapInfo != null)
+            {
+                DoMouseMoveForSnapDrawing(SnapInfo.SnapMode, _mousePosition);
+            }
+
+            base.OnMouseMove(e);
+        }
+        protected override void OnMouseUp(GeoMouseArgs e)
+        {
+            base.OnMouseUp(e);
+        }
         #endregion
     }
 }

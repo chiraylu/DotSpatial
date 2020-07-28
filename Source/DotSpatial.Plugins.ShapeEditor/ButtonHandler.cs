@@ -207,7 +207,7 @@ namespace DotSpatial.Plugins.ShapeEditor
                 _addShapeFunction = new AddShapeFunction(_geoMap)
                 {
                     Name = "AddShape"
-                }; 
+                };
             }
 
             if (_geoMap.MapFunctions.Contains(_addShapeFunction) == false)
@@ -356,11 +356,18 @@ namespace DotSpatial.Plugins.ShapeEditor
 
         private void SetSnapLayers(SnappableMapFunction func)
         {
-            func.DoSnapping = _doSnapping;
+            if (_doSnapping)
+            {
+                func.SnapMode = SnapMode.Point | SnapMode.End | SnapMode.Vertex | SnapMode.Edege;
+            }
+            else
+            {
+                func.SnapMode = SnapMode.None;
+            }
             if (!_doSnapping)
                 return;
 
-            foreach (var fl in _geoMap.GetFeatureLayers())
+            foreach (var fl in _geoMap.MapFrame.GetAllFeatureLayers())
             {
                 func.AddLayerToSnap(fl); // changed by jany_ (2016-02-24) allow all layers to be snapped because there seems to be no reason to exclude any of them
             }
@@ -378,20 +385,12 @@ namespace DotSpatial.Plugins.ShapeEditor
                     _doSnapping = dlg.DoSnapping;
                     if (_moveVertexFunction != null)
                     {
-                        _moveVertexFunction.DoSnapping = _doSnapping; // changed by jany_ (2016-02-24) update the snap settings of the functions without having to stop editing
-                        if (_doSnapping)
-                        {
-                            SetSnapLayers(_moveVertexFunction);
-                        }
+                        SetSnapLayers(_moveVertexFunction);
                     }
 
                     if (_addShapeFunction != null)
                     {
-                        _addShapeFunction.DoSnapping = _doSnapping;
-                        if (_doSnapping)
-                        {
-                            SetSnapLayers(_addShapeFunction);
-                        }
+                        SetSnapLayers(_addShapeFunction);
                     }
                 }
             }

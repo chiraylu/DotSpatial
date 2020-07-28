@@ -301,19 +301,7 @@ namespace DotSpatial.Plugins.ShapeEditor
         protected override void OnMouseMove(GeoMouseArgs e)
         {
             _mousePosition = e.Location;
-            if (_dragging)
-            {
-                // Begin snapping changes
-                Coordinate snappedCoord = e.GeographicLocation;
-                if (ComputeSnappedLocation(e, ref snappedCoord))
-                {
-                    _mousePosition = Map.ProjToPixel(snappedCoord);
-                }
-
-                // End snapping changes
-                UpdateDragCoordinate(snappedCoord); // Snapping changes
-            }
-            else
+            if (!_dragging)
             {
                 if (_selectedFeature != null)
                 {
@@ -351,6 +339,14 @@ namespace DotSpatial.Plugins.ShapeEditor
             }
 
             base.OnMouseMove(e);
+            if (_dragging)
+            {
+                // Begin snapping changes
+                _mousePosition = Map.ProjToPixel(e.GeographicLocation);
+
+                // End snapping changes
+                UpdateDragCoordinate(e.GeographicLocation); // Snapping changes
+            }
         }
 
         /// <inheritdoc />
