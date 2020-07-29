@@ -2108,7 +2108,6 @@ namespace DotSpatial.Controls
             var deltaY = _lastMousePoint.Y - e.Y;
             _lastMousePoint = e.Location;
             var inflate = 5F;
-
             // Handles various different mouse modes
             switch (MouseMode)
             {
@@ -2222,7 +2221,10 @@ namespace DotSpatial.Controls
                 case MouseMode.PanMap:
                     _mouseBox.Width = e.X - _mouseStartPoint.X;
                     _mouseBox.Height = e.Y - _mouseStartPoint.Y;
-                    Invalidate(new Region(PaperToScreen(SelectedLayoutElements[0].Rectangle)));
+                    if (SelectedLayoutElements.Count == 1 && SelectedLayoutElements[0] is LayoutMap)
+                    {
+                        Invalidate(new Region(PaperToScreen(SelectedLayoutElements[0].Rectangle)));
+                    }
                     break;
 
                 case MouseMode.Default:
@@ -2362,7 +2364,7 @@ namespace DotSpatial.Controls
                         break;
 
                     case MouseMode.PanMap:
-                        if (_mouseBox.Width != 0 || _mouseBox.Height != 0)
+                        if ((_mouseBox.Width != 0 || _mouseBox.Height != 0) && (SelectedLayoutElements.Count == 1 && SelectedLayoutElements[0] is LayoutMap))
                             PanMap(SelectedLayoutElements[0] as LayoutMap, _mouseBox.Width, _mouseBox.Height);
                         MouseMode = MouseMode.StartPanMap;
                         break;
