@@ -87,6 +87,7 @@
     <Compile Include="ColorSchemeType.cs" />
     <Compile Include="IMarkerStroke.cs" />
     <Compile Include="IRasterLayerActions.cs" />
+    <Compile Include="ISelectable.cs" />
     <Compile Include="LayerCollectionExensions.cs" />
     <Compile Include="LayerMovedEventArgs.cs" />
     <Compile Include="MarkerStroke.cs" />
@@ -136,7 +137,6 @@
     <Compile Include="IRenderable.cs" />
     <Compile Include="IRenderableLegendItem.cs" />
     <Compile Include="IScheme.cs" />
-    <Compile Include="ISelectable.cs" />
     <Compile Include="FastLabelDrawnState.cs" />
     <Compile Include="ILabelCategory.cs" />
     <Compile Include="ILabelLayer.cs" />

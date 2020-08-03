@@ -328,11 +328,11 @@ namespace DotSpatial.Plugins.ShapeEditor
                         }
                     }
 
-                    if (requiresInvalidate)
-                    {
-                        Map.MapFrame.Initialize();
-                        Map.Invalidate();
-                    }
+                    //if (requiresInvalidate)
+                    //{
+                    //    Map.MapFrame.Initialize();
+                    //    Map.Invalidate();
+                    //}
                 }
 
                 // check to see if the coordinates intersect with a shape in our current featureset.

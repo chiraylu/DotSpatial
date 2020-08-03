@@ -30,7 +30,7 @@ namespace DotSpatial.Controls
         public MapDrawArgs(Graphics inGraphics, Rectangle clipRectangle, IMapFrame inMapFrame)
         {
             _graphics = inGraphics;
-            _geoGraphics = new MapArgs(clipRectangle, inMapFrame.ViewExtents);
+            _geoGraphics = new MapArgs(inMapFrame.ClientRectangle, inMapFrame.ViewExtents);
 
             _clipRectangle = clipRectangle;
         }
