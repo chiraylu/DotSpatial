@@ -1,7 +1,9 @@
 // Copyright (c) DotSpatial Team. All rights reserved.
 // Licensed under the MIT license. See License.txt file in the project root for full license information.
 
+using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 using System.Windows.Forms;
 
 namespace DotSpatial.Controls
@@ -14,7 +16,8 @@ namespace DotSpatial.Controls
         #region Fields
         private bool _isPanningTemporarily;
         private int _keyPanCount;
-        private FunctionMode _previousFunction = FunctionMode.None;
+        private FunctionMode _previousFunctionMode = FunctionMode.None;
+        private List<IMapFunction> _previousFunctions = new List<IMapFunction>();
         #endregion
 
         #region  Constructors
@@ -52,7 +55,19 @@ namespace DotSpatial.Controls
             // Allow panning if the space is pressed.
             if (e.KeyCode == Keys.Space && !_isPanningTemporarily)
             {
-                _previousFunction = Map.FunctionMode;
+                _previousFunctionMode = Map.FunctionMode;
+                _previousFunctions.Clear();
+                IMapFunction pan = Map.MapFunctions.FirstOrDefault(x => x is MapFunctionPan);
+                foreach (var f in Map.MapFunctions)
+                {
+                    if (!f.Enabled || (f.YieldStyle & YieldStyles.AlwaysOn) == YieldStyles.AlwaysOn) continue; // ignore "Always On" functions
+                    int test = (int)(f.YieldStyle & pan.YieldStyle);
+                    if (test > 0)
+                    {
+                        _previousFunctions.Add(f);
+                    }
+                }
+
                 Map.FunctionMode = FunctionMode.Pan;
                 _isPanningTemporarily = true;
             }
@@ -122,7 +137,6 @@ namespace DotSpatial.Controls
                 Map.IsBusy = false;
             }
         }
-
         /// <summary>
         /// Handles the Key Up situation.
         /// </summary>
@@ -132,7 +146,15 @@ namespace DotSpatial.Controls
             // Allow panning if the space is pressed.
             if (e.KeyCode == Keys.Space && _isPanningTemporarily)
             {
-                Map.FunctionMode = _previousFunction;
+                Map.FunctionMode = _previousFunctionMode;
+                if (Map.FunctionMode == FunctionMode.None && _previousFunctions.Count > 0)
+                {
+                    foreach (var item in _previousFunctions)
+                    {
+                        item.Activate();
+                    }
+                }
+                _previousFunctions.Clear();
                 _isPanningTemporarily = false;
             }
 
