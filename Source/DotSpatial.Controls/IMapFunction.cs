@@ -86,6 +86,12 @@ namespace DotSpatial.Controls
         void Deactivate();
 
         /// <summary>
+        /// When a key is preview pressed while the map has the focus, this occurs.
+        /// </summary>
+        /// <param name="e">The event args.</param>
+        void DoPreviewKeyDown(PreviewKeyDownEventArgs e);
+
+        /// <summary>
         /// When a key is pressed while the map has the focus, this occurs.
         /// </summary>
         /// <param name="e">The event args.</param>

@@ -1272,9 +1272,18 @@ namespace DotSpatial.Controls
         {
             KeyUp += MapKeyUp;
             KeyDown += MapKeyDown;
+            PreviewKeyDown += Map_PreviewKeyDown;
 
             SizeChanged += OnSizeChanged;
             _oldSize = Size;
+        }
+
+        private void Map_PreviewKeyDown(object sender, PreviewKeyDownEventArgs e)
+        {
+            foreach (var tool in MapFunctions.Where(_ => _.Enabled))
+            {
+                tool.DoPreviewKeyDown(e);
+            }
         }
 
         /// <summary>

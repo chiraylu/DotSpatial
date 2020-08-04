@@ -45,7 +45,23 @@ namespace DotSpatial.Controls
         #endregion
 
         #region Methods
-
+        /// <inheritdoc/>
+        protected override void OnPreviewKeyDown(PreviewKeyDownEventArgs e)
+        {
+            switch (e.KeyCode)
+            {
+                case Keys.Up:
+                case Keys.Down:
+                case Keys.Left:
+                case Keys.Right:
+                    if (!e.IsInputKey)
+                    {
+                        e.IsInputKey = true;
+                    }
+                    break;
+            }
+            base.OnPreviewKeyDown(e);
+        }
         /// <summary>
         /// Handles the Key Down situation.
         /// </summary>
@@ -86,16 +102,16 @@ namespace DotSpatial.Controls
                 switch (e.KeyCode)
                 {
                     case Keys.Up:
-                        Map.MapFrame.View = new Rectangle(source.X, source.Y - 20, source.Width, source.Height);
-                        break;
-                    case Keys.Down:
                         Map.MapFrame.View = new Rectangle(source.X, source.Y + 20, source.Width, source.Height);
                         break;
+                    case Keys.Down:
+                        Map.MapFrame.View = new Rectangle(source.X, source.Y - 20, source.Width, source.Height);
+                        break;
                     case Keys.Left:
-                        Map.MapFrame.View = new Rectangle(source.X - 20, source.Y, source.Width, source.Height);
+                        Map.MapFrame.View = new Rectangle(source.X + 20, source.Y, source.Width, source.Height);
                         break;
                     case Keys.Right:
-                        Map.MapFrame.View = new Rectangle(source.X + 20, source.Y, source.Width, source.Height);
+                        Map.MapFrame.View = new Rectangle(source.X - 20, source.Y, source.Width, source.Height);
                         break;
                 }
 

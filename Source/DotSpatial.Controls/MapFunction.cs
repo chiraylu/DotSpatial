@@ -174,6 +174,12 @@ namespace DotSpatial.Controls
             OnKeyDown(e);
         }
 
+        /// <inheritdoc />
+        public void DoPreviewKeyDown(PreviewKeyDownEventArgs e)
+        {
+            OnPreviewKeyDown(e);
+        }
+
         /// <summary>
         /// Instructs this tool to perform any actions that should occur on the KeyUp event.
         /// </summary>
@@ -304,6 +310,14 @@ namespace DotSpatial.Controls
         /// </summary>
         /// <param name="e">A PaintEventArgs where the graphics object is already in image coordinates</param>
         protected virtual void OnDraw(MapDrawArgs e)
+        {
+        }
+
+        /// <summary>
+        /// Occurs when a key is preview pressed
+        /// </summary>
+        /// <param name="e">The event args.</param>
+        protected virtual void OnPreviewKeyDown(PreviewKeyDownEventArgs e)
         {
         }
 
