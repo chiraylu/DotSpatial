@@ -1773,7 +1773,7 @@ namespace DotSpatial.Symbology
             DrawingFilter?.DrawnStates?.Add(e.Feature, new DrawnState(Symbology.GetCategories().First(), false, 0, true));
         }
 
-        private void DataSetFeatureRemoved(object sender, FeatureRemovedEventArgs e)
+        private void DataSetFeatureRemoved(object sender, FeatureEventArgs e)
         {
             DrawingFilter?.DrawnStates.Remove(e.Feature);
         }

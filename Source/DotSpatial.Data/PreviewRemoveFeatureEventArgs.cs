@@ -3,12 +3,11 @@
 
 namespace DotSpatial.Data
 {
-    public class FeatureRemovedEventArgs : FeatureEventArgs
+    public class PreviewRemoveFeatureEventArgs : FeatureEventArgs
     {
-        public int Fid { get; set; }
-        public FeatureRemovedEventArgs(IFeature feature, int fid) : base(feature)
+        public bool Handled { get; set; }
+        public PreviewRemoveFeatureEventArgs(IFeature feature) : base(feature)
         {
-            Fid = fid;
         }
     }
 }

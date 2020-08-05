@@ -46,7 +46,10 @@ namespace DotSpatial.Data
         /// <summary>
         /// Occurs when a feature is removed from the list.
         /// </summary>
-        public event EventHandler<FeatureRemovedEventArgs> FeatureRemoved;
+        public event EventHandler<FeatureEventArgs> FeatureRemoved;
+
+        /// <inheritdoc/>
+        public event EventHandler<PreviewRemoveFeatureEventArgs> PreviewRemoveFeature;
 
         #region Properties
 
@@ -516,17 +519,8 @@ namespace DotSpatial.Data
         public virtual void RemoveAt(int index)
         {
             IFeature item = _list[index];
-            DataRow srcRow = item.DataRow;
-            DataRow cloneRow = srcRow.Table.NewRow();
-            object[] obj = new object[srcRow.ItemArray.Length];
-            srcRow.ItemArray.CopyTo(obj, 0);
-            cloneRow.ItemArray = obj;
-            int fid = item.Fid;
-            Parent.DataTable.Rows.Remove(item.DataRow);
+            ExcludeFeature(item);
             _list.RemoveAt(index);
-            item.ParentFeatureSet = null;
-            item.DataRow = cloneRow;
-            OnFeatureRemoved(item, fid);
         }
 
         /// <summary>
@@ -695,14 +689,30 @@ namespace DotSpatial.Data
         }
 
         /// <summary>
+        /// Occurs before a feature is removed from the list. This should only be
+        /// called if suspend events is false.
+        /// </summary>
+        /// <param name="feature">he feature that was removed</param>
+        /// <returns>whether handle or not</returns>
+        protected virtual bool OnPreviewRemoveFeature(IFeature feature)
+        {
+            bool handled = false;
+            if (!EventsSuspended && PreviewRemoveFeature != null)
+            {
+                var args = new PreviewRemoveFeatureEventArgs(feature);
+                PreviewRemoveFeature.Invoke(this, args);
+                handled = args.Handled;
+            }
+            return handled;
+        }
+        /// <summary>
         /// Occurs each time a feature is removed from the list. This should only be
         /// called if suspend events is false.
         /// </summary>
         /// <param name="feature">he feature that was removed</param>
-        /// <param name="fid">Fid</param>
-        protected virtual void OnFeatureRemoved(IFeature feature, int fid)
+        protected virtual void OnFeatureRemoved(IFeature feature)
         {
-            if (!EventsSuspended) FeatureRemoved?.Invoke(this, new FeatureRemovedEventArgs(feature, fid));
+            if (!EventsSuspended) FeatureRemoved?.Invoke(this, new FeatureEventArgs(feature));
         }
 
         private void Configure()
@@ -718,16 +728,12 @@ namespace DotSpatial.Data
         /// <param name="item">Feature that gets excluded.</param>
         private void ExcludeFeature(IFeature item)
         {
-            int fid = item.Fid;
-            DataRow srcRow = item.DataRow;
-            DataRow cloneRow = srcRow.Table.NewRow();
-            object[] obj = new object[srcRow.ItemArray.Length];
-            srcRow.ItemArray.CopyTo(obj, 0);
-            cloneRow.ItemArray = obj;
-            item.ParentFeatureSet = null;
-            Parent.DataTable.Rows.Remove(item.DataRow);
-            item.DataRow = cloneRow;
-            OnFeatureRemoved(item, fid);
+            if (!OnPreviewRemoveFeature(item))
+            {
+                item.ParentFeatureSet = null;
+                Parent.DataTable.Rows.Remove(item.DataRow);
+                OnFeatureRemoved(item);
+            }
         }
 
         /// <summary>

@@ -76,6 +76,7 @@ namespace DotSpatial.Data
             _features = new FeatureList(this);
             _features.FeatureAdded += FeaturesFeatureAdded;
             _features.FeatureRemoved += FeaturesFeatureRemoved;
+            _features.PreviewRemoveFeature += FeaturesPreviewRemoveFeature;
             _dataTable = new DataTable();
         }
 
@@ -186,12 +187,15 @@ namespace DotSpatial.Data
         /// <summary>
         /// Occurs when a feature is removed from the list.
         /// </summary>
-        public event EventHandler<FeatureRemovedEventArgs> FeatureRemoved;
+        public event EventHandler<FeatureEventArgs> FeatureRemoved;
 
         /// <summary>
         /// Occurs when the vertices are invalidated, encouraging a re-draw
         /// </summary>
         public event EventHandler VerticesInvalidated;
+
+        /// <inheritdoc/>
+        public event EventHandler<PreviewRemoveFeatureEventArgs> PreviewRemoveFeature;
 
         #endregion
 
@@ -1946,7 +1950,9 @@ namespace DotSpatial.Data
 
             _features.FeatureAdded -= FeaturesFeatureAdded;
             _features.FeatureRemoved -= FeaturesFeatureRemoved;
+            _features.PreviewRemoveFeature -= FeaturesPreviewRemoveFeature;
         }
+
 
         /// <summary>
         /// Occurs when setting the feature list, allowing events to be connected.
@@ -1961,6 +1967,7 @@ namespace DotSpatial.Data
 
             _features.FeatureAdded += FeaturesFeatureAdded;
             _features.FeatureRemoved += FeaturesFeatureRemoved;
+            _features.PreviewRemoveFeature += FeaturesPreviewRemoveFeature;
         }
         
 
@@ -2190,7 +2197,7 @@ namespace DotSpatial.Data
         /// </summary>
         /// <param name="sender">The object sender.</param>
         /// <param name="e">The FeatureEventArgs.</param>
-        private void FeaturesFeatureRemoved(object sender, FeatureRemovedEventArgs e)
+        private void FeaturesFeatureRemoved(object sender, FeatureEventArgs e)
         {
             _verticesAreValid = false;
             ShapeIndices.Remove(e.Feature.ShapeIndex);
@@ -2198,6 +2205,10 @@ namespace DotSpatial.Data
             FeatureRemoved?.Invoke(sender, e);
         }
 
+        private void FeaturesPreviewRemoveFeature(object sender, PreviewRemoveFeatureEventArgs e)
+        {
+            PreviewRemoveFeature?.Invoke(this, e);
+        }
         /// <summary>
         /// This forces the cached vertices array to be copied back to the individual X and Y values of the coordinates themselves.
         /// </summary>
