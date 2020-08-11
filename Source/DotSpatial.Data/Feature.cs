@@ -245,14 +245,20 @@ namespace DotSpatial.Data
         {
             get
             {
-                if (_parentFeatureSet.IndexMode || !_parentFeatureSet.AttributesPopulated)
+                int fid = -1;
+                if (_parentFeatureSet != null)
                 {
-                    return ShapeIndex?.RecordNumber - 1 ?? -2; // -1 because RecordNumber for shapefiles is 1-based.
-
-                    // todo: The better will be remove RecordNumber from public interface to avoid ±1 issues.
+                    if (_parentFeatureSet.IndexMode || !_parentFeatureSet.AttributesPopulated)
+                    {
+                        fid = ShapeIndex?.RecordNumber - 1 ?? -2; // -1 because RecordNumber for shapefiles is 1-based.
+                        // todo: The better will be remove RecordNumber from public interface to avoid ±1 issues.
+                    }
+                    else
+                    {
+                        fid = _parentFeatureSet.Features.IndexOf(this);
+                    }
                 }
-
-                return _parentFeatureSet.Features.IndexOf(this);
+                return fid;
             }
         }
 
