@@ -2197,16 +2197,8 @@ namespace DotSpatial.Data
             {
                 return;
             }
-            if (!IndexMode)
-            {
-                if (ShapeIndices.Count == Features.Count - 1)//表示不是调用AddShape方法添加的
-                {
-                    Shape shape = new Shape(e.Feature);
-                    shape.Range.RecordNumber = e.Feature.Fid + 1;
-                    OnAddShape(shape);
-                }
-            }
-            Extent.ExpandToInclude(e.Feature.Geometry.EnvelopeInternal.ToExtent());
+            ShapeIndices = null;
+            UpdateExtent();
             FeatureLookup[e.Feature.DataRow] = e.Feature;
             FeatureAdded?.Invoke(sender, e);
         }
@@ -2219,7 +2211,8 @@ namespace DotSpatial.Data
         private void FeaturesFeatureRemoved(object sender, FeatureEventArgs e)
         {
             _verticesAreValid = false;
-            ShapeIndices.Remove(e.Feature.ShapeIndex);
+            ShapeIndices = null;
+            //ShapeIndices.Remove(e.Feature.ShapeIndex);
             FeatureLookup.Remove(e.Feature.DataRow);
             UpdateExtent();
             FeatureRemoved?.Invoke(sender, e);

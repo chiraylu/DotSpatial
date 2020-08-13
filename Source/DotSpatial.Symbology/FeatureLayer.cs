@@ -524,7 +524,7 @@ namespace DotSpatial.Symbology
         public void AssignFastDrawnStates()
         {
             _drawnStatesNeeded = true;
-            var selectedIndices = Selection.ToFeatureList().Where(x => x.Fid >= 0 && x.Fid < DataSet.ShapeIndices.Count).Select(x => x.Fid);
+            var selectedIndices = Selection.ToFeatureList().Select(x => x.Fid);
             _drawnStates = new FastDrawnState[DataSet.ShapeIndices.Count];
             Selection.Changed -= SelectedFeaturesChanged;
             Selection = new IndexSelection(this); // update the new drawn-states;
@@ -532,7 +532,7 @@ namespace DotSpatial.Symbology
             // Fastest when no categories are used because we don't need DataTable at all
             List<IFeatureCategory> categories = _scheme.GetCategories().ToList();
             IFeatureCategory deflt = null;
-            if (categories.Count > 0 && categories[0].FilterExpression == null)
+            if (categories.Count > 0 && string.IsNullOrEmpty(categories[0].FilterExpression) )
             {
                 deflt = categories[0];
             }
@@ -1784,16 +1784,26 @@ namespace DotSpatial.Symbology
             {
                 LabelLayer.CreateLabels();//重新计算标注
             }
+            DataSet.InvalidateVertices();
         }
 
         private void DataSetFeatureRemoved(object sender, FeatureEventArgs e)
         {
             DrawingFilter?.DrawnStates.Remove(e.Feature);
+            var selectedFeatures = Selection.ToFeatureList();
+            foreach (var item in selectedFeatures)
+            {
+                if (item.Fid == -1)
+                {
+                    UnSelect(item);
+                }
+            }
             AssignFastDrawnStates();
             if (ShowLabels && LabelLayer.Symbology.Categories.Count > 0)
             {
                 LabelLayer.CreateLabels();//重新计算标注
             }
+            DataSet.InvalidateVertices();
         }
 
         private void DataSetVerticesInvalidated(object sender, EventArgs e)
