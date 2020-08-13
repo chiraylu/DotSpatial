@@ -508,10 +508,8 @@ namespace DotSpatial.Data
         {
         }
 
-        /// <inheritdoc/>
-        public void AddShape(Shape shape)
-        {
-            // This first section controls the indices which need to happen regardless
+        private void OnAddShape(Shape shape)
+        {// This first section controls the indices which need to happen regardless
             // because drawing uses indices even if editors like working with features.
             int count = _vertices?.Length / 2 ?? 0; // Original number of points
             int totalCount = shape.Range.NumPoints + count;
@@ -569,6 +567,11 @@ namespace DotSpatial.Data
             }
 
             Extent.ExpandToInclude(shape.Range.Extent);
+        }
+        /// <inheritdoc/>
+        public void AddShape(Shape shape)
+        {
+            OnAddShape(shape);
 
             if (!IndexMode)
             {
@@ -804,13 +807,13 @@ namespace DotSpatial.Data
                 }
             }
 
-            for (int row = startIndex, i = 0; i < numRows && row < _dataTable.Rows.Count; row++, i++)
+            for (int row = startIndex, i = 0; i < numRows && row < DataTable.Rows.Count; row++, i++)
             {
                 DataRow myRow = result.NewRow();
                 myRow["FID"] = row;
                 foreach (var name in fn.Where(d => d != "FID"))
                 {
-                    myRow[name] = _dataTable.Rows[row][name];
+                    myRow[name] = DataTable.Rows[row][name];
                 }
 
                 result.Rows.Add(myRow);
@@ -1281,7 +1284,7 @@ namespace DotSpatial.Data
                 {
                     DataTable.Rows.RemoveAt(index);
                 }
-                
+
                 ProgressMeter.Next();
             }
 
@@ -1508,15 +1511,15 @@ namespace DotSpatial.Data
         {
             // overridden in sub-classes, but default implementation is for the in-ram only case.
             int row = startIndex;
-            if (_dataTable == null)
+            if (DataTable == null)
             {
-                _dataTable = new DataTable();
+                DataTable = new DataTable();
             }
 
             List<string> names = new List<string>();
             foreach (DataColumn c in pageValues.Columns)
             {
-                _dataTable.Columns.Add(new DataColumn(c.ColumnName, c.DataType));
+                DataTable.Columns.Add(new DataColumn(c.ColumnName, c.DataType));
                 names.Add(c.ColumnName);
             }
 
@@ -1524,7 +1527,7 @@ namespace DotSpatial.Data
             {
                 foreach (string name in names)
                 {
-                    _dataTable.Rows[row][name] = dataRow[name];
+                    DataTable.Rows[row][name] = dataRow[name];
                 }
 
                 row++;
@@ -1554,13 +1557,13 @@ namespace DotSpatial.Data
             }
             else
             {
-                if (_shapeIndices == null || _shapeIndices.Count == 0)
+                if (ShapeIndices == null || ShapeIndices.Count == 0)
                 {
                     // jany_ (2015-07-17) return the empty extent because any other extent would result in to big extent when zooming to full map extent
                     return;
                 }
 
-                foreach (ShapeRange range in _shapeIndices)
+                foreach (ShapeRange range in ShapeIndices)
                 {
                     range.CalculateExtents();
                     MyExtent.ExpandToInclude(range.Extent);
@@ -1614,7 +1617,7 @@ namespace DotSpatial.Data
                 _z = null;
             }
 
-            _dataTable?.Dispose();
+            DataTable?.Dispose();
 
             base.Dispose(disposeManagedResources);
         }
@@ -1969,7 +1972,7 @@ namespace DotSpatial.Data
             _features.FeatureRemoved += FeaturesFeatureRemoved;
             _features.PreviewRemoveFeature += FeaturesPreviewRemoveFeature;
         }
-        
+
 
         /// <summary>
         /// Occurs when the vertices are being re-calculated.
@@ -2100,7 +2103,14 @@ namespace DotSpatial.Data
                         if (columns[iField].DataType != value.GetType())
                         {
                             // this may throw an exception if the type casting fails
-                            value = Convert.ChangeType(value, columns[iField].DataType);
+                            if (value == DBNull.Value)
+                            {
+                                value = columns[iField].DataType.IsValueType ? Activator.CreateInstance(columns[iField].DataType) : null;
+                            }
+                            else
+                            {
+                                value = Convert.ChangeType(value, columns[iField].DataType);
+                            }
                         }
 
                         fixedContent[iField] = value;
@@ -2111,7 +2121,7 @@ namespace DotSpatial.Data
                 if (AttributesPopulated)
                 {
                     // just add a new DataRow
-                    DataRow addedRow = _dataTable.NewRow();
+                    DataRow addedRow = DataTable.NewRow();
                     addedRow.ItemArray = fixedContent;
                     return addedRow;
                 }
@@ -2187,7 +2197,16 @@ namespace DotSpatial.Data
             {
                 return;
             }
-
+            if (!IndexMode)
+            {
+                if (ShapeIndices.Count == Features.Count - 1)//表示不是调用AddShape方法添加的
+                {
+                    Shape shape = new Shape(e.Feature);
+                    shape.Range.RecordNumber = e.Feature.Fid + 1;
+                    OnAddShape(shape);
+                }
+            }
+            Extent.ExpandToInclude(e.Feature.Geometry.EnvelopeInternal.ToExtent());
             FeatureLookup[e.Feature.DataRow] = e.Feature;
             FeatureAdded?.Invoke(sender, e);
         }
@@ -2202,6 +2221,7 @@ namespace DotSpatial.Data
             _verticesAreValid = false;
             ShapeIndices.Remove(e.Feature.ShapeIndex);
             FeatureLookup.Remove(e.Feature.DataRow);
+            UpdateExtent();
             FeatureRemoved?.Invoke(sender, e);
         }
 

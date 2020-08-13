@@ -524,7 +524,7 @@ namespace DotSpatial.Symbology
         public void AssignFastDrawnStates()
         {
             _drawnStatesNeeded = true;
-            var selectedIndices = Selection.ToFeatureList().Select(x => x.Fid);
+            var selectedIndices = Selection.ToFeatureList().Where(x => x.Fid >= 0 && x.Fid < DataSet.ShapeIndices.Count).Select(x => x.Fid);
             _drawnStates = new FastDrawnState[DataSet.ShapeIndices.Count];
             Selection.Changed -= SelectedFeaturesChanged;
             Selection = new IndexSelection(this); // update the new drawn-states;
@@ -841,36 +841,44 @@ namespace DotSpatial.Symbology
 
             IFeatureSet fs = DataSet;
             var mode = fs.IndexMode;
-            //if (fs.IndexMode)
-            //{
-            //    // Use Index selection to remove by index
-            //    IndexSelection indexSel = Selection as IndexSelection;
-
-            //    // In case we have an invalid cast for some reason.
-            //    if (indexSel == null) return;
-
-            //    // Create a list of index values to remove.
-            //    List<int> orderedIndex = new List<int>(indexSel);
-
-            //    // Clear the selection so the removed features are no longer contained when IFeatureSet.FeatureRemoved is raised
-            //    Selection.Clear();
-
-            //    RemoveFeaturesAt(orderedIndex);
-            //}
-            //else
+            if (fs.IndexMode)
             {
-                // This case tracks by IFeature, so we don't need to do a lot else.
-                List<int> featureIndexes = Selection.ToFeatureList().Select(x => x.Fid).ToList();
-                featureIndexes.Sort();
+                // Use Index selection to remove by index
+                IndexSelection indexSel = Selection as IndexSelection;
+
+                // In case we have an invalid cast for some reason.
+                if (indexSel == null) return;
+
+                // Create a list of index values to remove.
+                List<int> orderedIndex = new List<int>(indexSel);
+
                 // Clear the selection so the removed features are no longer contained when IFeatureSet.FeatureRemoved is raised
                 Selection.Clear();
-                for (int i = featureIndexes.Count - 1; i >= 0; i--)
+
+                RemoveFeaturesAt(orderedIndex);
+            }
+            else
+            {
+                //// This case tracks by IFeature, so we don't need to do a lot else.
+                //List<int> featureIndexes = Selection.ToFeatureList().Select(x => x.Fid).ToList();
+                //featureIndexes.Sort();
+                //// Clear the selection so the removed features are no longer contained when IFeatureSet.FeatureRemoved is raised
+                //Selection.Clear();
+                //for (int i = featureIndexes.Count - 1; i >= 0; i--)
+                //{
+                //    DataSet.Features.RemoveAt(featureIndexes[i]);
+                //}
+
+                // This case tracks by IFeature, so we don't need to do a lot else.
+                List<IFeature> features = Selection.ToFeatureList();
+
+                // Clear the selection so the removed features are no longer contained when IFeatureSet.FeatureRemoved is raised
+                Selection.Clear();
+
+                foreach (IFeature feature in features)
                 {
-                    DataSet.Features.RemoveAt(featureIndexes[i]);
+                    DataSet.Features.Remove(feature);
                 }
-                //DataSet.ShapeIndices = null;
-                DataSet.UpdateExtent();
-                AssignFastDrawnStates();
             }
         }
 
@@ -1771,11 +1779,21 @@ namespace DotSpatial.Symbology
         private void DataSetFeatureAdded(object sender, FeatureEventArgs e)
         {
             DrawingFilter?.DrawnStates?.Add(e.Feature, new DrawnState(Symbology.GetCategories().First(), false, 0, true));
+            AssignFastDrawnStates();
+            if (ShowLabels && LabelLayer.Symbology.Categories.Count > 0)
+            {
+                LabelLayer.CreateLabels();//重新计算标注
+            }
         }
 
         private void DataSetFeatureRemoved(object sender, FeatureEventArgs e)
         {
             DrawingFilter?.DrawnStates.Remove(e.Feature);
+            AssignFastDrawnStates();
+            if (ShowLabels && LabelLayer.Symbology.Categories.Count > 0)
+            {
+                LabelLayer.CreateLabels();//重新计算标注
+            }
         }
 
         private void DataSetVerticesInvalidated(object sender, EventArgs e)

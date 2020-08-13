@@ -390,7 +390,7 @@ namespace DotSpatial.Plugins.ShapeEditor
 
                     if (_addShapeFunction != null)
                     {
-                        SetSnapLayers(_addShapeFunction);
+                        SetSnapLayers(_addShapeFunction); 
                     }
                 }
             }
