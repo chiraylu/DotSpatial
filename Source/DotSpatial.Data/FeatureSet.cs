@@ -2211,8 +2211,17 @@ namespace DotSpatial.Data
         private void FeaturesFeatureRemoved(object sender, FeatureEventArgs e)
         {
             _verticesAreValid = false;
-            ShapeIndices = null;
-            //ShapeIndices.Remove(e.Feature.ShapeIndex);
+
+            // 解决始终无法删除最后一个要素的问题
+            if (ShapeIndices.Count == 1)
+            {
+                ShapeIndices.Remove(e.Feature.ShapeIndex);
+            }
+            else
+            {
+                ShapeIndices = null;
+            }
+
             FeatureLookup.Remove(e.Feature.DataRow);
             UpdateExtent();
             FeatureRemoved?.Invoke(sender, e);

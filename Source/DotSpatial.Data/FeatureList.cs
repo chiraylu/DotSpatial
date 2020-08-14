@@ -168,7 +168,7 @@ namespace DotSpatial.Data
         {
             foreach (IFeature feature in _list)
             {
-                ExcludeFeature(feature);
+                Remove(feature);
             }
 
             _list.Clear();
@@ -475,12 +475,14 @@ namespace DotSpatial.Data
         /// <exception cref="System.ApplicationException">Unable to remove while the ReadOnly property is set to true.</exception>
         public virtual bool Remove(IFeature item)
         {
-            if (_list.Remove(item))
+            if (!OnPreviewRemoveFeature(item))
             {
-                ExcludeFeature(item);
-                return true;
+                if (_list.Remove(item))
+                {
+                    ExcludeFeature(item);
+                    return true;
+                }
             }
-
             return false;
         }
 
@@ -498,11 +500,7 @@ namespace DotSpatial.Data
             int numRemoved = matches.Count;
             foreach (IFeature item in matches)
             {
-                if (_list.Remove(item))
-                {
-                    ExcludeFeature(item);
-                }
-                else
+                if (!Remove(item))
                 {
                     numRemoved--;
                 }
@@ -519,8 +517,7 @@ namespace DotSpatial.Data
         public virtual void RemoveAt(int index)
         {
             IFeature item = _list[index];
-            ExcludeFeature(item);
-            _list.RemoveAt(index);
+            Remove(item);
         }
 
         /// <summary>
@@ -538,7 +535,7 @@ namespace DotSpatial.Data
             _list.RemoveRange(index, count);
             foreach (IFeature item in temp)
             {
-                ExcludeFeature(item);
+                Remove(item);
             }
         }
 
@@ -728,12 +725,9 @@ namespace DotSpatial.Data
         /// <param name="item">Feature that gets excluded.</param>
         private void ExcludeFeature(IFeature item)
         {
-            if (!OnPreviewRemoveFeature(item))
-            {
-                item.ParentFeatureSet = null;
-                Parent.DataTable.Rows.Remove(item.DataRow);
-                OnFeatureRemoved(item);
-            }
+            item.ParentFeatureSet = null;
+            Parent.DataTable.Rows.Remove(item.DataRow);
+            OnFeatureRemoved(item);
         }
 
         /// <summary>

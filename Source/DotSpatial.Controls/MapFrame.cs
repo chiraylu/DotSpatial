@@ -783,8 +783,9 @@ namespace DotSpatial.Controls
                                ViewExtents
                            });
             }
-            catch (InvalidOperationException)
+            catch (Exception e)
             {
+                Debug.WriteLine(e);
             }
         }
 
