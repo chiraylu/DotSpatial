@@ -468,7 +468,7 @@ namespace DotSpatial.Data
         public override void FillAttributes()
         {
             _attributeTable.AttributesPopulated = false; // attributeTable.Table fills itself if attributes are not populated
-            DataTable = _attributeTable.Table;
+            DataTable = _attributeTable.Table; 
             base.AttributesPopulated = true;
 
             // Link the data rows to the vectors in this object

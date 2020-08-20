@@ -959,7 +959,58 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                 }
             }
         }
+        public override void SaveAs(string fileName, string driverCode, string[] options)
+        {
+            // Create a new raster file
+            IRaster newRaster = DataManager.DefaultDataManager.CreateRaster(fileName, driverCode, NumColumns, NumRows, NumBands, DataType, options);
 
+            // Copy the file based values
+            // newRaster.Copy(Filename, true);
+            newRaster.Projection = Projection;
+
+            newRaster.Extent = Extent;
+
+            // Copy the in memory value
+            newRaster.SetData(this);
+
+            newRaster.ProgressHandler = ProgressHandler;
+            newRaster.NoDataValue = NoDataValue;
+            newRaster.GetStatistics();
+            newRaster.Bounds = Bounds;
+
+            // Save the in-memory values.
+            if (newRaster is GdalRaster<T>)
+            {
+                int count = 1024;
+                int xSize, ySize;
+                for (int i = 0; i < Bands.Count; i++)
+                {
+                    var newBand = newRaster.Bands[i];
+                    for (int row = 0; row < NumRows; row += count)
+                    {
+                        ySize = Math.Min(count, NumRows - row);
+                        for (int col = 0; col < NumColumns; col += count)
+                        {
+                            xSize = Math.Min(count, NumColumns - col);
+                            IRaster raster = Bands[i].ReadBlock(col, row, xSize, ySize);
+                            newBand.WriteBlock(raster, col, row, xSize, ySize);
+                        }
+                    }
+                }
+                newRaster.Save();
+            }
+            else
+            {
+                newRaster.Save();
+            }
+            newRaster.Close();
+        }
+        /// <inheritdoc/>
+        public override void Save()
+        {
+            UpdateHeader();
+            _dataset.FlushCache();
+        }
         /// <summary>
         /// Most reading is optimized to read in a block at a time and process it. This method is designed
         /// for seeking through the file.  It should work faster than the buffered methods in cases where
