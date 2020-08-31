@@ -4,7 +4,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Data;
+using System.Linq;
 
 namespace DotSpatial.Data
 {
@@ -34,22 +36,13 @@ namespace DotSpatial.Data
         /// <param name="parent">The ParentFeatureSet of the specified item.</param>
         public FeatureList(IFeatureSet parent)
         {
-            Parent = parent;
+            Parent = parent; 
             Configure();
         }
 
-        /// <summary>
-        /// Occurs when a new feature is added to the list.
-        /// </summary>
-        public event EventHandler<FeatureEventArgs> FeatureAdded;
-
-        /// <summary>
-        /// Occurs when a feature is removed from the list.
-        /// </summary>
-        public event EventHandler<FeatureEventArgs> FeatureRemoved;
-
         /// <inheritdoc/>
         public event EventHandler<PreviewRemoveFeatureEventArgs> PreviewRemoveFeature;
+        public event NotifyCollectionChangedEventHandler CollectionChanged;
 
         #region Properties
 
@@ -118,9 +111,12 @@ namespace DotSpatial.Data
             set
             {
                 // Don't add handlers if the items are already members of this list
-                ExcludeFeature(_list[index]);
+                var oldItem = _list[index];
+                ExcludeFeature(oldItem);
+                OnFeatureRemoved(oldItem);
                 _list[index] = value;
                 IncludeFeature(value, index);
+                OnFeatureAdded(value);
             }
         }
 
@@ -132,6 +128,7 @@ namespace DotSpatial.Data
         {
             _list.Add(item);
             IncludeFeature(item);
+            OnFeatureAdded(item);
         }
 
         /// <summary>
@@ -410,6 +407,7 @@ namespace DotSpatial.Data
         {
             _list.Insert(index, item);
             IncludeFeature(item, index);
+            OnFeatureAdded(item);
         }
 
         /// <summary>
@@ -422,12 +420,18 @@ namespace DotSpatial.Data
         /// <exception cref="System.ApplicationException">Unable to insert while the ReadOnly property is set to true.</exception>
         public virtual void InsertRange(int index, IEnumerable<IFeature> collection)
         {
+            List<IFeature> featues = new List<IFeature>();
             int indx = index;
             foreach (IFeature item in collection)
             {
                 _list.Insert(indx, item);
                 indx++;
                 IncludeFeature(item, indx);
+                featues.Add(item);
+            }
+            if (featues.Count > 0)
+            {
+                OnFeaturesAdded(featues);
             }
         }
 
@@ -480,6 +484,7 @@ namespace DotSpatial.Data
                 if (_list.Remove(item))
                 {
                     ExcludeFeature(item);
+                    OnFeatureRemoved(item);
                     return true;
                 }
             }
@@ -682,9 +687,18 @@ namespace DotSpatial.Data
         /// <param name="feature">The feature that was added.</param>
         protected virtual void OnFeatureAdded(IFeature feature)
         {
-            if (!EventsSuspended) FeatureAdded?.Invoke(this, new FeatureEventArgs(feature));
+            if (!EventsSuspended)
+            {
+                CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, feature));
+            }
         }
-
+        protected virtual void OnFeaturesAdded(IList<IFeature> features)
+        {
+            if (!EventsSuspended)
+            {
+                CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, features));
+            }
+        }
         /// <summary>
         /// Occurs before a feature is removed from the list. This should only be
         /// called if suspend events is false.
@@ -709,9 +723,18 @@ namespace DotSpatial.Data
         /// <param name="feature">he feature that was removed</param>
         protected virtual void OnFeatureRemoved(IFeature feature)
         {
-            if (!EventsSuspended) FeatureRemoved?.Invoke(this, new FeatureEventArgs(feature));
+            if (!EventsSuspended)
+            {
+                CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, feature));
+            }
         }
-
+        protected virtual void OnFeaturesRemoved(IList<IFeature> features)
+        {
+            if (!EventsSuspended)
+            {
+                CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, features));
+            }
+        }
         private void Configure()
         {
             _suspension = 0;
@@ -727,7 +750,6 @@ namespace DotSpatial.Data
         {
             item.ParentFeatureSet = null;
             Parent.DataTable.Rows.Remove(item.DataRow);
-            OnFeatureRemoved(item);
         }
 
         /// <summary>
@@ -757,8 +779,36 @@ namespace DotSpatial.Data
                     Parent.DataTable.Rows.Add(row);
                 else Parent.DataTable.Rows.InsertAt(row, index);
             }
+        }
 
-            OnFeatureAdded(item);
+        public void Add(IEnumerable<IFeature> features)
+        {
+            _list.AddRange(features);
+            foreach (var item in features)
+            {
+                IncludeFeature(item);
+            }
+            OnFeaturesAdded(features.ToList());
+        }
+
+        public void Remove(IEnumerable<IFeature> features)
+        {
+            List<IFeature> removedFeatures = new List<IFeature>();
+            foreach (var item in features)
+            {
+                if (!OnPreviewRemoveFeature(item))
+                {
+                    if (_list.Remove(item))
+                    {
+                        ExcludeFeature(item);
+                        removedFeatures.Add(item);
+                    }
+                }
+            }
+            if (removedFeatures.Count > 0)
+            {
+                OnFeaturesRemoved(removedFeatures);
+            }
         }
 
         #endregion

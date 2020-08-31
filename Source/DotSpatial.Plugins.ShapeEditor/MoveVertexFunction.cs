@@ -382,7 +382,7 @@ namespace DotSpatial.Plugins.ShapeEditor
                     OnVertexMoved(new VertexMovedEventArgs(_activeFeature, _originCoord, _dragCoord));
                     if (_layer.GetCategory(_selectedFeature) != _selectedCategory)
                     {
-                        _layer.SetCategory(_selectedFeature, _selectedCategory);
+                        _layer.SetCategory(_selectedFeature, _selectedCategory); 
                     }
                 }
             }

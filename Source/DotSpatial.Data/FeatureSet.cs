@@ -3,6 +3,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Data;
 using System.Data.OleDb;
@@ -74,9 +76,7 @@ namespace DotSpatial.Data
             IndexMode = false; // this is false unless we are loading it from a specific shapefile case.
             FeatureLookup = new Dictionary<DataRow, IFeature>();
             _features = new FeatureList(this);
-            _features.FeatureAdded += FeaturesFeatureAdded;
-            _features.FeatureRemoved += FeaturesFeatureRemoved;
-            _features.PreviewRemoveFeature += FeaturesPreviewRemoveFeature;
+            _features.CollectionChanged += Features_CollectionChanged;
             _dataTable = new DataTable();
         }
 
@@ -180,22 +180,10 @@ namespace DotSpatial.Data
         #region Events
 
         /// <summary>
-        /// Occurs when a new feature is added to the list
-        /// </summary>
-        public event EventHandler<FeatureEventArgs> FeatureAdded;
-
-        /// <summary>
-        /// Occurs when a feature is removed from the list.
-        /// </summary>
-        public event EventHandler<FeatureEventArgs> FeatureRemoved;
-
-        /// <summary>
         /// Occurs when the vertices are invalidated, encouraging a re-draw
         /// </summary>
         public event EventHandler VerticesInvalidated;
-
-        /// <inheritdoc/>
-        public event EventHandler<PreviewRemoveFeatureEventArgs> PreviewRemoveFeature;
+        public event NotifyCollectionChangedEventHandler FeaturesCollectionChanged;
 
         #endregion
 
@@ -423,6 +411,70 @@ namespace DotSpatial.Data
         #endregion
 
         #region Methods
+
+        private void Features_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    FeaturesFeatureAdded(e);
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    FeaturesFeatureRemoved(e);
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    ShapeIndices.Clear();
+                    UpdateExtent();
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    ShapeIndices = null;
+                    UpdateExtent();
+                    break;
+            }
+            FeaturesCollectionChanged?.Invoke(this, e);
+        }
+
+        /// <summary>
+        /// The features feature added.
+        /// </summary>
+        /// <param name="e">The e.</param>
+        private void FeaturesFeatureAdded(NotifyCollectionChangedEventArgs e)
+        {
+            _verticesAreValid = false; // invalidate vertices
+            ShapeIndices = null;
+            UpdateExtent();
+            foreach (IFeature item in e.NewItems)
+            {
+                FeatureLookup[item.DataRow] = item;
+            }
+        }
+
+        /// <summary>
+        /// The features feature removed.
+        /// </summary>
+        /// <param name="e">The FeatureEventArgs.</param>
+        private void FeaturesFeatureRemoved(NotifyCollectionChangedEventArgs e)
+        {
+            _verticesAreValid = false;
+
+            // 解决始终无法删除最后一个要素的问题
+            foreach (IFeature item in e.OldItems)
+            {
+                FeatureLookup.Remove(item.DataRow);
+            }
+            if (ShapeIndices.Count == 1)
+            {
+                foreach (IFeature item in e.OldItems)
+                {
+                    ShapeIndices.Remove(item.ShapeIndex);
+                }
+            }
+            else
+            {
+                ShapeIndices = null;
+            }
+            UpdateExtent();
+        }
 
         /// <summary>
         /// This attempts to open the specified file as a valid IFeatureSet. This will require that
@@ -1951,9 +2003,7 @@ namespace DotSpatial.Data
                 return;
             }
 
-            _features.FeatureAdded -= FeaturesFeatureAdded;
-            _features.FeatureRemoved -= FeaturesFeatureRemoved;
-            _features.PreviewRemoveFeature -= FeaturesPreviewRemoveFeature;
+            _features.CollectionChanged -= Features_CollectionChanged;
         }
 
 
@@ -1968,9 +2018,7 @@ namespace DotSpatial.Data
                 return;
             }
 
-            _features.FeatureAdded += FeaturesFeatureAdded;
-            _features.FeatureRemoved += FeaturesFeatureRemoved;
-            _features.PreviewRemoveFeature += FeaturesPreviewRemoveFeature;
+            _features.CollectionChanged += Features_CollectionChanged;
         }
 
 
@@ -2092,7 +2140,7 @@ namespace DotSpatial.Data
 
                 if (shape.Attributes.Length != columns.Length)
                 {
-                    throw new ArgumentException("Attribute column count mismatch.");
+                    throw new ArgumentException("Attribute column count mismatch."); 
                 }
 
                 for (int iField = 0; iField < columns.Length; iField++)
@@ -2185,52 +2233,6 @@ namespace DotSpatial.Data
             FeatureLookup.Remove(e.Row);
         }
 
-        /// <summary>
-        /// The features feature added.
-        /// </summary>
-        /// <param name="sender">The sender.</param>
-        /// <param name="e">The e.</param>
-        private void FeaturesFeatureAdded(object sender, FeatureEventArgs e)
-        {
-            _verticesAreValid = false; // invalidate vertices
-            if (e.Feature.DataRow == null)
-            {
-                return;
-            }
-            ShapeIndices = null;
-            UpdateExtent();
-            FeatureLookup[e.Feature.DataRow] = e.Feature;
-            FeatureAdded?.Invoke(sender, e);
-        }
-
-        /// <summary>
-        /// The features feature removed.
-        /// </summary>
-        /// <param name="sender">The object sender.</param>
-        /// <param name="e">The FeatureEventArgs.</param>
-        private void FeaturesFeatureRemoved(object sender, FeatureEventArgs e)
-        {
-            _verticesAreValid = false;
-
-            // 解决始终无法删除最后一个要素的问题
-            if (ShapeIndices.Count == 1)
-            {
-                ShapeIndices.Remove(e.Feature.ShapeIndex);
-            }
-            else
-            {
-                ShapeIndices = null;
-            }
-
-            FeatureLookup.Remove(e.Feature.DataRow);
-            UpdateExtent();
-            FeatureRemoved?.Invoke(sender, e);
-        }
-
-        private void FeaturesPreviewRemoveFeature(object sender, PreviewRemoveFeatureEventArgs e)
-        {
-            PreviewRemoveFeature?.Invoke(this, e);
-        }
         /// <summary>
         /// This forces the cached vertices array to be copied back to the individual X and Y values of the coordinates themselves.
         /// </summary>

@@ -238,6 +238,8 @@ namespace DotSpatial.Symbology
         /// <param name="category">The new category to use for the specified feature</param>
         void SetCategory(IFeature feature, IFeatureCategory category);
 
+        void UpdateCategory(IFeature feature);
+
         /// <summary>
         /// This forces the creation of a category for the specified symbolizer, if it doesn't exist.
         /// This will add the specified feature to the category. Be sure that the symbolizer type
