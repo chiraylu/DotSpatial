@@ -908,10 +908,11 @@ namespace DotSpatial.Symbology
                 // Clear the selection so the removed features are no longer contained when IFeatureSet.FeatureRemoved is raised
                 Selection.Clear();
 
-                foreach (IFeature feature in features)
-                {
-                    DataSet.Features.Remove(feature);
-                }
+                //foreach (IFeature feature in features)
+                //{
+                //    DataSet.Features.Remove(feature);
+                //}
+                DataSet.Features.Remove(features);
             }
         }
 

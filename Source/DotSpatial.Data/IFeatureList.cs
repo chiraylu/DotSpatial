@@ -62,6 +62,7 @@ namespace DotSpatial.Data
         List<IFeature> ToList();
 
         void Add(IEnumerable<IFeature> features);
+        void Insert(Dictionary<int, IFeature> fidFeaturePairs);
         void Remove(IEnumerable<IFeature> features);
         #endregion
     }
