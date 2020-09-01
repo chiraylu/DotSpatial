@@ -1780,31 +1780,11 @@ namespace DotSpatial.Symbology
         private void DataSetFeatureAdded(object sender, FeatureEventArgs e)
         {
             DrawingFilter?.DrawnStates?.Add(e.Feature, new DrawnState(Symbology.GetCategories().First(), false, 0, true));
-            AssignFastDrawnStates();
-            if (ShowLabels && LabelLayer.Symbology.Categories.Count > 0)
-            {
-                LabelLayer.CreateLabels();//重新计算标注
-            }
-            DataSet.InvalidateVertices();
         }
 
         private void DataSetFeatureRemoved(object sender, FeatureEventArgs e)
         {
             DrawingFilter?.DrawnStates.Remove(e.Feature);
-            var selectedFeatures = Selection.ToFeatureList();
-            foreach (var item in selectedFeatures)
-            {
-                if (item.Fid == -1)
-                {
-                    UnSelect(item);
-                }
-            }
-            AssignFastDrawnStates();
-            if (ShowLabels && LabelLayer.Symbology.Categories.Count > 0)
-            {
-                LabelLayer.CreateLabels();//重新计算标注
-            }
-            DataSet.InvalidateVertices();
         }
 
         private void DataSetVerticesInvalidated(object sender, EventArgs e)
