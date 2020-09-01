@@ -36,7 +36,7 @@ namespace DotSpatial.Data
         /// <param name="parent">The ParentFeatureSet of the specified item.</param>
         public FeatureList(IFeatureSet parent)
         {
-            Parent = parent;
+            Parent = parent; 
             Configure();
         }
 
@@ -728,7 +728,7 @@ namespace DotSpatial.Data
                 CollectionChanged?.Invoke(this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, feature));
             }
         }
-        protected virtual void OnFeaturesRemoved(List<IFeature> features)
+        protected virtual void OnFeaturesRemoved(IList<IFeature> features)
         {
             if (!EventsSuspended)
             {
@@ -783,30 +783,12 @@ namespace DotSpatial.Data
 
         public void Add(IEnumerable<IFeature> features)
         {
-            if (features == null || features.Count() == 0)
-            {
-                return;
-            }
             _list.AddRange(features);
             foreach (var item in features)
             {
                 IncludeFeature(item);
             }
             OnFeaturesAdded(features.ToList());
-        }
-
-        public void Insert(Dictionary<int, IFeature> fidFeaturePairs)
-        {
-            if (fidFeaturePairs == null || fidFeaturePairs.Count == 0)
-            {
-                return;
-            }
-            foreach (var item in fidFeaturePairs)
-            {
-                _list.Insert(item.Key, item.Value);
-                IncludeFeature(item.Value);
-            }
-            OnFeaturesAdded(fidFeaturePairs.Values.ToList());
         }
 
         public void Remove(IEnumerable<IFeature> features)
