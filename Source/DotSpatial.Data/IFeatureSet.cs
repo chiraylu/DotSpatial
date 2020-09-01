@@ -4,7 +4,6 @@
 using GeoAPI.Geometries;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Data;
 
 namespace DotSpatial.Data
@@ -20,9 +19,19 @@ namespace DotSpatial.Data
     public interface IFeatureSet : IDataSet, IAttributeSource
     {
         /// <summary>
-        /// Occurs when the Features collection are changed
+        /// Occurs when a new feature is added to the list.
         /// </summary>
-        event NotifyCollectionChangedEventHandler FeaturesCollectionChanged;
+        event EventHandler<FeatureEventArgs> FeatureAdded;
+
+        /// <summary>
+        /// Occurs before a feature is removed from the list.
+        /// </summary>
+        event EventHandler<PreviewRemoveFeatureEventArgs> PreviewRemoveFeature;
+
+        /// <summary>
+        /// Occurs when a feature is removed from the list.
+        /// </summary>
+        event EventHandler<FeatureEventArgs> FeatureRemoved;
 
         /// <summary>
         /// Occurs when the vertices are invalidated, encouraging a re-draw.

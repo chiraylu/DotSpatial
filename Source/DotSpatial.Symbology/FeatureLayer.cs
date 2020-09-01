@@ -3,7 +3,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
@@ -533,7 +532,7 @@ namespace DotSpatial.Symbology
             // Fastest when no categories are used because we don't need DataTable at all
             List<IFeatureCategory> categories = _scheme.GetCategories().ToList();
             IFeatureCategory deflt = null;
-            if (categories.Count > 0 && string.IsNullOrEmpty(categories[0].FilterExpression))
+            if (categories.Count > 0 && string.IsNullOrEmpty(categories[0].FilterExpression) )
             {
                 deflt = categories[0];
             }
@@ -629,38 +628,6 @@ namespace DotSpatial.Symbology
                     table.Columns.Remove("FID");
                 }
             }
-        }
-
-        public void UpdateCategory(IFeature feature)
-        {
-            if (feature == null)
-            {
-                return;
-            }
-            IFeatureCategory destCategory = null;
-            var categories = _scheme.GetCategories().ToList();
-            var firstCategory = categories.FirstOrDefault();
-            if (firstCategory != null && string.IsNullOrEmpty(firstCategory.FilterExpression))
-            {
-                destCategory = firstCategory;
-            }
-            if (categories.Count() > 1)
-            {
-                DataTable table = DataSet.DataTable;
-                foreach (var category in categories)
-                {
-                    DataRow[] result = table.Select(category.FilterExpression);
-                    foreach (DataRow row in result)
-                    {
-                        if (table.Rows.IndexOf(row) == feature.Fid)
-                        {
-                            destCategory = category;
-                            break;
-                        }
-                    }
-                }
-            }
-            SetCategory(feature, destCategory);
         }
 
         /// <summary>
@@ -1145,6 +1112,7 @@ namespace DotSpatial.Symbology
                 _scheme.InsertCategory(0, category);
             }
         }
+
         /// <summary>
         /// This forces the creation of a category for the specified symbolizer, if it doesn't exist.
         /// This will add the specified feature to the category. Be sure that the symbolizer type
@@ -1623,60 +1591,10 @@ namespace DotSpatial.Symbology
             }
 
             DataSet.VerticesInvalidated += DataSetVerticesInvalidated;
-            DataSet.FeaturesCollectionChanged += Features_CollectionChanged;
-            //DataSet.FeatureAdded += DataSetFeatureAdded;
-            //DataSet.FeatureRemoved += DataSetFeatureRemoved;
+            DataSet.FeatureAdded += DataSetFeatureAdded;
+            DataSet.FeatureRemoved += DataSetFeatureRemoved;
         }
 
-        private void Features_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Add:
-                    DataSetFeatureAdded(e);
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    DataSetFeatureRemoved(e);
-                    break;
-                case NotifyCollectionChangedAction.Reset:
-                    RefreshFastDrawnStatesAndLabels();
-                    break;
-                case NotifyCollectionChangedAction.Replace:
-                    RefreshFastDrawnStatesAndLabels();
-                    break;
-            }
-        }
-        private void DataSetFeatureAdded(NotifyCollectionChangedEventArgs e)
-        {
-            if (DrawingFilter?.DrawnStates != null)
-            {
-                foreach (IFeature item in e.NewItems)
-                {
-                    DrawingFilter.DrawnStates.Add(item, new DrawnState(Symbology.GetCategories().First(), false, 0, true));
-                }
-            }
-            RefreshFastDrawnStatesAndLabels();
-        }
-        private void RefreshFastDrawnStatesAndLabels()
-        {
-            AssignFastDrawnStates();
-            if (ShowLabels && LabelLayer.Symbology.Categories.Count > 0)
-            {
-                LabelLayer.CreateLabels(); // 重新计算标注
-            }
-            DataSet.InvalidateVertices();
-        }
-        private void DataSetFeatureRemoved(NotifyCollectionChangedEventArgs e)
-        {
-            if (DrawingFilter?.DrawnStates != null)
-            {
-                foreach (IFeature item in e.OldItems)
-                {
-                    DrawingFilter?.DrawnStates.Remove(item);
-                }
-            }
-            RefreshFastDrawnStatesAndLabels();
-        }
         /// <summary>
         /// Unwires event handlers for the specified featureset.
         /// </summary>
@@ -1688,8 +1606,9 @@ namespace DotSpatial.Symbology
                 return;
             }
 
-            DataSet.FeaturesCollectionChanged -= Features_CollectionChanged;
             DataSet.VerticesInvalidated -= DataSetVerticesInvalidated;
+            DataSet.FeatureAdded -= DataSetFeatureAdded;
+            DataSet.FeatureRemoved -= DataSetFeatureRemoved;
         }
 
         /// <summary>
@@ -1852,12 +1771,40 @@ namespace DotSpatial.Symbology
                 Selection = new IndexSelection(this);
             }
 
-            Selection.Changed += SelectedFeaturesChanged; 
+            Selection.Changed += SelectedFeaturesChanged;
 
-             _drawnStatesNeeded = false;
+            _drawnStatesNeeded = false;
         }
 
+        private void DataSetFeatureAdded(object sender, FeatureEventArgs e)
+        {
+            DrawingFilter?.DrawnStates?.Add(e.Feature, new DrawnState(Symbology.GetCategories().First(), false, 0, true));
+            AssignFastDrawnStates();
+            if (ShowLabels && LabelLayer.Symbology.Categories.Count > 0)
+            {
+                LabelLayer.CreateLabels();//重新计算标注
+            }
+            DataSet.InvalidateVertices();
+        }
 
+        private void DataSetFeatureRemoved(object sender, FeatureEventArgs e)
+        {
+            DrawingFilter?.DrawnStates.Remove(e.Feature);
+            var selectedFeatures = Selection.ToFeatureList();
+            foreach (var item in selectedFeatures)
+            {
+                if (item.Fid == -1)
+                {
+                    UnSelect(item);
+                }
+            }
+            AssignFastDrawnStates();
+            if (ShowLabels && LabelLayer.Symbology.Categories.Count > 0)
+            {
+                LabelLayer.CreateLabels();//重新计算标注
+            }
+            DataSet.InvalidateVertices();
+        }
 
         private void DataSetVerticesInvalidated(object sender, EventArgs e)
         {

@@ -3,21 +3,30 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 
 namespace DotSpatial.Data
 {
     /// <summary>
     /// IFeatureList
     /// </summary>
-    public interface IFeatureList : IList<IFeature>, INotifyCollectionChanged
+    public interface IFeatureList : IList<IFeature>
     {
         #region Events
+
+        /// <summary>
+        /// Occurs when a new feature is added to the list
+        /// </summary>
+        event EventHandler<FeatureEventArgs> FeatureAdded;
 
         /// <summary>
         /// Occurs before a feature is removed from the list.
         /// </summary>
         event EventHandler<PreviewRemoveFeatureEventArgs> PreviewRemoveFeature;
+
+        /// <summary>
+        /// Occurs when a feature is removed from the list.
+        /// </summary>
+        event EventHandler<FeatureEventArgs> FeatureRemoved;
 
         #endregion
 
@@ -61,8 +70,6 @@ namespace DotSpatial.Data
         /// <returns>The features as a List of IFeature.</returns>
         List<IFeature> ToList();
 
-        void Add(IEnumerable<IFeature> features);
-        void Remove(IEnumerable<IFeature> features);
         #endregion
     }
 }

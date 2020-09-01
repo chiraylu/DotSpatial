@@ -1025,31 +1025,25 @@ namespace DotSpatial.Controls
             g.TextRenderingHint = TextRenderingHint.AntiAlias;
             g.SmoothingMode = SmoothingMode.AntiAlias;
 
-            Action<ILabelCategory, int> drawFeature;
+            Action<ILabelCategory, IFeature> drawFeature;
             bool selected = false;
             switch (FeatureSet.FeatureType)
             {
                 case FeatureType.Polygon:
-                    drawFeature = (category, fid) =>
-                    {
-                        var feature = FeatureSet.GetFeature(fid);
-                        DrawPolygonFeature(e, g, feature, category, selected, ExistingLabels);
-                    };
+                    drawFeature = (category, feature) => DrawPolygonFeature(e, g, feature, category, selected, ExistingLabels);
                     break;
                 case FeatureType.Line:
-                    drawFeature = (category, fid) =>
+                    drawFeature = (category, feature) =>
                     {
-                        var symbolizer = FeatureLayer.GetCategory(fid).Symbolizer as ILineSymbolizer;
-                        var feature = FeatureSet.GetFeature(fid);
+                        var symbolizer = FeatureLayer.GetCategory(feature).Symbolizer as ILineSymbolizer;
                         DrawLineFeature(e, g, feature, category, selected, ExistingLabels, symbolizer);
                     };
                     break;
                 case FeatureType.Point:
                 case FeatureType.MultiPoint:
-                    drawFeature = (category, fid) =>
+                    drawFeature = (category, feature) =>
                     {
-                        var symbolizer = FeatureLayer.GetCategory(fid).Symbolizer as IPointSymbolizer;
-                        var feature = FeatureSet.GetFeature(fid);
+                        var symbolizer = FeatureLayer.GetCategory(feature).Symbolizer as IPointSymbolizer;
                         DrawPointFeature(e, g, feature, category, selected, ExistingLabels, symbolizer);
                     };
                     break;
@@ -1098,7 +1092,8 @@ namespace DotSpatial.Controls
                 foreach (var fid in catFeatures)
                 {
                     if (!FeatureLayer.DrawnStates[fid].Visible) continue;
-                    drawFeature(category, fid);
+                    var feature = FeatureSet.GetFeature(fid);
+                    drawFeature(category, feature);
                 }
             }
 
