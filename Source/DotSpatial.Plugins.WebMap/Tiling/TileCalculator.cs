@@ -135,11 +135,21 @@ namespace DotSpatial.Plugins.WebMap.Tiling
         /// </summary>
         /// <param name="latitude">Latitude (in degrees) at which to measure the ground resolution.</param>
         /// <param name="levelOfDetail">Level of detail, from 1 (lowest detail) to 23 (highest detail).</param>
-        /// <returns>The ground resolution, in meters per pixel.</returns>
-        public static double GroundResolution(double latitude, int levelOfDetail)
+        /// <param name="useDegrees">Whether use degrees</param>
+        /// <returns>The ground resolution, in meters or degrees per pixel.</returns>
+        public static double GroundResolution(double latitude, int levelOfDetail, bool useDegrees = false)
         {
             latitude = Clip(latitude, MinLatitude, MaxLatitude);
-            return Math.Cos(latitude * Math.PI / 180) * 2 * Math.PI * EarthRadiusKms / MapSize(levelOfDetail);
+            var ret = Math.Cos(latitude * Math.PI / 180) / MapSize(levelOfDetail);
+            if (useDegrees)
+            {
+                ret *= 360;
+            }
+            else
+            {
+                ret *= 2 * Math.PI * EarthRadiusKms;
+            }
+            return ret;
         }
 
         /// <summary>

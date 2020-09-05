@@ -90,7 +90,7 @@ namespace DotSpatial.Plugins.WebMap
                 Extent extent = WebMapExtent;
                 if (TileManager.ServiceProvider.Projection?.Equals(Map.Projection) == false)
                 {
-                    extent = GetReprojectedExtent(WebMapExtent, TileManager.ServiceProvider.Projection, Map.Projection);
+                    extent = WebMapExtent.Reproject(TileManager.ServiceProvider.Projection, Map.Projection);
                 }
                 return extent;
             }
@@ -242,29 +242,7 @@ namespace DotSpatial.Plugins.WebMap
             destRect.Height = (int)Math.Ceiling((ymax - ymin) * dy);
             return destRect;
         }
-        private Extent GetReprojectedExtent(Extent extent, ProjectionInfo srcProjection, ProjectionInfo destProjection)
-        {
-            Extent destExtent = CloneableEm.Copy(extent);
-            if (extent == null || srcProjection == null || destProjection == null || srcProjection.Equals(destProjection))
-            {
-                return destExtent;
-            }
-            var xmin = extent.MinX;
-            var xmax = extent.MaxX;
-            var ymin = extent.MinY;
-            var ymax = extent.MaxY;
-            double[] z = { 0, 0 };
-            Envelope geogEnv = new Envelope(xmin, xmax, ymin, ymax);
 
-            var mapVertices = new[] { xmin, ymax, xmax, ymin };
-            Projections.Reproject.ReprojectPoints(mapVertices, z, srcProjection, destProjection, 0, mapVertices.Length / 2);
-            geogEnv = new Envelope(mapVertices[0], mapVertices[2], mapVertices[1], mapVertices[3]);
-            destExtent.MinX = mapVertices[0];
-            destExtent.MinY = mapVertices[3];
-            destExtent.MaxX = mapVertices[2];
-            destExtent.MaxY = mapVertices[1];
-            return destExtent;
-        }
         private InRamImageData GetImageData(Extent extent, Rectangle rectangle, Func<int, bool> bwProgress)
         {
             InRamImageData tileImage = null;
@@ -296,7 +274,7 @@ namespace DotSpatial.Plugins.WebMap
                         ymax = TileCalculator.Clip(ymax, TileCalculator.MinWebMercY, TileCalculator.MaxWebMercY);
                         rectangle = GetRectangle(mapViewExtent, rectangle, xmin, ymin, xmax, ymax);
                         var clipExtent = new Extent(xmin, ymin, xmax, ymax);
-                        geogEnv = GetReprojectedExtent(clipExtent, Map.Projection, ServiceProviderFactory.Wgs84Proj.Value).ToEnvelope();
+                        geogEnv = clipExtent.Reproject(Map.Projection, ServiceProviderFactory.Wgs84Proj.Value).ToEnvelope();
                         if (bwProgress?.Invoke(25) == false) return tileImage;
                     }
                     else if (Map.Projection.Equals(ServiceProviderFactory.Wgs84Proj.Value))
@@ -326,7 +304,7 @@ namespace DotSpatial.Plugins.WebMap
                         if (TileManager.ServiceProvider.Projection?.Equals(ServiceProviderFactory.WebMercProj.Value) == true)
                         {
                             var tileExtent = new Extent(tiles.TopLeftTile.MinX, tiles.BottomRightTile.MinY, tiles.BottomRightTile.MaxX, tiles.TopLeftTile.MaxY);
-                            bmpExtent = GetReprojectedExtent(tileExtent, ServiceProviderFactory.Wgs84Proj.Value, ServiceProviderFactory.WebMercProj.Value);
+                            bmpExtent = tileExtent.Reproject(ServiceProviderFactory.Wgs84Proj.Value, ServiceProviderFactory.WebMercProj.Value);
                         }
 
                         tileImage = new InRamImageData(stitchedBasemap)
@@ -344,7 +322,7 @@ namespace DotSpatial.Plugins.WebMap
                     else if (Map.Projection.Equals(ServiceProviderFactory.Wgs84Proj.Value) == true)
                     {
                         var tileExtent = new Extent(tiles.TopLeftTile.MinX, tiles.BottomRightTile.MinY, tiles.BottomRightTile.MaxX, tiles.TopLeftTile.MaxY);
-                        bmpExtent = GetReprojectedExtent(tileExtent, ServiceProviderFactory.Wgs84Proj.Value, ServiceProviderFactory.WebMercProj.Value);
+                        bmpExtent = tileExtent.Reproject(ServiceProviderFactory.Wgs84Proj.Value, ServiceProviderFactory.WebMercProj.Value);
                         tileImage = new InRamImageData(stitchedBasemap)
                         {
                             Name = WebMapName,
