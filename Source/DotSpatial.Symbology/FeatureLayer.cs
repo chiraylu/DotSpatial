@@ -1096,7 +1096,7 @@ namespace DotSpatial.Symbology
             {
                 if (DrawingFilter.DrawnStates.ContainsKey(feature))
                 {
-                    DrawingFilter.DrawnStates[feature].SchemeCategory = category;
+                    DrawingFilter.DrawnStates[feature].SchemeCategory = category; 
                 }
             }
             else

@@ -38,7 +38,7 @@ namespace DotSpatial.Plugins.ShapeEditor
         /// <summary>
         /// Gets or sets a value of Snap mode.
         /// </summary>
-        public SnapMode SnapMode { get; set; }
+        public virtual SnapMode SnapMode { get; set; }
 
         /// <summary>
         /// Gets or sets SnapInfo
@@ -330,7 +330,7 @@ namespace DotSpatial.Plugins.ShapeEditor
         {
             if (snapMode != SnapMode.None)
             {
-                Rectangle invalid = new Rectangle((int)(pos.X - SnapTol - SnapPen.Width), (int)(pos.Y - SnapTol - SnapPen.Width),(int)(SnapTol + SnapPen.Width) * 2, (int)((SnapTol + SnapPen.Width) * 2));
+                Rectangle invalid = new Rectangle((int)(pos.X - SnapTol - SnapPen.Width), (int)(pos.Y - SnapTol - SnapPen.Width), (int)(SnapTol + SnapPen.Width) * 2, (int)((SnapTol + SnapPen.Width) * 2));
                 Map.Invalidate(invalid);
             }
         }
