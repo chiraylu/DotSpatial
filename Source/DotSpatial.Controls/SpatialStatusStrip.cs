@@ -214,7 +214,13 @@ namespace DotSpatial.Controls
         private void UpdateProgress(int percent, string message)
         {
             if (ProgressBar != null)
+            {
+                if (ProgressBar.IsDisposed)
+                {
+                    return;
+                }
                 ProgressBar.Value = percent;
+            }
             if (ProgressLabel != null)
                 ProgressLabel.Text = message;
             Refresh();

@@ -11,7 +11,7 @@ namespace DotSpatial.Symbology
     /// <summary>
     /// Interface for pattern.
     /// </summary>
-    public interface IPattern : ICloneable, IChangeItem
+    public interface IPattern : IDescriptor, ICloneable, IChangeItem
     {
         #region Properties
 
