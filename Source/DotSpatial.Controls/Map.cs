@@ -1386,6 +1386,7 @@ namespace DotSpatial.Controls
             using (var stencil = new Bitmap(clip.Width, clip.Height, PixelFormat.Format32bppArgb))
             using (var g = Graphics.FromImage(stencil))
             {
+                g.Clip = new Region(new Rectangle(0, 0, clip.Width, clip.Height));
                 using (var b = new SolidBrush(BackColor))
                     g.FillRectangle(b, new Rectangle(0, 0, stencil.Width, stencil.Height));
 
