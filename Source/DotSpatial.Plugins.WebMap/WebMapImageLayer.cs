@@ -8,6 +8,7 @@ using System.Drawing.Imaging;
 using System.Linq;
 using DotSpatial.Controls;
 using DotSpatial.Data;
+using DotSpatial.Data.Rasters.GdalExtension;
 using DotSpatial.Plugins.WebMap.Properties;
 using DotSpatial.Plugins.WebMap.Tiling;
 using DotSpatial.Projections;
@@ -243,9 +244,9 @@ namespace DotSpatial.Plugins.WebMap
             return destRect;
         }
 
-        private InRamImageData GetImageData(Extent extent, Rectangle rectangle, Func<int, bool> bwProgress)
+        private IImageData GetImageData(Extent extent, Rectangle rectangle, Func<int, bool> bwProgress)
         {
-            InRamImageData tileImage = null;
+            IImageData tileImage = null;
             if (Map != null)
             {
                 Extent mapViewExtent = extent.Clone() as Extent;
@@ -307,6 +308,10 @@ namespace DotSpatial.Plugins.WebMap
                             bmpExtent = tileExtent.Reproject(ServiceProviderFactory.Wgs84Proj.Value, ServiceProviderFactory.WebMercProj.Value);
                         }
 
+                        //tileImage = new GdalImage(stitchedBasemap, TileManager.ServiceProvider.Projection, bmpExtent)
+                        //{
+                        //    Name = WebMapName
+                        //};
                         tileImage = new InRamImageData(stitchedBasemap)
                         {
                             Name = WebMapName,
@@ -323,6 +328,10 @@ namespace DotSpatial.Plugins.WebMap
                     {
                         var tileExtent = new Extent(tiles.TopLeftTile.MinX, tiles.BottomRightTile.MinY, tiles.BottomRightTile.MaxX, tiles.TopLeftTile.MaxY);
                         bmpExtent = tileExtent.Reproject(ServiceProviderFactory.Wgs84Proj.Value, ServiceProviderFactory.WebMercProj.Value);
+                        //tileImage = new GdalImage(stitchedBasemap, TileManager.ServiceProvider.Projection, bmpExtent)
+                        //{
+                        //    Name = WebMapName
+                        //};
                         tileImage = new InRamImageData(stitchedBasemap)
                         {
                             Name = WebMapName,

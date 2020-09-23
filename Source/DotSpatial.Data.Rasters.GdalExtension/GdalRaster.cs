@@ -446,72 +446,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                 }
             }
         }
-        private unsafe Bitmap GetBitmap(int width, int height, byte[] rBuffer, byte[] gBuffer, byte[] bBuffer, byte[] aBuffer = null)
-        {
-            if (width <= 0 || height <= 0)
-            {
-                return null;
-            }
-            Bitmap result = new Bitmap(width, height, PixelFormat.Format32bppArgb);
-            BitmapData bData = result.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
-            byte* scan0 = (byte*)bData.Scan0;
-            int stride = bData.Stride;
-            int dWidth = stride - width * 4;
-            int ptrIndex = -1;
-            int bufferIndex = -1;
-            if (aBuffer == null)
-            {
-                for (int row = 0; row < height; row++)
-                {
-                    ptrIndex = row * stride;
-                    bufferIndex = row * width;
-                    for (int col = 0; col < width; col++)
-                    {
-                        byte bValue = bBuffer[bufferIndex];
-                        byte gValue = gBuffer[bufferIndex];
-                        byte rValue = rBuffer[bufferIndex];
-                        byte aValue = 255;
-                        if (rValue == NoDataValue || gValue == NoDataValue || bValue == NoDataValue)
-                        {
-                            aValue = 0;
-                        }
-                        scan0[ptrIndex] = bValue;
-                        scan0[ptrIndex + 1] = gValue;
-                        scan0[ptrIndex + 2] = rValue;
-                        scan0[ptrIndex + 3] = aValue;
-                        ptrIndex += 4;
-                        bufferIndex++;
-                    }
-                }
-            }
-            else
-            {
-                for (int row = 0; row < height; row++)
-                {
-                    ptrIndex = row * stride;
-                    bufferIndex = row * width;
-                    for (int col = 0; col < width; col++)
-                    {
-                        byte bValue = bBuffer[bufferIndex];
-                        byte gValue = gBuffer[bufferIndex];
-                        byte rValue = rBuffer[bufferIndex];
-                        byte aValue = aBuffer[bufferIndex];
-                        if (rValue == NoDataValue || gValue == NoDataValue || bValue == NoDataValue)
-                        {
-                            aValue = 0;
-                        }
-                        scan0[ptrIndex] = bValue;
-                        scan0[ptrIndex + 1] = gValue;
-                        scan0[ptrIndex + 2] = rValue;
-                        scan0[ptrIndex + 3] = aValue;
-                        ptrIndex += 4;
-                        bufferIndex++;
-                    }
-                }
-            }
-            result.UnlockBits(bData);
-            return result;
-        }
+
         private Bitmap ReadGrayIndex(int xOffset, int yOffset, int xSize, int ySize)
         {
             Band firstBand;
@@ -525,14 +460,13 @@ namespace DotSpatial.Data.Rasters.GdalExtension
             {
                 firstBand = _band;
             }
-            int width, height;
-            GdalImage.NormalizeSizeToBand(xOffset, yOffset, xSize, ySize, firstBand, out width, out height);
-            byte[] rBuffer = GdalImage.ReadBand(firstBand, xOffset, yOffset, xSize, ySize, width, height);
+            GdalImage.NormalizeSizeToBand(xOffset, yOffset, xSize, ySize, firstBand, out int width, out int height);
+            byte[] rBuffer = firstBand.ReadBand(xOffset, yOffset, width, height, width, height);
             if (disposeBand)
             {
                 firstBand.Dispose();
             }
-            Bitmap result = GetBitmap(width, height, rBuffer, rBuffer, rBuffer);
+            Bitmap result = GdalExtensions.GetBitmap(width, height, rBuffer, rBuffer, rBuffer, noDataValue: NoDataValue);
             rBuffer = null;
             return result;
         }
@@ -560,18 +494,17 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                 bBand = (Bands[2] as GdalRaster<T>)._band;
             }
 
-            int width, height;
-            GdalImage.NormalizeSizeToBand(xOffset, yOffset, xSize, ySize, rBand, out width, out height);
-            byte[] rBuffer = GdalImage.ReadBand(rBand, xOffset, yOffset, xSize, ySize, width, height);
-            byte[] gBuffer = GdalImage.ReadBand(gBand, xOffset, yOffset, xSize, ySize, width, height);
-            byte[] bBuffer = GdalImage.ReadBand(bBand, xOffset, yOffset, xSize, ySize, width, height);
+            GdalImage.NormalizeSizeToBand(xOffset, yOffset, xSize, ySize, rBand, out int width, out int height);
+            byte[] rBuffer = rBand.ReadBand(xOffset, yOffset, width, height, width, height);
+            byte[] gBuffer = gBand.ReadBand(xOffset, yOffset, width, height, width, height);
+            byte[] bBuffer = bBand.ReadBand(xOffset, yOffset, width, height, width, height);
             if (disposeBand)
             {
                 rBand.Dispose();
                 gBand.Dispose();
                 bBand.Dispose();
             }
-            Bitmap result = GetBitmap(width, height, rBuffer, gBuffer, bBuffer);
+            Bitmap result = GdalExtensions.GetBitmap(width, height, rBuffer, gBuffer, bBuffer, noDataValue: NoDataValue);
             rBuffer = null;
             gBuffer = null;
             bBuffer = null;
@@ -605,12 +538,11 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                 bBand = (Bands[3] as GdalRaster<T>)._band;
             }
 
-            int width, height;
-            GdalImage.NormalizeSizeToBand(xOffset, yOffset, xSize, ySize, rBand, out width, out height);
-            byte[] aBuffer = GdalImage.ReadBand(aBand, xOffset, yOffset, xSize, ySize, width, height);
-            byte[] rBuffer = GdalImage.ReadBand(rBand, xOffset, yOffset, xSize, ySize, width, height);
-            byte[] gBuffer = GdalImage.ReadBand(gBand, xOffset, yOffset, xSize, ySize, width, height);
-            byte[] bBuffer = GdalImage.ReadBand(bBand, xOffset, yOffset, xSize, ySize, width, height);
+            GdalImage.NormalizeSizeToBand(xOffset, yOffset, xSize, ySize, rBand, out int width, out int height);
+            byte[] aBuffer = aBand.ReadBand(xOffset, yOffset, width, height, width, height);
+            byte[] rBuffer = rBand.ReadBand(xOffset, yOffset, width, height, width, height);
+            byte[] gBuffer = gBand.ReadBand(xOffset, yOffset, width, height, width, height);
+            byte[] bBuffer = bBand.ReadBand(xOffset, yOffset, width, height, width, height);
             if (disposeBand)
             {
                 aBand.Dispose();
@@ -618,7 +550,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                 gBand.Dispose();
                 bBand.Dispose();
             }
-            Bitmap result = GetBitmap(width, height, rBuffer, gBuffer, bBuffer, aBuffer);
+            Bitmap result = GdalExtensions.GetBitmap(width, height, rBuffer, gBuffer, bBuffer, aBuffer, NoDataValue);
             rBuffer = null;
             gBuffer = null;
             bBuffer = null;
@@ -653,12 +585,11 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                 aBand = (Bands[3] as GdalRaster<T>)._band;
             }
 
-            int width, height;
-            GdalImage.NormalizeSizeToBand(xOffset, yOffset, xSize, ySize, rBand, out width, out height);
-            byte[] aBuffer = GdalImage.ReadBand(aBand, xOffset, yOffset, xSize, ySize, width, height);
-            byte[] rBuffer = GdalImage.ReadBand(rBand, xOffset, yOffset, xSize, ySize, width, height);
-            byte[] gBuffer = GdalImage.ReadBand(gBand, xOffset, yOffset, xSize, ySize, width, height);
-            byte[] bBuffer = GdalImage.ReadBand(bBand, xOffset, yOffset, xSize, ySize, width, height);
+            GdalImage.NormalizeSizeToBand(xOffset, yOffset, xSize, ySize, rBand, out int width, out int height);
+            byte[] aBuffer = aBand.ReadBand(xOffset, yOffset, width, height, width, height);
+            byte[] rBuffer = rBand.ReadBand(xOffset, yOffset, width, height, width, height);
+            byte[] gBuffer = gBand.ReadBand(xOffset, yOffset, width, height, width, height);
+            byte[] bBuffer = bBand.ReadBand(xOffset, yOffset, width, height, width, height);
             if (disposeBand)
             {
                 aBand.Dispose();
@@ -666,7 +597,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                 gBand.Dispose();
                 bBand.Dispose();
             }
-            Bitmap result = GetBitmap(width, height, rBuffer, gBuffer, bBuffer, aBuffer);
+            Bitmap result = GdalExtensions.GetBitmap(width, height, rBuffer, gBuffer, bBuffer, aBuffer, NoDataValue);
             rBuffer = null;
             gBuffer = null;
             bBuffer = null;
@@ -709,9 +640,8 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                 firstBand = _band;
             }
 
-            int width, height;
-            GdalImage.NormalizeSizeToBand(xOffset, yOffset, xSize, ySize, firstBand, out width, out height);
-            byte[] indexBuffer = GdalImage.ReadBand(firstBand, xOffset, yOffset, xSize, ySize, width, height);
+            GdalImage.NormalizeSizeToBand(xOffset, yOffset, xSize, ySize, firstBand, out int width, out int height);
+            byte[] indexBuffer = firstBand.ReadBand(xOffset, yOffset, width, height, width, height);
             if (disposeBand)
             {
                 firstBand.Dispose();
@@ -728,7 +658,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                 gBuffer[i] = colorTable[index][2];
                 bBuffer[i] = colorTable[index][3];
             }
-            Bitmap result = GetBitmap(width, height, rBuffer, gBuffer, gBuffer, aBuffer);
+            Bitmap result = GdalExtensions.GetBitmap(width, height, rBuffer, gBuffer, gBuffer, aBuffer, NoDataValue);
             rBuffer = null;
             gBuffer = null;
             bBuffer = null;

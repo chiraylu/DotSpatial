@@ -23,22 +23,23 @@ namespace DotSpatial.Data.Rasters.GdalExtension
         public static Dataset Open(string fileName)
         {
             Dataset dataset = null;
-            if (File.Exists(fileName))
+            if (string.IsNullOrEmpty(fileName))
+            {
+                return dataset;
+            }
+            try
+            {
+                dataset = Gdal.Open(fileName, Access.GA_Update);
+            }
+            catch
             {
                 try
                 {
-                    dataset = Gdal.Open(fileName, Access.GA_Update);
+                    dataset = Gdal.Open(fileName, Access.GA_ReadOnly);
                 }
-                catch
+                catch (Exception ex)
                 {
-                    try
-                    {
-                        dataset = Gdal.Open(fileName, Access.GA_ReadOnly);
-                    }
-                    catch (Exception ex)
-                    {
-                        throw new GdalException(ex.ToString());
-                    }
+                    throw new GdalException(ex.ToString());
                 }
             }
             return dataset;

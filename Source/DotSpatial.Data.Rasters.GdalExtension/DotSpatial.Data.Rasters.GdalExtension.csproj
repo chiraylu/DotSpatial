@@ -127,6 +127,7 @@
     <Compile Include="MapSelfLoadPolygonLayer.cs" />
     <Compile Include="MarshalHelper.cs" />
     <Compile Include="MultiLayerDataSet.cs" />
+    <Compile Include="NumberExtensions.cs" />
     <Compile Include="OgrDataReader.cs" />
     <Compile Include="OgrDataProvider.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -6,8 +6,10 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
+using DotSpatial.Projections;
 using DotSpatial.Serialization;
 using OSGeo.GDAL;
 
@@ -18,9 +20,9 @@ namespace DotSpatial.Data.Rasters.GdalExtension
     /// </summary>
     public class GdalImage : ImageData
     {
+        static List<string> _memFiles;
         #region Fields
 
-        private static object _lockObj = new object();
         private Band _alpha;
         private Band _blue;
         private Dataset _dataset;
@@ -37,6 +39,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
         static GdalImage()
         {
             GdalConfiguration.ConfigureGdal();
+            _memFiles = new List<string>();
         }
 
         /// <summary>
@@ -53,7 +56,32 @@ namespace DotSpatial.Data.Rasters.GdalExtension
             };
             ReadHeader();
         }
-
+        private byte[] ImageToBuffer(Image image, ImageFormat imageFormat = null)
+        {
+            byte[] buffer = null;
+            if (imageFormat == null)
+            {
+                switch (image.PixelFormat)
+                {
+                    case PixelFormat.Format16bppArgb1555:
+                    case PixelFormat.Format32bppArgb:
+                    case PixelFormat.Format32bppPArgb:
+                    case PixelFormat.Format64bppArgb:
+                    case PixelFormat.Format64bppPArgb:
+                        imageFormat = ImageFormat.Png;
+                        break;
+                    default:
+                        imageFormat = ImageFormat.Jpeg;
+                        break;
+                }
+            }
+            using (MemoryStream ms = new MemoryStream())
+            {
+                image.Save(ms, imageFormat);
+                buffer = ms.GetBuffer();
+            }
+            return buffer;
+        }
         /// <summary>
         /// Initializes a new instance of the <see cref="GdalImage"/> class.
         /// </summary>
@@ -845,10 +873,10 @@ namespace DotSpatial.Data.Rasters.GdalExtension
             NormalizeSizeToBand(xOffset, yOffset, xSize, ySize, firstO, out width, out height);
             Bitmap result = new Bitmap(width, height, PixelFormat.Format32bppArgb);
 
-            byte[] a = ReadBand(firstO, xOffset, yOffset, xSize, ySize, width, height);
-            byte[] r = ReadBand(redO, xOffset, yOffset, xSize, ySize, width, height);
-            byte[] g = ReadBand(greenO, xOffset, yOffset, xSize, ySize, width, height);
-            byte[] b = ReadBand(blueO, xOffset, yOffset, xSize, ySize, width, height);
+            byte[] a = firstO.ReadBand(xOffset, yOffset, xSize, ySize, width, height);
+            byte[] r = redO.ReadBand(xOffset, yOffset, xSize, ySize, width, height);
+            byte[] g = greenO.ReadBand(xOffset, yOffset, xSize, ySize, width, height);
+            byte[] b = blueO.ReadBand(xOffset, yOffset, xSize, ySize, width, height);
 
             if (disposeO)
             {
@@ -883,198 +911,6 @@ namespace DotSpatial.Data.Rasters.GdalExtension
             result.UnlockBits(bData);
             return result;
         }
-        public static byte[] ReadBand(Band band, int xOffset, int yOffset, int xSize, int ySize, int width, int height)
-        {
-            int length = width * height;
-            byte[] buffer = new byte[length];
-            DataType dataType = band.DataType;
-            IntPtr bufferPtr = IntPtr.Zero;
-            // Percentage truncation
-            double minPercent = 0.5;
-            double maxPercent = 0.5;
-            band.GetMaximum(out double maxValue, out int hasvalue);
-            band.GetMinimum(out double minValue, out hasvalue);
-            double dValue = maxValue - minValue;
-            double highValue = maxValue - dValue * maxPercent / 100;
-            double lowValue = minValue + dValue * minPercent / 100;
-            double dValuePercent = highValue - lowValue;
-            lock (_lockObj)
-            {
-                switch (dataType)
-                {
-                    case DataType.GDT_Unknown:
-                        throw new Exception("Unknown datatype");
-                    case DataType.GDT_Byte:
-                        {
-                            byte[] tmpBuffer = new byte[length];
-                            bufferPtr = GCHandleHelper.GetIntPtr(tmpBuffer);
-                            band.ReadRaster(xOffset, yOffset, width, height, bufferPtr, width, height, dataType, 0, 0);
-                            for (int i = 0; i < length; i++)
-                            {
-                                var value = tmpBuffer[i];
-                                if (value >= highValue)
-                                {
-                                    buffer[i] = 255;
-                                }
-                                else if (value <= lowValue)
-                                {
-                                    buffer[i] = 0;
-                                }
-                                else
-                                {
-                                    buffer[i] = (byte)((value - lowValue) / dValuePercent * 255);
-                                }
-                            }
-                        }
-                        break;
-                    case DataType.GDT_UInt16:
-                        {
-                            ushort[] tmpBuffer = new ushort[length];
-                            bufferPtr = GCHandleHelper.GetIntPtr(tmpBuffer);
-                            band.ReadRaster(xOffset, yOffset, width, height, bufferPtr, width, height, dataType, 0, 0);
-                            for (int i = 0; i < length; i++)
-                            {
-                                var value = tmpBuffer[i];
-                                if (value >= highValue)
-                                {
-                                    buffer[i] = 255;
-                                }
-                                else if (value <= lowValue)
-                                {
-                                    buffer[i] = 0;
-                                }
-                                else
-                                {
-                                    buffer[i] = (byte)((value - lowValue) / dValuePercent * 255);
-                                }
-                            }
-                        }
-                        break;
-                    case DataType.GDT_Int16:
-                        {
-                            short[] tmpBuffer = new short[length];
-                            bufferPtr = GCHandleHelper.GetIntPtr(tmpBuffer);
-                            band.ReadRaster(xOffset, yOffset, width, height, bufferPtr, width, height, dataType, 0, 0);
-                            for (int i = 0; i < length; i++)
-                            {
-                                var value = tmpBuffer[i];
-                                if (value >= highValue)
-                                {
-                                    buffer[i] = 255;
-                                }
-                                else if (value <= lowValue)
-                                {
-                                    buffer[i] = 0;
-                                }
-                                else
-                                {
-                                    buffer[i] = (byte)((value - lowValue) / dValuePercent * 255);
-                                }
-                            }
-                        }
-                        break;
-                    case DataType.GDT_UInt32:
-                        {
-                            uint[] tmpBuffer = new uint[length];
-                            bufferPtr = GCHandleHelper.GetIntPtr(tmpBuffer);
-                            band.ReadRaster(xOffset, yOffset, width, height, bufferPtr, width, height, dataType, 0, 0);
-                            for (int i = 0; i < length; i++)
-                            {
-                                var value = tmpBuffer[i];
-                                if (value >= highValue)
-                                {
-                                    buffer[i] = 255;
-                                }
-                                else if (value <= lowValue)
-                                {
-                                    buffer[i] = 0;
-                                }
-                                else
-                                {
-                                    buffer[i] = (byte)((value - lowValue) / dValuePercent * 255);
-                                }
-                            }
-                        }
-                        break;
-                    case DataType.GDT_Int32:
-                        {
-                            int[] tmpBuffer = new int[length];
-                            bufferPtr = GCHandleHelper.GetIntPtr(tmpBuffer);
-                            band.ReadRaster(xOffset, yOffset, width, height, bufferPtr, width, height, dataType, 0, 0);
-                            for (int i = 0; i < length; i++)
-                            {
-                                var value = tmpBuffer[i];
-                                if (value >= highValue)
-                                {
-                                    buffer[i] = 255;
-                                }
-                                else if (value <= lowValue)
-                                {
-                                    buffer[i] = 0;
-                                }
-                                else
-                                {
-                                    buffer[i] = (byte)((value - lowValue) / dValuePercent * 255);
-                                }
-                            }
-                        }
-                        break;
-                    case DataType.GDT_Float32:
-                        {
-                            float[] tmpBuffer = new float[length];
-                            bufferPtr = GCHandleHelper.GetIntPtr(tmpBuffer);
-                            band.ReadRaster(xOffset, yOffset, width, height, bufferPtr, width, height, dataType, 0, 0);
-                            for (int i = 0; i < length; i++)
-                            {
-                                var value = tmpBuffer[i];
-                                if (value >= highValue)
-                                {
-                                    buffer[i] = 255;
-                                }
-                                else if (value <= lowValue)
-                                {
-                                    buffer[i] = 0;
-                                }
-                                else
-                                {
-                                    buffer[i] = (byte)((value - lowValue) / dValuePercent * 255);
-                                }
-                            }
-                        }
-                        break;
-                    case DataType.GDT_Float64:
-                        {
-                            double[] tmpBuffer = new double[length];
-                            bufferPtr = GCHandleHelper.GetIntPtr(tmpBuffer);
-                            band.ReadRaster(xOffset, yOffset, width, height, bufferPtr, width, height, dataType, 0, 0);
-                            for (int i = 0; i < length; i++)
-                            {
-                                var value = tmpBuffer[i];
-                                if (value >= highValue)
-                                {
-                                    buffer[i] = 255;
-                                }
-                                else if (value <= lowValue)
-                                {
-                                    buffer[i] = 0;
-                                }
-                                else
-                                {
-                                    buffer[i] = (byte)((value - lowValue) / dValuePercent * 255);
-                                }
-                            }
-                        }
-                        break;
-                    case DataType.GDT_CInt16:
-                    case DataType.GDT_CInt32:
-                    case DataType.GDT_CFloat32:
-                    case DataType.GDT_CFloat64:
-                    case DataType.GDT_TypeCount:
-                        throw new NotImplementedException();
-                }
-            }
-            return buffer;
-        }
 
         private Bitmap ReadGrayIndex(int xOffset, int yOffset, int xSize, int ySize, Band first)
         {
@@ -1095,7 +931,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
             NormalizeSizeToBand(xOffset, yOffset, xSize, ySize, firstO, out width, out height);
 
             Bitmap result = new Bitmap(width, height, PixelFormat.Format32bppArgb);
-            byte[] r = ReadBand(firstO, xOffset, yOffset, xSize, ySize, width, height);
+            byte[] r = firstO.ReadBand(xOffset, yOffset, xSize, ySize, width, height);
             if (disposeO)
             {
                 firstO.Dispose();
@@ -1239,9 +1075,9 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                 return null;
             }
             Bitmap result = new Bitmap(width, height, PixelFormat.Format32bppArgb);
-            byte[] r = ReadBand(firstO, xOffset, yOffset, xSize, ySize, width, height);
-            byte[] g = ReadBand(greenO, xOffset, yOffset, xSize, ySize, width, height);
-            byte[] b = ReadBand(blueO, xOffset, yOffset, xSize, ySize, width, height);
+            byte[] r = firstO.ReadBand(xOffset, yOffset, xSize, ySize, width, height);
+            byte[] g = greenO.ReadBand(xOffset, yOffset, xSize, ySize, width, height);
+            byte[] b = blueO.ReadBand(xOffset, yOffset, xSize, ySize, width, height);
 
             if (disposeO)
             {
