@@ -327,7 +327,10 @@ namespace DotSpatial.Plugins.WebMap
                     else if (Map.Projection.Equals(ServiceProviderFactory.Wgs84Proj.Value) == true)
                     {
                         var tileExtent = new Extent(tiles.TopLeftTile.MinX, tiles.BottomRightTile.MinY, tiles.BottomRightTile.MaxX, tiles.TopLeftTile.MaxY);
-                        bmpExtent = tileExtent.Reproject(ServiceProviderFactory.Wgs84Proj.Value, ServiceProviderFactory.WebMercProj.Value);
+                        if (TileManager.ServiceProvider.Projection?.Equals(ServiceProviderFactory.WebMercProj.Value) == true)
+                        {
+                            bmpExtent = tileExtent.Reproject(ServiceProviderFactory.Wgs84Proj.Value, ServiceProviderFactory.WebMercProj.Value);
+                        }
                         //tileImage = new GdalImage(stitchedBasemap, TileManager.ServiceProvider.Projection, bmpExtent)
                         //{
                         //    Name = WebMapName

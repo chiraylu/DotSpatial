@@ -2,6 +2,7 @@
 using System;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 
 namespace DotSpatial.Data.Rasters.GdalExtension
 {
@@ -62,7 +63,17 @@ namespace DotSpatial.Data.Rasters.GdalExtension
             return gtwrk;
         }
 
-
+        /// <summary>
+        /// 读取栅格块为字节数组（自动拉伸）
+        /// </summary>
+        /// <param name="band"></param>
+        /// <param name="xOffset"></param>
+        /// <param name="yOffset"></param>
+        /// <param name="xSize"></param>
+        /// <param name="ySize"></param>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <returns></returns>
         public static byte[] ReadBand(this Band band, int xOffset, int yOffset, int xSize, int ySize, int width, int height)
         {
             byte[] buffer = null;
@@ -176,6 +187,12 @@ namespace DotSpatial.Data.Rasters.GdalExtension
             }
             return buffer;
         }
+
+        /// <summary>
+        /// 根据数据类型查找对应类型
+        /// </summary>
+        /// <param name="dataType"></param>
+        /// <returns></returns>
         public static Type ToType(this DataType dataType)
         {
             Type type = null;
@@ -205,6 +222,12 @@ namespace DotSpatial.Data.Rasters.GdalExtension
             }
             return type;
         }
+
+        /// <summary>
+        /// 类型转数据类型
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public static DataType ToDataType(this Type type)
         {
             DataType dataType = DataType.GDT_Unknown;
@@ -298,6 +321,33 @@ namespace DotSpatial.Data.Rasters.GdalExtension
             }
             result.UnlockBits(bData);
             return result;
+        }
+
+        public static Dataset ToMemDataset(this Image image, string memPath = "/vsimem/inmemfile")
+        {
+            Dataset dataset = null;
+            if (image == null)
+            {
+                throw new Exception("image不能为空");
+            }
+            if (memPath?.StartsWith("/vsimem/") != true)
+            {
+                throw new Exception("memPath必须以“/vsimem/”开头");
+            }
+            byte[] buffer = null;
+            using (MemoryStream ms = new MemoryStream())
+            {
+                var format = image.RawFormat.ToString();
+                if (format.Contains("[ImageFormat:"))
+                {
+                    throw new Exception("image格式不正确");
+                }
+                image.Save(ms, image.RawFormat);
+                buffer = ms.GetBuffer();
+            }
+            Gdal.FileFromMemBuffer(memPath, buffer);
+            dataset = Gdal.Open(memPath, Access.GA_ReadOnly);
+            return dataset;
         }
     }
 }

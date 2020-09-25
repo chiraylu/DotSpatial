@@ -1111,6 +1111,5 @@ namespace DotSpatial.Data.Rasters.GdalExtension
         }
 
         #endregion
-
     }
 }
