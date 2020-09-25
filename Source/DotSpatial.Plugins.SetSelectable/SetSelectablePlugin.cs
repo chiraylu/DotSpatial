@@ -91,7 +91,7 @@ namespace DotSpatial.Plugins.SetSelectable
             App.Map.LayerAdded += MapLayerAdded;
             App.Map.MapFrame.LayerRemoved += MapLayerRemoved;
             if (App.Legend != null) App.Legend.OrderChanged += LegendOrderChanged;
-
+            _dgvSelection.Clear();
             foreach (IMapLayer layer in App.Map.Layers)
             {
                 AddLayer(layer);
@@ -150,7 +150,7 @@ namespace DotSpatial.Plugins.SetSelectable
         /// <param name="e">The event args.</param>
         private void MapLayerRemoved(object sender, LayerEventArgs e)
         {
-            _dgvSelection.RemoveLayer(e.Layer);
+            _dgvSelection.RemoveLayer(e.Layer); 
         }
 
         /// <summary>

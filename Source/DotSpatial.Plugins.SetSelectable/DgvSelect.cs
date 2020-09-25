@@ -55,7 +55,7 @@ namespace DotSpatial.Plugins.SetSelectable
                 ChangeDataSource();
             }
         }
-
+        
         /// <summary>
         /// Updates the datagridviews datasource and corrects the column order.
         /// </summary>
@@ -137,7 +137,18 @@ namespace DotSpatial.Plugins.SetSelectable
                 ChangeDataSource();
             }
         }
-
+        public void Clear()
+        {
+            if (_layers.Count > 0)
+            {
+                foreach (var item in _layers)
+                {
+                    item.Layer.SelectionChanged -= SelectionChanged;
+                }
+                _layers.Clear();
+                ChangeDataSource();
+            }
+        }
         /// <summary>
         /// Corrects the text in the datagridview, when the selection of a layer changes.
         /// </summary>
