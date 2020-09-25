@@ -124,17 +124,26 @@ namespace DotSpatial.Plugins.SetSelectable
         /// <param name="layer">Layer, that should be removed.</param>
         public void RemoveLayer(ILayer layer)
         {
-            IFeatureLayer mLayer = layer as IFeatureLayer;
-            if (mLayer != null)
+            if (layer is IGroup group)
             {
-                int index = _layers.FindIndex(f => ReferenceEquals(f.Layer, mLayer));
-                if (index > -1)
+                foreach (var featureLayer in group.GetAllFeatureLayers())
                 {
-                    mLayer.SelectionChanged -= SelectionChanged;
-                    _layers.RemoveAt(index);
+                    RemoveLayer(featureLayer);
                 }
+            }
+            else if(layer is IFeatureLayer mLayer)
+            {
+                if (mLayer != null)
+                {
+                    int index = _layers.FindIndex(f => ReferenceEquals(f.Layer, mLayer));
+                    if (index > -1)
+                    {
+                        mLayer.SelectionChanged -= SelectionChanged;
+                        _layers.RemoveAt(index);
+                    }
 
-                ChangeDataSource();
+                    ChangeDataSource();
+                }
             }
         }
         public void Clear()

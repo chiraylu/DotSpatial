@@ -74,14 +74,18 @@ namespace DotSpatial.Projections
 
             return affineResult;
         }
-        
+
         public static void ReprojectPoints(double[] xy, double[] z, ProjectionInfo source, ProjectionInfo dest, int startIndex, int numPoints)
         {
             ReprojectPoints(xy, z, source, 1.0, dest, 1.0, null, startIndex, numPoints);
         }
-        
+
         public static void ReprojectPoints(double[] xy, double[] z, ProjectionInfo source, double srcZtoMeter, ProjectionInfo dest, double dstZtoMeter, IDatumTransform idt, int startIndex, int numPoints)
         {
+            if (xy == null || source?.Equals(dest) == true || numPoints <= 0)
+            {
+                return;
+            }
             double toMeter = source.Unit.Meters;
 
             // Geocentric coordinates are centered at the core of the earth.  Z is up toward the north pole.
@@ -402,7 +406,7 @@ namespace DotSpatial.Projections
                 xy[i * 2] += lam0;
                 if (!source.Over)
                 {
-                    xy[i*2] = Adjlon(xy[i*2]);
+                    xy[i * 2] = Adjlon(xy[i * 2]);
                 }
                 if (source.Geoc && Math.Abs(Math.Abs(xy[i * 2 + 1]) - Math.PI / 2) > EPS)
                 {

@@ -37,9 +37,15 @@ namespace DotSpatial.Plugins.SetSelectable
             _dgvSelection = new DgvSelect();
             App.DockManager.Add(new DockablePanel("kSetSelectable", LocalizationStrings.PanelHeader, _dgvSelection, DockStyle.Left));
             App.SerializationManager.Deserializing += SerializationManagerDeserializing;
+            App.SerializationManager.NewProjectCreated += SerializationManager_NewProjectCreated;
             AttachLayerAddedEvents();
             App.Legend.UseLegendForSelection = false;
             base.Activate();
+        }
+
+        private void SerializationManager_NewProjectCreated(object sender, SerializingEventArgs e)
+        {
+            _dgvSelection.Clear();
         }
 
         /// <inheritdoc />
@@ -53,6 +59,7 @@ namespace DotSpatial.Plugins.SetSelectable
             }
 
             App.SerializationManager.Deserializing -= SerializationManagerDeserializing;
+            App.SerializationManager.NewProjectCreated -= SerializationManager_NewProjectCreated;
             DetachLayerAddedEvents();
             base.Deactivate();
         }
