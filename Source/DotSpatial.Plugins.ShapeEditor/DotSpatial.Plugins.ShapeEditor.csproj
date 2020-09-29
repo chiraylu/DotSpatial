@@ -265,6 +265,7 @@
     <Content Include="Readme.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <None Include="Resources\SaveAll.png" />
     <None Include="Resources\Save.png" />
   </ItemGroup>
   <ItemGroup>

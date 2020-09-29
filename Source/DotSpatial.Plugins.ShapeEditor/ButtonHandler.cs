@@ -147,6 +147,12 @@ namespace DotSpatial.Plugins.ShapeEditor
                 GroupCaption = "Shape Editor",
                 SmallImage = ShapeEditorResources.Save,
                 RootKey = HeaderControl.HomeRootItemKey
+            }); 
+            _header.Add(new SimpleActionItem(ShapeEditorMenuKey, "SaveAll", SaveAllButtonClick)
+            {
+                GroupCaption = "Shape Editor",
+                SmallImage = ShapeEditorResources.SaveAll,
+                RootKey = HeaderControl.HomeRootItemKey
             });
             _header.Add(new SimpleActionItem(ShapeEditorMenuKey, ShapeEditorResources.New, NewButtonClick)
             {
@@ -173,6 +179,15 @@ namespace DotSpatial.Plugins.ShapeEditor
                 SmallImage = ShapeEditorResources.SnappingIcon.ToBitmap(),
                 RootKey = HeaderControl.HomeRootItemKey
             });
+        }
+
+        private void SaveAllButtonClick(object sender, EventArgs e)
+        {
+            var featureLayers = Map.GetFeatureLayers();
+            foreach (var featureLayer in featureLayers)
+            {
+                featureLayer.DataSet.Save();
+            }
         }
 
         private void SaveButtonClick(object sender, EventArgs e)
