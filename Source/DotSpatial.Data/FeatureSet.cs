@@ -1312,11 +1312,6 @@ namespace DotSpatial.Data
         /// </param>
         public override void Reproject(ProjectionInfo targetProjection)
         {
-            int pointCount = Vertex.Length / 2;
-            if (Vertex.Length == 0 || Projection?.Equals(targetProjection) == true || pointCount == 0)
-            {
-                return;
-            }
             Projections.Reproject.ReprojectPoints(Vertex, Z, Projection, targetProjection, 0, Vertex.Length / 2);
             if (!IndexMode) UpdateCoordinates();
 
