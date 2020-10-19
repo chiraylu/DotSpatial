@@ -73,7 +73,6 @@ namespace DotSpatial.Plugins.WebMap.Tiling
                     var currEnv = GetTileEnvelope(x, y, zoom);
                     tileMatrix[x - topLeftTileXy.X, y - topLeftTileXy.Y] = GetTile(x, y, currEnv, zoom);
                 }));
-
             return new Tiles(
                 zoom,
                 tileMatrix,
