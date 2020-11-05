@@ -539,9 +539,9 @@ namespace DotSpatial.Controls
                 IFeatureLayer fl = lb.Item as IFeatureLayer;
                 if (fl != null)
                 {
-                    using (var layDialog = new LayerDialog(fl, new FeatureCategoryControl() { Dock= DockStyle.Fill}))
+                    using (var layDialog = new LayerDialog(fl, new FeatureCategoryControl() { Dock = DockStyle.Fill }))
                     {
-                        layDialog.ShowDialog(); 
+                        layDialog.ShowDialog();
                     }
                 }
 
@@ -677,7 +677,7 @@ namespace DotSpatial.Controls
                     {
                         // draw the line on the position the layer would be moved to
                         _dragTarget = boxOverLine;
-                        _previousLine = new Rectangle(left, boxOverLine.Bounds.Bottom, Width - left, 4);
+                        _previousLine = new Rectangle(left - ControlRectangle.Left, boxOverLine.Bounds.Bottom - ControlRectangle.Top, Width - left, 4);
                         Cursor = Cursors.Hand;
                         cursorHandled = true;
                         Invalidate(_previousLine);
@@ -1034,9 +1034,9 @@ namespace DotSpatial.Controls
                         if (!e.ItemBox.Item.LegendTextReadOnly)
                         {
                             // Edit via text box
-                            _editBox.Left = e.ItemBox.Textbox.Left;
+                            _editBox.Left = e.ItemBox.Textbox.Left - ControlRectangle.Left;
                             _editBox.Width = e.ItemBox.Textbox.Width + 10;
-                            _editBox.Top = e.ItemBox.Bounds.Top;
+                            _editBox.Top = e.ItemBox.Bounds.Top - ControlRectangle.Top;
                             _editBox.Height = e.ItemBox.Bounds.Height;
                             _editBox.SelectedText = e.ItemBox.Item.LegendText;
                             _editBox.Font = Font;

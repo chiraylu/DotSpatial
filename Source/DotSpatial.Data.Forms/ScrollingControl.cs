@@ -368,6 +368,42 @@ namespace DotSpatial.Data.Forms
             Invalidate();
         }
 
+        /// <inheritdoc/>
+        protected override void OnMouseWheel(MouseEventArgs e)
+        {
+            int oldValue = _scrVertical.Value;
+            int newValue = oldValue;
+            ScrollEventType type = ScrollEventType.EndScroll;
+            if (e.Delta > 0)
+            {
+                newValue = oldValue - (e.Delta / 120 * _scrVertical.SmallChange);
+                type = ScrollEventType.SmallDecrement;
+            }
+            else if (e.Delta < 0)
+            {
+                newValue = oldValue - (e.Delta / 120 * _scrVertical.SmallChange);
+                type = ScrollEventType.SmallIncrement;
+            }
+            else
+            {
+                type = ScrollEventType.EndScroll;
+            }
+
+            if (newValue >= _scrVertical.Maximum - _scrVertical.LargeChange + 1)
+            {
+                newValue = _scrVertical.Maximum - _scrVertical.LargeChange + 1;
+            }
+            else if (newValue <= _scrVertical.Minimum)
+            {
+                newValue = _scrVertical.Minimum;
+            }
+
+            _scrVertical.Value = newValue;
+            ScrollOrientation scroll = ScrollOrientation.VerticalScroll;
+            ScrollEventArgs arg = new ScrollEventArgs(type, oldValue, newValue, scroll);
+            ScrVerticalScroll(_scrVertical, arg);
+            base.OnMouseWheel(e);
+        }
         // Redraws the entire contents of the control, even if the clip rectangle is smaller.
         private void Initialize()
         {
