@@ -82,7 +82,6 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                 return buffer;
             }
             int length = width * height;
-            buffer = new byte[length];
             DataType dataType = band.DataType;
             IntPtr bufferPtr;
             // Percentage truncation
@@ -93,6 +92,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
             double dValue = maxValue - minValue;
             double highValue = maxValue - dValue * maxPercent / 100;
             double lowValue = minValue + dValue * minPercent / 100;
+            double factor = 255 / (highValue - lowValue); // 系数
             CPLErr err = CPLErr.CE_None;
             lock (_lockObj)
             {
@@ -102,13 +102,13 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                         throw new Exception("Unknown datatype");
                     case DataType.GDT_Byte:
                         {
-                            byte[] tmpBuffer = new byte[length];
-                            bufferPtr = GCHandleHelper.GetIntPtr(tmpBuffer);
+                            buffer = new byte[length];
+                            bufferPtr = GCHandleHelper.GetIntPtr(buffer);
                             err = band.ReadRaster(xOffset, yOffset, xSize, ySize, bufferPtr, width, height, dataType, 0, 0);
-                            for (int i = 0; i < length; i++)
-                            {
-                                buffer[i] = tmpBuffer[i].StretchToByteValue(highValue, lowValue);
-                            }
+                            //for (int i = 0; i < length; i++)
+                            //{
+                            //    buffer[i] = buffer[i].StretchToByteValue(highValue, lowValue, factor);//做拉伸时才需要
+                            //}
                         }
                         break;
                     case DataType.GDT_UInt16:
@@ -116,9 +116,10 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                             ushort[] tmpBuffer = new ushort[length];
                             bufferPtr = GCHandleHelper.GetIntPtr(tmpBuffer);
                             err = band.ReadRaster(xOffset, yOffset, xSize, ySize, bufferPtr, width, height, dataType, 0, 0);
+                            buffer = new byte[length];
                             for (int i = 0; i < length; i++)
                             {
-                                buffer[i] = tmpBuffer[i].StretchToByteValue(highValue, lowValue);
+                                buffer[i] = tmpBuffer[i].StretchToByteValue(highValue, lowValue, factor);
                             }
                         }
                         break;
@@ -127,9 +128,10 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                             short[] tmpBuffer = new short[length];
                             bufferPtr = GCHandleHelper.GetIntPtr(tmpBuffer);
                             err = band.ReadRaster(xOffset, yOffset, xSize, ySize, bufferPtr, width, height, dataType, 0, 0);
+                            buffer = new byte[length];
                             for (int i = 0; i < length; i++)
                             {
-                                buffer[i] = tmpBuffer[i].StretchToByteValue(highValue, lowValue);
+                                buffer[i] = tmpBuffer[i].StretchToByteValue(highValue, lowValue, factor);
                             }
                         }
                         break;
@@ -138,9 +140,10 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                             uint[] tmpBuffer = new uint[length];
                             bufferPtr = GCHandleHelper.GetIntPtr(tmpBuffer);
                             err = band.ReadRaster(xOffset, yOffset, xSize, ySize, bufferPtr, width, height, dataType, 0, 0);
+                            buffer = new byte[length];
                             for (int i = 0; i < length; i++)
                             {
-                                buffer[i] = tmpBuffer[i].StretchToByteValue(highValue, lowValue);
+                                buffer[i] = tmpBuffer[i].StretchToByteValue(highValue, lowValue, factor);
                             }
                         }
                         break;
@@ -149,9 +152,10 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                             int[] tmpBuffer = new int[length];
                             bufferPtr = GCHandleHelper.GetIntPtr(tmpBuffer);
                             err = band.ReadRaster(xOffset, yOffset, xSize, ySize, bufferPtr, width, height, dataType, 0, 0);
+                            buffer = new byte[length];
                             for (int i = 0; i < length; i++)
                             {
-                                buffer[i] = tmpBuffer[i].StretchToByteValue(highValue, lowValue);
+                                buffer[i] = tmpBuffer[i].StretchToByteValue(highValue, lowValue, factor);
                             }
                         }
                         break;
@@ -160,9 +164,10 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                             float[] tmpBuffer = new float[length];
                             bufferPtr = GCHandleHelper.GetIntPtr(tmpBuffer);
                             err = band.ReadRaster(xOffset, yOffset, xSize, ySize, bufferPtr, width, height, dataType, 0, 0);
+                            buffer = new byte[length];
                             for (int i = 0; i < length; i++)
                             {
-                                buffer[i] = tmpBuffer[i].StretchToByteValue(highValue, lowValue);
+                                buffer[i] = tmpBuffer[i].StretchToByteValue(highValue, lowValue, factor);
                             }
                         }
                         break;
@@ -171,9 +176,10 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                             double[] tmpBuffer = new double[length];
                             bufferPtr = GCHandleHelper.GetIntPtr(tmpBuffer);
                             err = band.ReadRaster(xOffset, yOffset, xSize, ySize, bufferPtr, width, height, dataType, 0, 0);
+                            buffer = new byte[length];
                             for (int i = 0; i < length; i++)
                             {
-                                buffer[i] = tmpBuffer[i].StretchToByteValue(highValue, lowValue);
+                                buffer[i] = tmpBuffer[i].StretchToByteValue(highValue, lowValue, factor);
                             }
                         }
                         break;

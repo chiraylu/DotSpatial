@@ -356,31 +356,16 @@ namespace DotSpatial.Data.Rasters.GdalExtension
 
             int blockXsize = 0, blockYsize = 0;
 
-            // get the optimal block size to request gdal.
-            // if the image is stored line by line then ask for a 100px stripe.
-            Action<Band> computeBlockSize = new Action<Band>((band) =>
-            {
-                int size = 256;
-                band.GetBlockSize(out blockXsize, out blockYsize);
-                if (blockYsize < size)
-                {
-                    blockYsize = Math.Min(size, band.YSize);
-                }
-                if (blockXsize < size)
-                {
-                    blockXsize = Math.Min(size, band.XSize);
-                }
-            });
             if (_overview >= 0 && _overviewCount > 0)
             {
                 using (var overview = _band.GetOverview(_overview))
                 {
-                    computeBlockSize(overview);
+                    ComputeBlockSize(overview, out blockXsize, out blockYsize); 
                 }
             }
             else
             {
-                computeBlockSize(_band);
+                ComputeBlockSize(_band, out blockXsize, out blockYsize);
             }
 
             int nbX, nbY;
@@ -444,6 +429,35 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                         Trace.WriteLine($"获取图片失败，文件:{FilePath},xOffset:{xOffsetI},yOffset:{yOffsetI},xSize:{xSize},ySize:{ySize}，异常：{e}");
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// 计算读取块大小
+        /// </summary>
+        /// <param name="band"></param>
+        /// <param name="blockXsize"></param>
+        /// <param name="blockYsize"></param>
+        private void ComputeBlockSize(Band band, out int blockXsize, out int blockYsize)
+        {
+            int minSize = 1024;
+            int maxSize = 4096;
+            band.GetBlockSize(out blockXsize, out blockYsize);
+            if (blockXsize > maxSize)
+            {
+                blockXsize = Math.Min(maxSize, blockXsize);
+            }
+            else if (blockXsize < minSize)
+            {
+                blockXsize = Math.Min(minSize, band.XSize);
+            }
+            if (blockYsize > maxSize)
+            {
+                blockYsize = Math.Min(maxSize, blockYsize);
+            }
+            else if (blockYsize < minSize)
+            {
+                blockYsize = Math.Min(minSize, band.YSize);
             }
         }
 
