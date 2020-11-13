@@ -228,7 +228,6 @@ namespace DotSpatial.Data.Rasters.GdalExtension
             }
             return type;
         }
-
         /// <summary>
         /// 类型转数据类型
         /// </summary>
@@ -251,77 +250,137 @@ namespace DotSpatial.Data.Rasters.GdalExtension
             return dataType;
         }
 
-        /// <summary>
-        /// 根据波段值获取图片
-        /// </summary>
-        /// <param name="width">宽度</param>
-        /// <param name="height">高度</param>
-        /// <param name="rBuffer">红色波段</param>
-        /// <param name="gBuffer">绿色波段</param>
-        /// <param name="bBuffer">蓝色波段</param>
-        /// <param name="aBuffer">透明波段</param>
-        /// <param name="noDataValue">无数据值</param>
-        /// <returns>图片</returns>
-        public static unsafe Bitmap GetBitmap(int width, int height, byte[] rBuffer, byte[] gBuffer, byte[] bBuffer, byte[] aBuffer = null, double noDataValue = 256)
+
+        public static void NormalizeSizeToBand(int rasterXSize, int rasterYSize, int xOffset, int yOffset, int xSize, int ySize, out int width, out int height)
         {
-            if (width <= 0 || height <= 0)
+            width = xSize;
+            height = ySize;
+
+            if (xOffset + width > rasterXSize)
+            {
+                width = rasterXSize - xOffset;
+            }
+
+            if (yOffset + height > rasterYSize)
+            {
+                height = rasterYSize - yOffset;
+            }
+        }
+        public static unsafe Bitmap GetBitmap(int width, int height, byte[] rBuffer, byte[] gBuffer, byte[] bBuffer, byte[] aBuffer = null, double? noDataValue = null)
+        {
+            Bitmap result = null;
+            int bufferLength = width * height;
+            if (width <= 0 || height <= 0 || rBuffer == null || rBuffer.Length != bufferLength || gBuffer == null || gBuffer.Length != bufferLength || bBuffer == null || bBuffer.Length != bufferLength)
             {
                 return null;
             }
-            Bitmap result = new Bitmap(width, height, PixelFormat.Format32bppArgb);
-            BitmapData bData = result.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
-            byte* scan0 = (byte*)bData.Scan0;
-            int stride = bData.Stride;
-            int dWidth = stride - width * 4;
-            int ptrIndex = -1;
-            int bufferIndex = -1;
+            PixelFormat pixelFormat;
+            int bytesPerPixel;
             if (aBuffer == null)
             {
-                for (int row = 0; row < height; row++)
+                if (noDataValue.HasValue && noDataValue.Value >= byte.MinValue && noDataValue.Value <= byte.MaxValue)
                 {
-                    ptrIndex = row * stride;
-                    bufferIndex = row * width;
-                    for (int col = 0; col < width; col++)
+                    pixelFormat = PixelFormat.Format32bppArgb;
+                    bytesPerPixel = 4;
+                }
+                else
+                {
+                    pixelFormat = PixelFormat.Format24bppRgb;
+                    bytesPerPixel = 3;
+                }
+            }
+            else
+            {
+                pixelFormat = PixelFormat.Format32bppArgb;
+                bytesPerPixel = 4;
+            }
+            result = new Bitmap(width, height, pixelFormat);
+            BitmapData bData = result.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.ReadWrite, pixelFormat);
+            byte* scan0 = (byte*)bData.Scan0;
+            int stride = bData.Stride;
+            int dWidth = stride - width * bytesPerPixel;
+            int ptrIndex =0;
+            int bufferIndex = 0;
+            if (aBuffer == null)
+            {
+                if (noDataValue.HasValue && noDataValue.Value >= byte.MinValue && noDataValue.Value <= byte.MaxValue)
+                {
+                    for (int row = 0; row < height; row++)
                     {
-                        byte bValue = bBuffer[bufferIndex];
-                        byte gValue = gBuffer[bufferIndex];
-                        byte rValue = rBuffer[bufferIndex];
-                        byte aValue = 255;
-                        if (rValue == noDataValue || gValue == noDataValue || bValue == noDataValue)
+                        for (int col = 0; col < width; col++)
                         {
-                            aValue = 0;
+                            scan0[ptrIndex] = bBuffer[bufferIndex];
+                            scan0[ptrIndex + 1] = gBuffer[bufferIndex];
+                            scan0[ptrIndex + 2] = rBuffer[bufferIndex];
+                            if (rBuffer[bufferIndex] == noDataValue.Value || gBuffer[bufferIndex] == noDataValue.Value || bBuffer[bufferIndex] == noDataValue.Value)
+                            {
+                                scan0[ptrIndex + 3] = 0;
+                            }
+                            else
+                            {
+                                scan0[ptrIndex + 3] = 255;
+                            }
+                            ptrIndex += bytesPerPixel;
+                            bufferIndex++;
                         }
-                        scan0[ptrIndex] = bValue;
-                        scan0[ptrIndex + 1] = gValue;
-                        scan0[ptrIndex + 2] = rValue;
-                        scan0[ptrIndex + 3] = aValue;
-                        ptrIndex += 4;
-                        bufferIndex++;
+                        ptrIndex += dWidth;
+                    }
+                }
+                else
+                {
+                    for (int row = 0; row < height; row++)
+                    {
+                        for (int col = 0; col < width; col++)
+                        {
+                            scan0[ptrIndex] = bBuffer[bufferIndex];
+                            scan0[ptrIndex + 1] = gBuffer[bufferIndex];
+                            scan0[ptrIndex + 2] = rBuffer[bufferIndex];
+                            ptrIndex += bytesPerPixel;
+                            bufferIndex++;
+                        }
+                        ptrIndex += dWidth;
                     }
                 }
             }
             else
             {
-                for (int row = 0; row < height; row++)
+                if (noDataValue.HasValue && noDataValue.Value >= byte.MinValue && noDataValue.Value <= byte.MaxValue)
                 {
-                    ptrIndex = row * stride;
-                    bufferIndex = row * width;
-                    for (int col = 0; col < width; col++)
+                    for (int row = 0; row < height; row++)
                     {
-                        byte bValue = bBuffer[bufferIndex];
-                        byte gValue = gBuffer[bufferIndex];
-                        byte rValue = rBuffer[bufferIndex];
-                        byte aValue = aBuffer[bufferIndex];
-                        if (rValue == noDataValue && gValue == noDataValue && bValue == noDataValue)
+                        for (int col = 0; col < width; col++)
                         {
-                            aValue = 0;
+                            scan0[ptrIndex] = bBuffer[bufferIndex];
+                            scan0[ptrIndex + 1] = gBuffer[bufferIndex];
+                            scan0[ptrIndex + 2] = rBuffer[bufferIndex];
+                            if (rBuffer[bufferIndex] == noDataValue.Value || gBuffer[bufferIndex] == noDataValue.Value || bBuffer[bufferIndex] == noDataValue.Value)
+                            {
+                                scan0[ptrIndex + 3] = 0;
+                            }
+                            else
+                            {
+                                scan0[ptrIndex + 3] = aBuffer[bufferIndex];
+                            }
+                            ptrIndex += bytesPerPixel;
+                            bufferIndex++;
                         }
-                        scan0[ptrIndex] = bValue;
-                        scan0[ptrIndex + 1] = gValue;
-                        scan0[ptrIndex + 2] = rValue;
-                        scan0[ptrIndex + 3] = aValue;
-                        ptrIndex += 4;
-                        bufferIndex++;
+                        ptrIndex += dWidth;
+                    }
+                }
+                else
+                {
+                    for (int row = 0; row < height; row++)
+                    {
+                        for (int col = 0; col < width; col++)
+                        {
+                            scan0[ptrIndex] = bBuffer[bufferIndex];
+                            scan0[ptrIndex + 1] = gBuffer[bufferIndex];
+                            scan0[ptrIndex + 2] = rBuffer[bufferIndex];
+                            scan0[ptrIndex + 3] = aBuffer[bufferIndex];
+                            ptrIndex += bytesPerPixel;
+                            bufferIndex++;
+                        }
+                        ptrIndex += dWidth;
                     }
                 }
             }
@@ -354,6 +413,275 @@ namespace DotSpatial.Data.Rasters.GdalExtension
             Gdal.FileFromMemBuffer(memPath, buffer);
             dataset = Gdal.Open(memPath, Access.GA_ReadOnly);
             return dataset;
+        }
+
+        /// <summary>
+        /// 按照BGR(A)顺序读取栅格并返回位图的字节数组
+        /// </summary>
+        /// <param name="dataset">栅格数据集</param>
+        /// <param name="xOffset">X偏移</param>
+        /// <param name="yOffset">Y偏移</param>
+        /// <param name="xSize">X宽度</param>
+        /// <param name="ySize">Y宽度</param>
+        /// <param name="width">位图长度</param>
+        /// <param name="height">位图宽度</param>
+        /// <param name="bandCount">波段数</param>
+        /// <param name="bandMap">波段映射</param>
+        /// <param name="pixelSpace">像素间隔</param>
+        /// <param name="lineSpace">行间隔</param>
+        /// <param name="bandSpace">波段间隔</param>
+        /// <param name="readABand">是否读取透明波段</param>
+        /// <returns>位图的字节数组</returns>
+        public static byte[] ReadBmpBytes(this Dataset dataset, int xOffset, int yOffset, int xSize, int ySize, int width, int height, int bandCount, int[] bandMap, int pixelSpace, int lineSpace, int bandSpace, bool readABand = false)
+        {
+            byte[] buffer = null;
+            if (dataset == null || xOffset < 0 || yOffset < 0 || xSize <= 0 || ySize <= 0 || width <= 0 || height <= 0 || dataset.RasterXSize < (xOffset + xSize) || dataset.RasterYSize < (yOffset + ySize))
+            {
+                return buffer;
+            }
+            int destBandCount;
+            if (readABand)
+            {
+                destBandCount = 4;
+            }
+            else
+            {
+                destBandCount = 3;
+            }
+            if (dataset.RasterCount < destBandCount || bandCount != destBandCount || bandMap?.Length != destBandCount)
+            {
+                return buffer;
+            }
+            int length = width * height * bandCount;
+            DataType dataType;
+            double maxValue, minValue;
+            using (var band = dataset.GetRasterBand(1))
+            {
+                dataType = band.DataType;
+                band.GetMaximum(out maxValue, out int hasvalue);
+                band.GetMinimum(out minValue, out hasvalue);
+            }
+            IntPtr bufferPtr;
+            // Percentage truncation
+            double minPercent = 0.5;
+            double maxPercent = 0.5;
+            double dValue = maxValue - minValue;
+            double highValue = maxValue - dValue * maxPercent / 100;
+            double lowValue = minValue + dValue * minPercent / 100;
+            double factor = 255 / (highValue - lowValue); // 系数
+            CPLErr err = CPLErr.CE_None;
+            lock (_lockObj)
+            {
+                switch (dataType)
+                {
+                    case DataType.GDT_Unknown:
+                        throw new Exception("Unknown datatype");
+                    case DataType.GDT_Byte:
+                        {
+                            buffer = new byte[length];
+                            bufferPtr = GCHandleHelper.GetIntPtr(buffer);
+                            err = dataset.ReadRaster(xOffset, yOffset, xSize, ySize, bufferPtr, width, height, dataType, bandCount, bandMap, pixelSpace, lineSpace, bandSpace);
+                            //for (int i = 0; i < length; i++)
+                            //{
+                            //    buffer[i] = buffer[i].StretchToByteValue(highValue, lowValue, factor);//做拉伸时才需要
+                            //}
+                        }
+                        break;
+                    case DataType.GDT_UInt16:
+                        {
+                            ushort[] tmpBuffer = new ushort[length];
+                            bufferPtr = GCHandleHelper.GetIntPtr(tmpBuffer);
+                            err = dataset.ReadRaster(xOffset, yOffset, xSize, ySize, bufferPtr, width, height, dataType, bandCount, bandMap, pixelSpace, lineSpace, bandSpace);
+                            buffer = new byte[length];
+                            for (int i = 0; i < length; i++)
+                            {
+                                buffer[i] = tmpBuffer[i].StretchToByteValue(highValue, lowValue, factor);
+                            }
+                        }
+                        break;
+                    case DataType.GDT_Int16:
+                        {
+                            short[] tmpBuffer = new short[length];
+                            bufferPtr = GCHandleHelper.GetIntPtr(tmpBuffer);
+                            err = dataset.ReadRaster(xOffset, yOffset, xSize, ySize, bufferPtr, width, height, dataType, bandCount, bandMap, pixelSpace, lineSpace, bandSpace);
+                            buffer = new byte[length];
+                            for (int i = 0; i < length; i++)
+                            {
+                                buffer[i] = tmpBuffer[i].StretchToByteValue(highValue, lowValue, factor);
+                            }
+                        }
+                        break;
+                    case DataType.GDT_UInt32:
+                        {
+                            uint[] tmpBuffer = new uint[length];
+                            bufferPtr = GCHandleHelper.GetIntPtr(tmpBuffer);
+                            err = dataset.ReadRaster(xOffset, yOffset, xSize, ySize, bufferPtr, width, height, dataType, bandCount, bandMap, pixelSpace, lineSpace, bandSpace);
+                            buffer = new byte[length];
+                            for (int i = 0; i < length; i++)
+                            {
+                                buffer[i] = tmpBuffer[i].StretchToByteValue(highValue, lowValue, factor);
+                            }
+                        }
+                        break;
+                    case DataType.GDT_Int32:
+                        {
+                            int[] tmpBuffer = new int[length];
+                            bufferPtr = GCHandleHelper.GetIntPtr(tmpBuffer);
+                            err = dataset.ReadRaster(xOffset, yOffset, xSize, ySize, bufferPtr, width, height, dataType, bandCount, bandMap, pixelSpace, lineSpace, bandSpace);
+                            buffer = new byte[length];
+                            for (int i = 0; i < length; i++)
+                            {
+                                buffer[i] = tmpBuffer[i].StretchToByteValue(highValue, lowValue, factor);
+                            }
+                        }
+                        break;
+                    case DataType.GDT_Float32:
+                        {
+                            float[] tmpBuffer = new float[length];
+                            bufferPtr = GCHandleHelper.GetIntPtr(tmpBuffer);
+                            err = dataset.ReadRaster(xOffset, yOffset, xSize, ySize, bufferPtr, width, height, dataType, bandCount, bandMap, pixelSpace, lineSpace, bandSpace);
+                            buffer = new byte[length];
+                            for (int i = 0; i < length; i++)
+                            {
+                                buffer[i] = tmpBuffer[i].StretchToByteValue(highValue, lowValue, factor);
+                            }
+                        }
+                        break;
+                    case DataType.GDT_Float64:
+                        {
+                            double[] tmpBuffer = new double[length];
+                            bufferPtr = GCHandleHelper.GetIntPtr(tmpBuffer);
+                            err = dataset.ReadRaster(xOffset, yOffset, xSize, ySize, bufferPtr, width, height, dataType, bandCount, bandMap, pixelSpace, lineSpace, bandSpace);
+                            buffer = new byte[length];
+                            for (int i = 0; i < length; i++)
+                            {
+                                buffer[i] = tmpBuffer[i].StretchToByteValue(highValue, lowValue, factor);
+                            }
+                        }
+                        break;
+                    case DataType.GDT_CInt16:
+                    case DataType.GDT_CInt32:
+                    case DataType.GDT_CFloat32:
+                    case DataType.GDT_CFloat64:
+                    case DataType.GDT_TypeCount:
+                        throw new NotImplementedException();
+                }
+            }
+            return buffer;
+        }
+        private static unsafe void BufferToScan0(BitmapData bData, int width, int height, int bytesPerPixel, byte[] bmpBuffer)
+        {
+            byte* scan0 = (byte*)bData.Scan0;
+            int stride = bData.Stride;
+            int dWidth = stride - width * bytesPerPixel;
+            int bufferIndex = 0;
+            for (int row = 0; row < height; row++)
+            {
+                for (int col = 0; col < width; col++)
+                {
+                    for (int i = 0; i < bytesPerPixel; i++)
+                    {
+                        scan0[i] = bmpBuffer[bufferIndex];
+                        bufferIndex++;
+                        scan0++;
+                    }
+                }
+                scan0 += dWidth;
+            }
+        }
+        private static unsafe void BufferToScan0(BitmapData bData, int width, int height, int bytesPerPixel, byte[] bmpBuffer, double noDataValue)
+        {
+            byte* scan0 = (byte*)bData.Scan0;
+            int stride = bData.Stride;
+            int dWidth = stride - width * bytesPerPixel;
+            int bufferIndex = 0;
+            for (int row = 0; row < height; row++)
+            {
+                for (int col = 0; col < width; col++)
+                {
+                    scan0[0] = bmpBuffer[bufferIndex];
+                    scan0[1] = bmpBuffer[bufferIndex + 1];
+                    scan0[2] = bmpBuffer[bufferIndex + 2];
+                    if (scan0[0] == noDataValue && scan0[1] == noDataValue && scan0[2] == noDataValue)
+                    {
+                        scan0[3] = 0;
+                    }
+                    else
+                    {
+                        //scan0[3] = bmpBuffer[bufferIndex + 3];
+                        scan0[3] = 255;
+                    }
+                    scan0 += bytesPerPixel;
+                    bufferIndex += 3;
+                }
+                scan0 += dWidth;
+            }
+        }
+        /// <summary>
+        /// 根据字节数组创建位图
+        /// </summary>
+        /// <param name="width">宽度</param>
+        /// <param name="height">高度</param>
+        /// <param name="bmpBuffer">位图字节数组</param>
+        /// <param name="hasABand">是否包含A波段</param>
+        /// <param name="noDataValue">无数据值</param>
+        /// <returns>位图</returns>
+        public static unsafe Bitmap GetBitmap(int width, int height, byte[] bmpBuffer, bool hasABand = false, double? noDataValue = null)
+        {
+            Bitmap result = null;
+            if (width <= 0 || height <= 0 || bmpBuffer == null)
+            {
+                return result;
+            }
+            int bandCount;//波段数
+            int bytesPerPixel;//单个像素的字节数
+            PixelFormat pixelFormat;
+            if (hasABand)
+            {
+                bandCount = 4;
+                bytesPerPixel = 4;
+                pixelFormat = PixelFormat.Format32bppArgb;
+            }
+            else
+            {
+                bandCount = 3;
+                if (noDataValue.HasValue && noDataValue >= byte.MinValue && noDataValue.Value <= byte.MaxValue)
+                {
+                    bytesPerPixel = 4;
+                    pixelFormat = PixelFormat.Format32bppArgb;
+                }
+                else
+                {
+                    bytesPerPixel = 3;
+                    pixelFormat = PixelFormat.Format24bppRgb;
+                }
+                bytesPerPixel = 4;
+                pixelFormat = PixelFormat.Format32bppArgb;
+            }
+            if (bmpBuffer.Length != width * height * bandCount)
+            {
+                return result;
+            }
+            result = new Bitmap(width, height, pixelFormat);
+            BitmapData bData = result.LockBits(new Rectangle(0, 0, width, height), ImageLockMode.ReadWrite, pixelFormat);
+
+            if (bytesPerPixel == 3)
+            {
+                BufferToScan0(bData, width, height, bytesPerPixel, bmpBuffer);
+            }
+            else
+            {
+                if (noDataValue.HasValue)
+                {
+                    BufferToScan0(bData, width, height, bytesPerPixel, bmpBuffer, noDataValue.Value);
+                }
+                else
+                {
+                    BufferToScan0(bData, width, height, bytesPerPixel, bmpBuffer);
+                }
+            }
+            result.UnlockBits(bData);
+            return result;
         }
     }
 }

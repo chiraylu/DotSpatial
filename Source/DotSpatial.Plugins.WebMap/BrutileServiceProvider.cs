@@ -63,13 +63,21 @@ namespace DotSpatial.Plugins.WebMap
         /// <returns>Null on error, otherwise the resulting bitmap.</returns>
         public override Bitmap GetBitmap(int x, int y, Envelope envelope, int zoom)
         {
-            var ts = TileSource;
-            if (ts == null) return null;
-
             Bitmap bitMap = null;
-            var extent = ToBrutileExtent(envelope);
-            var tileInfo = ts.Schema.GetTileInfos(extent, zoom).FirstOrDefault();
+            var ts = TileSource;
+            if (ts == null) return bitMap;
 
+            var extent = ToBrutileExtent(envelope);
+            TileInfo tileInfo;
+            try
+            {
+                tileInfo = ts.Schema.GetTileInfos(extent, zoom).FirstOrDefault();
+            }
+            catch(Exception e)
+            {
+                Debug.WriteLine($"未找到瓦片信息：{e}");
+                return bitMap;
+            }
             try
             {
                 var index = new TileIndex(x, y, zoom);
@@ -79,7 +87,7 @@ namespace DotSpatial.Plugins.WebMap
                 {
                     if (tileInfo == null)
                     {
-                        return null;
+                        return bitMap;
                     }
 
                     tileInfo.Index = index;
@@ -100,7 +108,7 @@ namespace DotSpatial.Plugins.WebMap
                 }
                 else
                 {
-                    Debug.WriteLine(ex.Message);
+                    Debug.WriteLine(ex);
                 }
             }
 

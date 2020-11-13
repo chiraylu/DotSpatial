@@ -497,22 +497,6 @@ namespace DotSpatial.Data.Rasters.GdalExtension
             return Convert.ToByte(result);
         }
 
-        public static void NormalizeSizeToBand(int xOffset, int yOffset, int xSize, int ySize, Band band, out int width, out int height)
-        {
-            width = xSize;
-            height = ySize;
-
-            if (xOffset + width > band.XSize)
-            {
-                width = band.XSize - xOffset;
-            }
-
-            if (yOffset + height > band.YSize)
-            {
-                height = band.YSize - yOffset;
-            }
-        }
-
         private static void WriteArgb(Bitmap value, int xOffset, int yOffset, Band first, Dataset set)
         {
             if (set.RasterCount < 4)
@@ -870,7 +854,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
             }
 
             int width, height;
-            NormalizeSizeToBand(xOffset, yOffset, xSize, ySize, firstO, out width, out height);
+            GdalExtensions.NormalizeSizeToBand(red.XSize, red.YSize, xOffset, yOffset, xSize, ySize, out width, out height);
             Bitmap result = new Bitmap(width, height, PixelFormat.Format32bppArgb);
 
             byte[] a = firstO.ReadBand(xOffset, yOffset, xSize, ySize, width, height);
@@ -928,7 +912,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
             }
 
             int width, height;
-            NormalizeSizeToBand(xOffset, yOffset, xSize, ySize, firstO, out width, out height);
+            GdalExtensions.NormalizeSizeToBand(firstO.XSize, firstO.YSize, xOffset, yOffset, xSize, ySize, out width, out height);
 
             Bitmap result = new Bitmap(width, height, PixelFormat.Format32bppArgb);
             byte[] r = firstO.ReadBand(xOffset, yOffset, xSize, ySize, width, height);
@@ -1004,7 +988,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
             }
 
             int width, height;
-            NormalizeSizeToBand(xOffset, yOffset, xSize, ySize, firstO, out width, out height);
+            GdalExtensions.NormalizeSizeToBand(firstO.XSize, firstO.YSize, xOffset, yOffset, xSize, ySize, out width, out height);
             byte[] r = new byte[width * height];
 
             firstO.ReadRaster(xOffset, yOffset, width, height, r, width, height, 0, 0);
@@ -1069,7 +1053,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
             }
 
             int width, height;
-            NormalizeSizeToBand(xOffset, yOffset, xSize, ySize, firstO, out width, out height);
+            GdalExtensions.NormalizeSizeToBand(firstO.XSize, firstO.YSize, xOffset, yOffset, xSize, ySize, out width, out height);
             if (xOffset >= firstO.XSize || yOffset >= firstO.YSize)
             {
                 return null;
