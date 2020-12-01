@@ -166,11 +166,10 @@ namespace DotSpatial.Data
         /// <exception cref="System.ApplicationException">Unable to clear while the ReadOnly property is set to true.</exception>
         public virtual void Clear()
         {
-            foreach (IFeature feature in _list)
+            for (int i = _list.Count - 1; i >= 0; i--)
             {
-                Remove(feature);
+                RemoveAt(i);
             }
-
             _list.Clear();
         }
 
