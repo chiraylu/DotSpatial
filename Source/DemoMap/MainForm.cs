@@ -20,7 +20,6 @@ namespace DemoMap
         public MainForm()
         {
             InitializeComponent();
-
             if (DesignMode) return;
             shell = this;
             appManager.LoadExtensions();

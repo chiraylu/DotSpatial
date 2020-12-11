@@ -617,7 +617,7 @@ namespace DotSpatial.Controls
 
             // Text graphics path
             var gp = new GraphicsPath();
-            gp.AddString(labelText, textFont.FontFamily, (int)textFont.Style, textFont.SizeInPoints * 96F / 72F, labelBounds, format);
+            gp.AddString(labelText, textFont.FontFamily, (int)textFont.Style, textFont.SizeInPoints * g.DpiX / 72F, labelBounds, format);
 
             // Rotate text
             RotateAt(g, labelBounds.X, labelBounds.Y, angle);
