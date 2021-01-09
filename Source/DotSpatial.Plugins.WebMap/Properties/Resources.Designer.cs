@@ -47,8 +47,8 @@ namespace DotSpatial.Plugins.WebMap.Properties {
         }
         
         /// <summary>
-        ///   重写当前线程的 CurrentUICulture 属性
-        ///   重写当前线程的 CurrentUICulture 属性。
+        ///   重写当前线程的 CurrentUICulture 属性，对
+        ///   使用此强类型资源类的所有资源查找执行重写。
         /// </summary>
         [global::System.ComponentModel.EditorBrowsableAttribute(global::System.ComponentModel.EditorBrowsableState.Advanced)]
         internal static global::System.Globalization.CultureInfo Culture {
@@ -337,6 +337,15 @@ namespace DotSpatial.Plugins.WebMap.Properties {
         internal static string Service_Box_ToolTip {
             get {
                 return ResourceManager.GetString("Service_Box_ToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   查找类似 TianDiTuSatellite 的本地化字符串。
+        /// </summary>
+        internal static string TianDiTuSatellite {
+            get {
+                return ResourceManager.GetString("TianDiTuSatellite", resourceCulture);
             }
         }
         

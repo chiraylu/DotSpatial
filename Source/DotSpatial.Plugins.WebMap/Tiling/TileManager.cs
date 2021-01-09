@@ -52,7 +52,7 @@ namespace DotSpatial.Plugins.WebMap.Tiling
 
             mapBottomRight.Y = TileCalculator.Clip(mapBottomRight.Y, TileCalculator.MinLatitude, TileCalculator.MaxLatitude);
             mapBottomRight.X = TileCalculator.Clip(mapBottomRight.X, TileCalculator.MinLongitude, TileCalculator.MaxLongitude);
-            var zoom = TileCalculator.DetermineZoomLevel(wgs84Envelope, bounds);
+            var zoom = TileCalculator.DetermineZoomLevel(wgs84Envelope, bounds, 0, 18);
             var topLeftTileXy = TileCalculator.LatLongToTileXy(mapTopLeft, zoom);
             var btmRightTileXy = TileCalculator.LatLongToTileXy(mapBottomRight, zoom);
 

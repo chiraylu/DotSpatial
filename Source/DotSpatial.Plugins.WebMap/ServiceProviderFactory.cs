@@ -107,6 +107,18 @@ namespace DotSpatial.Plugins.WebMap
                 }
             }
 
+            if (name.Contains("TianDiTu"))
+            {
+                if (string.IsNullOrEmpty(url))
+                {
+                    return null;
+                }
+                else
+                {
+                    return new BrutileServiceProvider(name, CreateTianDiTuTileSource(url), fileCache()) { Projection = WebMercProj.Value };
+                }
+            }
+
             if (servEq(Resources.OpenStreetMap))
             {
                 return new BrutileServiceProvider(name, KnownTileSources.Create(), fileCache());
@@ -178,6 +190,10 @@ namespace DotSpatial.Plugins.WebMap
         {
             return new HttpTileSource(new GlobalSphericalMercator(), urlFormatter, new[] { "0", "1", "2", "3" }, tileFetcher: FetchGoogleTile);
         }
+        private static ITileSource CreateTianDiTuTileSource(string urlFormatter)
+        {
+            return new HttpTileSource(new GlobalSphericalMercator(), urlFormatter, new[] { "0", "1", "2", "3", "4", "5", "6", "7" }, tileFetcher: FetchTianDiTuTile);
+        }
         private static HttpClient _googleHttpClient;
         private static HttpClient GoogleHttpClient
         {
@@ -192,10 +208,26 @@ namespace DotSpatial.Plugins.WebMap
                 return _googleHttpClient; 
             }
         }
-
+        private static HttpClient _tianDiTuClient;
+        private static HttpClient TianDiTuClient
+        {
+            get
+            {
+                if (_tianDiTuClient == null)
+                {
+                    _tianDiTuClient = new HttpClient();
+                    _tianDiTuClient.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", @"Mozilla / 5.0(Windows; U; Windows NT 6.0; en - US; rv: 1.9.1.7) Gecko / 20091221 Firefox / 3.5.7");
+                }
+                return _tianDiTuClient;
+            }
+        }
         private static byte[] FetchGoogleTile(Uri arg)
         {
             return GoogleHttpClient.GetByteArrayAsync(arg).ConfigureAwait(false).GetAwaiter().GetResult(); 
+        }
+        private static byte[] FetchTianDiTuTile(Uri arg)
+        {
+            return TianDiTuClient.GetByteArrayAsync(arg).ConfigureAwait(false).GetAwaiter().GetResult();
         }
 
         #endregion

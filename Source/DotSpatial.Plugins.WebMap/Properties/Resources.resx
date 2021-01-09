@@ -223,4 +223,7 @@
   <data name="WMTS" xml:space="preserve">
     <value>WMTS</value>
   </data>
+  <data name="TianDiTuSatellite" xml:space="preserve">
+    <value>TianDiTuSatellite</value>
+  </data>
 </root>

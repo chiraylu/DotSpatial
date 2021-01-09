@@ -22,6 +22,10 @@ namespace DotSpatial.Plugins.WebMap
         GoogleLabelTerrain,
         GoogleMap,
         GoogleSatellite,
-        GoogleTerrain
+        GoogleTerrain,
+        /// <summary>
+        /// 天地图影像
+        /// </summary>
+        TianDiTuSatellite
     }
 }
