@@ -869,7 +869,14 @@ namespace DotSpatial.Data
         {
             if (IndexMode == false)
             {
-                return Features[index];
+                if (index < 0 || index >= Features.Count)
+                {
+                    return null;
+                }
+                else
+                {
+                    return Features[index];
+                }
             }
 
             if (FeatureType == FeatureType.Point)
@@ -1670,6 +1677,10 @@ namespace DotSpatial.Data
         /// <returns>The line feature for the specified index.</returns>
         protected IFeature GetLine(int index)
         {
+            if (index < 0 || index >= ShapeIndices.Count)
+            {
+                return null;
+            }
             ShapeRange shape = ShapeIndices[index];
             List<ILineString> lines = new List<ILineString>();
             foreach (PartRange part in shape.Parts)
@@ -1732,6 +1743,10 @@ namespace DotSpatial.Data
         /// <returns>The multipoint feature for the specified index.</returns>
         protected IFeature GetMultiPoint(int index)
         {
+            if (index < 0 || index >= ShapeIndices.Count)
+            {
+                return null;
+            }
             ShapeRange shape = ShapeIndices[index];
             List<Coordinate> coords = new List<Coordinate>();
             foreach (PartRange part in shape.Parts)
@@ -1778,6 +1793,10 @@ namespace DotSpatial.Data
         /// <returns>The point feature for the specified index.</returns>
         protected IFeature GetPoint(int index)
         {
+            if (index < 0 || index >= ShapeIndices.Count)
+            {
+                return null;
+            }
             ShapeRange shape = ShapeIndices[index];
             IPoint p;
             if (shape.ShapeType == ShapeType.NullShape)
@@ -1822,6 +1841,10 @@ namespace DotSpatial.Data
         /// <returns>The polygon feature for the specified index.</returns>
         protected IFeature GetPolygon(int index)
         {
+            if (index < 0 || index >= ShapeIndices.Count)
+            {
+                return null;
+            }
             if (FeatureGeometryFactory == null) FeatureGeometryFactory = GeometryFactory.Default;
 
             ShapeRange shape = ShapeIndices[index];

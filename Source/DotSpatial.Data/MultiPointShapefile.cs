@@ -48,6 +48,10 @@ namespace DotSpatial.Data
             IFeature f;
             if (!IndexMode)
             {
+                if (index < 0 || index >= Features.Count)
+                {
+                    return null;
+                }
                 f = Features[index];
             }
             else

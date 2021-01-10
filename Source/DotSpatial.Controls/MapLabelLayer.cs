@@ -617,7 +617,7 @@ namespace DotSpatial.Controls
 
             // Text graphics path
             var gp = new GraphicsPath();
-            gp.AddString(labelText, textFont.FontFamily, (int)textFont.Style, textFont.SizeInPoints * 96F / 72F, labelBounds, format);
+            gp.AddString(labelText, textFont.FontFamily, (int)textFont.Style, textFont.SizeInPoints * g.DpiX / 72F, labelBounds, format);
 
             // Rotate text
             RotateAt(g, labelBounds.X, labelBounds.Y, angle);
@@ -893,7 +893,7 @@ namespace DotSpatial.Controls
             }
             return new PointF(0, 0);
         }
-        private static PointF GetPointLabelPosition(ILabelSymbolizer symb, SizeF size, IPointSymbolizer symbolizer)
+        private static PointF GetPointLabelPosition(ILabelSymbolizer symb, SizeF labelSize, IPointSymbolizer symbolizer)
         {
             ContentAlignment orientation = symb.Orientation;
             var symbolSize2d = symbolizer.GetSize();
@@ -905,21 +905,21 @@ namespace DotSpatial.Controls
             switch (orientation)
             {
                 case ContentAlignment.TopLeft:
-                    return new PointF(-size.Width + x, -size.Height + y - halfHeight);
+                    return new PointF(-labelSize.Width + x, -labelSize.Height + y - halfHeight);
                 case ContentAlignment.TopCenter:
-                    return new PointF((-size.Width / 2) + x, -size.Height + y - halfHeight);
+                    return new PointF((-labelSize.Width / 2) + x, -labelSize.Height + y - halfHeight);
                 case ContentAlignment.TopRight:
-                    return new PointF(0 + x, -size.Height + y - halfHeight);
+                    return new PointF(0 + x, -labelSize.Height + y - halfHeight);
                 case ContentAlignment.MiddleLeft:
-                    return new PointF(-size.Width + x - halfWidth, (-size.Height / 2) + y);
+                    return new PointF(-labelSize.Width + x - halfWidth, (-labelSize.Height / 2) + y);
                 case ContentAlignment.MiddleCenter:
-                    return new PointF((-size.Width / 2) + x, (-size.Height / 2) + y);
+                    return new PointF((-labelSize.Width / 2) + x, (-labelSize.Height / 2) + y);
                 case ContentAlignment.MiddleRight:
-                    return new PointF(0 + x + halfWidth, (-size.Height / 2) + y);
+                    return new PointF(0 + x + halfWidth, (-labelSize.Height / 2) + y);
                 case ContentAlignment.BottomLeft:
-                    return new PointF(-size.Width + x, 0 + y + halfHeight);
+                    return new PointF(-labelSize.Width + x, 0 + y + halfHeight);
                 case ContentAlignment.BottomCenter:
-                    return new PointF((-size.Width / 2) + x, 0 + y + halfHeight);
+                    return new PointF((-labelSize.Width / 2) + x, 0 + y + halfHeight);
                 case ContentAlignment.BottomRight:
                     return new PointF(0 + x, 0 + y + halfHeight);
             }

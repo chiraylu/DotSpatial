@@ -949,6 +949,10 @@ namespace DotSpatial.Data.Rasters.GdalExtension
         /// <inheritdoc/>
         public override void Save()
         {
+            if (IsDisposed)
+            {
+                return;
+            }
             UpdateHeader();
             _dataset.FlushCache();
         }
@@ -1117,7 +1121,10 @@ namespace DotSpatial.Data.Rasters.GdalExtension
         /// </summary>
         protected override void UpdateHeader()
         {
-            _dataset.SetGeoTransform(Bounds.AffineCoefficients);
+            if (Bounds != null)
+            {
+                _dataset.SetGeoTransform(Bounds.AffineCoefficients);
+            }
 
             if (Projection != null)
             {
