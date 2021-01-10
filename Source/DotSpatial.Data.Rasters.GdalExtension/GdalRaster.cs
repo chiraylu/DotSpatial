@@ -523,32 +523,6 @@ namespace DotSpatial.Data.Rasters.GdalExtension
             return result;
         }
 
-        /// <summary>
-        /// 直接读取栅格数据集（参数有问题，需调整）
-        /// </summary>
-        /// <param name="xOffset"></param>
-        /// <param name="yOffset"></param>
-        /// <param name="xSize"></param>
-        /// <param name="ySize"></param>
-        /// <returns></returns>
-        private Bitmap ReadRgb1(int xOffset, int yOffset, int xSize, int ySize)
-        {
-            if (Bands.Count < 3)
-            {
-                throw new GdalException("RGB Format was indicated but there are only " + Bands.Count + " bands!");
-            }
-            GdalExtensions.NormalizeSizeToBand(_dataset.RasterXSize, _dataset.RasterYSize, xOffset, yOffset, xSize, ySize,  out int width, out int height);
-            int bandCount = 3;
-            int[] bandMap = { 3, 2, 1 };
-            int pixelSpace = 3;
-            int lineSpace = width * pixelSpace;
-            int bandSpace = 1;
-            bool readABand = false;
-            byte[] buffer = _dataset.ReadBmpBytes(xOffset, yOffset, width, height, width, height, bandCount, bandMap, pixelSpace, lineSpace, bandSpace, readABand);
-            var tmpBuffer = buffer.Where(x => x != 255);
-            Bitmap result = GdalExtensions.GetBitmap(width, height, buffer, readABand, NoDataValue);
-            return result;
-        }
         private Bitmap ReadArgb(int xOffset, int yOffset, int xSize, int ySize)
         {
             if (Bands.Count < 4)
