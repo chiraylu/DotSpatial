@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Globalization;
 using System.Xml.Serialization;
 using DotSpatial.Data;
@@ -376,14 +377,14 @@ namespace DotSpatial.Symbology
             Font fnt = new Font(_fontFamilyName, fontPointSize, _style, GraphicsUnit.Pixel);
             SizeF fSize = g.MeasureString(txt, fnt);
             float x = -fSize.Width / 2;
-            float y = -fSize.Height / 2;
+            float y = -fontPointSize / 2;
             if (fSize.Height > fSize.Width * 5)
             {
                 // Defective fonts sometimes are created with a bad height.
                 // Use the width instead
                 y = -fSize.Width / 2;
             }
-            g.DrawString(txt, fnt, b, new PointF(x, y));
+            g.DrawString(txt, fnt, b, x, y);
             b.Dispose();
         }
 
