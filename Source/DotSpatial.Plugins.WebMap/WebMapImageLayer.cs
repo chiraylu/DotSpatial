@@ -89,7 +89,7 @@ namespace DotSpatial.Plugins.WebMap
             get
             {
                 Extent extent = WebMapExtent;
-                if (TileManager.ServiceProvider.Projection?.Equals(Map.Projection) == false)
+                if (TileManager?.ServiceProvider?.Projection?.Equals(Map.Projection) == false)
                 {
                     extent = WebMapExtent.Reproject(TileManager.ServiceProvider.Projection, Map.Projection);
                 }
@@ -132,9 +132,7 @@ namespace DotSpatial.Plugins.WebMap
             ServiceProvider provider = null;
             if (!string.IsNullOrEmpty(WebMapName))
             {
-                var providers = ServiceProviderFactory.GetDefaultServiceProviders();
-                provider = providers.FirstOrDefault(p => p.Name.Equals(WebMapName, StringComparison.InvariantCultureIgnoreCase));
-                if (provider == null && !string.IsNullOrEmpty(WebMapUrl))
+                if (!string.IsNullOrEmpty(WebMapUrl))
                 {
                     provider = ServiceProviderFactory.Create(WebMapName, WebMapUrl);
                 }
