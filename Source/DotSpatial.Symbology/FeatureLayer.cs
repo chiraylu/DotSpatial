@@ -532,7 +532,7 @@ namespace DotSpatial.Symbology
             // Fastest when no categories are used because we don't need DataTable at all
             List<IFeatureCategory> categories = _scheme.GetCategories().ToList();
             IFeatureCategory deflt = null;
-            if (categories.Count > 0 && string.IsNullOrEmpty(categories[0].FilterExpression) )
+            if (categories.Count > 0 && string.IsNullOrEmpty(categories[0].FilterExpression))
             {
                 deflt = categories[0];
             }
@@ -749,12 +749,24 @@ namespace DotSpatial.Symbology
         /// <returns>Visible characteristics of the feature.</returns>
         public IFeatureCategory GetCategory(int index)
         {
+            IFeatureCategory featureCategory = null;
+            if (index < 0 && index >= DataSet.Features.Count)
+            {
+                return featureCategory;
+            }
             if (_editMode)
             {
-                return DrawingFilter.DrawnStates[DataSet.Features[index]].SchemeCategory;
+                var feature = DataSet.Features[index];
+                if (DrawingFilter.DrawnStates.ContainsKey(feature))
+                {
+                    featureCategory = DrawingFilter.DrawnStates[feature]?.SchemeCategory;
+                }
             }
-
-            return DrawnStates[index].Category;
+            else
+            {
+                featureCategory = DrawnStates[index].Category;
+            }
+            return featureCategory;
         }
 
         /// <summary>
@@ -766,15 +778,23 @@ namespace DotSpatial.Symbology
         /// <returns>Visible characteristics of the feature.</returns>
         public IFeatureCategory GetCategory(IFeature feature)
         {
+            IFeatureCategory featureCategory = null;
             if (_editMode)
             {
-                return DrawingFilter.DrawnStates[feature].SchemeCategory;
+                if (DrawingFilter.DrawnStates.ContainsKey(feature))
+                {
+                    featureCategory = DrawingFilter.DrawnStates[feature]?.SchemeCategory;
+                }
             }
-
-            int index = DataSet.Features.IndexOf(feature);
-            if (index < 0) return null;
-
-            return DrawnStates[index].Category;
+            else
+            {
+                int index = DataSet.Features.IndexOf(feature);
+                if (index >= 0 && index < DrawnStates.Length)
+                {
+                    featureCategory = DrawnStates[index].Category;
+                }
+            }
+            return featureCategory;
         }
 
         /// <summary>
@@ -1096,7 +1116,7 @@ namespace DotSpatial.Symbology
             {
                 if (DrawingFilter.DrawnStates.ContainsKey(feature))
                 {
-                    DrawingFilter.DrawnStates[feature].SchemeCategory = category; 
+                    DrawingFilter.DrawnStates[feature].SchemeCategory = category;
                 }
             }
             else

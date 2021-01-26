@@ -52,7 +52,7 @@ namespace DotSpatial.Controls
         /// </summary>
         public Map()
         {
-            InitializeComponent();
+            InitializeComponent(); 
             Configure();
             //Application.AddMessageFilter(this);
         }

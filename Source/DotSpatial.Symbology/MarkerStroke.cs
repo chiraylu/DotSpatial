@@ -86,9 +86,12 @@ namespace DotSpatial.Symbology
                             double segmentLength = Math.Sqrt(Math.Pow(endPoint.X - startPoint.X, 2) + Math.Pow(endPoint.Y - startPoint.Y, 2));
                             if (usedLength + segmentLength > totalUsedLength)
                             {
-                                double length = totalUsedLength - usedLength;
-                                PointF location = GetPoint(startPoint, endPoint, length);
-                                DrawImage(g, startPoint, endPoint, location, symbol);
+                                if (segmentLength >= symbol.Width / 2) // 线长度大于点符号宽度的一半才绘制
+                                {
+                                    double length = totalUsedLength - usedLength;
+                                    PointF location = GetPoint(startPoint, endPoint, length);
+                                    DrawImage(g, startPoint, endPoint, location, symbol);
+                                }
                                 break;
                             }
                             usedLength += segmentLength;
