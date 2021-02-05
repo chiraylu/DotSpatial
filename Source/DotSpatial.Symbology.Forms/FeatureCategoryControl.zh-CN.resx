@@ -117,18 +117,12 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="_cmbField.ToolTip" xml:space="preserve">
-    <value />
-  </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="_lblFieldName.Size" type="System.Drawing.Size, System.Drawing">
-    <value>35, 12</value>
+    <value>45, 15</value>
   </data>
   <data name="_lblFieldName.Text" xml:space="preserve">
     <value>&amp;字段:</value>
-  </data>
-  <data name="_lblFieldName.ToolTip" xml:space="preserve">
-    <value />
   </data>
   <data name="btnRamp.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
@@ -179,145 +173,124 @@
     <value>设计一个过滤表达式使没选中的要素进行显示</value>
   </data>
   <data name="radUniqueValues.Size" type="System.Drawing.Size, System.Drawing">
-    <value>59, 16</value>
+    <value>73, 19</value>
   </data>
   <data name="radUniqueValues.Text" xml:space="preserve">
     <value>&amp;特征值</value>
   </data>
   <data name="radQuantities.Size" type="System.Drawing.Size, System.Drawing">
-    <value>47, 16</value>
+    <value>58, 19</value>
   </data>
   <data name="radQuantities.Text" xml:space="preserve">
     <value>&amp;数量</value>
   </data>
+  <data name="tabStatistics.Text" xml:space="preserve">
+    <value>统计值</value>
+  </data>
   <data name="label3.Size" type="System.Drawing.Size, System.Drawing">
-    <value>65, 12</value>
+    <value>82, 15</value>
   </data>
   <data name="label3.Text" xml:space="preserve">
     <value>正规化字段</value>
   </data>
-  <data name="label3.ToolTip" xml:space="preserve">
-    <value />
-  </data>
   <data name="lblSigFig.Size" type="System.Drawing.Size, System.Drawing">
-    <value>53, 12</value>
+    <value>67, 15</value>
   </data>
   <data name="lblSigFig.Text" xml:space="preserve">
     <value>舍入数位</value>
   </data>
-  <data name="lblSigFig.ToolTip" xml:space="preserve">
-    <value />
-  </data>
   <data name="label1.Size" type="System.Drawing.Size, System.Drawing">
-    <value>53, 12</value>
+    <value>67, 15</value>
   </data>
   <data name="label1.Text" xml:space="preserve">
     <value>捕捉区间</value>
   </data>
-  <data name="label1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
   <data name="label2.Size" type="System.Drawing.Size, System.Drawing">
-    <value>53, 12</value>
+    <value>67, 15</value>
   </data>
   <data name="label2.Text" xml:space="preserve">
     <value>分区方法</value>
   </data>
-  <data name="label2.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="cmbInterval.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="nudCategoryCount.ToolTip" xml:space="preserve">
-    <value />
-  </data>
   <data name="lblBreaks.Size" type="System.Drawing.Size, System.Drawing">
-    <value>65, 12</value>
+    <value>82, 15</value>
   </data>
   <data name="lblBreaks.Text" xml:space="preserve">
     <value>区分点个数</value>
   </data>
-  <data name="lblBreaks.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="tabStatistics.Text" xml:space="preserve">
-    <value>统计值</value>
-  </data>
-  <data name="tabStatistics.ToolTip" xml:space="preserve">
-    <value />
+  <data name="tabGraph.Text" xml:space="preserve">
+    <value>图形</value>
   </data>
   <data name="lblColumns.Size" type="System.Drawing.Size, System.Drawing">
-    <value>17, 12</value>
+    <value>22, 15</value>
   </data>
   <data name="lblColumns.Text" xml:space="preserve">
     <value>列</value>
   </data>
-  <data name="lblColumns.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="nudColumns.ToolTip" xml:space="preserve">
-    <value />
+  <data name="chkLog.Location" type="System.Drawing.Point, System.Drawing">
+    <value>267, 238</value>
   </data>
   <data name="chkLog.Size" type="System.Drawing.Size, System.Drawing">
-    <value>72, 16</value>
+    <value>89, 19</value>
   </data>
   <data name="chkLog.Text" xml:space="preserve">
     <value>原始比例</value>
   </data>
-  <data name="chkLog.ToolTip" xml:space="preserve">
-    <value />
-  </data>
   <data name="chkShowStd.Location" type="System.Drawing.Point, System.Drawing">
-    <value>139, 248</value>
+    <value>139, 245</value>
   </data>
   <data name="chkShowStd.Size" type="System.Drawing.Size, System.Drawing">
-    <value>72, 16</value>
+    <value>89, 19</value>
   </data>
   <data name="chkShowStd.Text" xml:space="preserve">
     <value>标准显示</value>
   </data>
-  <data name="chkShowStd.ToolTip" xml:space="preserve">
-    <value />
-  </data>
   <data name="chkShowMean.Location" type="System.Drawing.Point, System.Drawing">
-    <value>397, 248</value>
+    <value>397, 245</value>
   </data>
   <data name="chkShowMean.Size" type="System.Drawing.Size, System.Drawing">
-    <value>72, 16</value>
+    <value>89, 19</value>
   </data>
   <data name="chkShowMean.Text" xml:space="preserve">
     <value>均值显示</value>
   </data>
-  <data name="chkShowMean.ToolTip" xml:space="preserve">
-    <value />
-  </data>
   <data name="breakSliderGraph1.Text" xml:space="preserve">
     <value>间断滑条图形</value>
   </data>
-  <data name="breakSliderGraph1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="tabGraph.Text" xml:space="preserve">
-    <value>图形</value>
-  </data>
-  <data name="tabGraph.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="tabScheme.ToolTip" xml:space="preserve">
-    <value />
-  </data>
   <data name="chkUseGradients.Size" type="System.Drawing.Size, System.Drawing">
-    <value>72, 16</value>
+    <value>89, 19</value>
   </data>
   <data name="chkUseGradients.Text" xml:space="preserve">
     <value>采用坡度</value>
   </data>
-  <data name="chkUseGradients.ToolTip" xml:space="preserve">
-    <value />
+  <data name="radCustom.Size" type="System.Drawing.Size, System.Drawing">
+    <value>58, 19</value>
+  </data>
+  <data name="radCustom.Text" xml:space="preserve">
+    <value>定制</value>
+  </data>
+  <data name="btnImport.Text" xml:space="preserve">
+    <value>导入</value>
+  </data>
+  <data name="btnSave.Text" xml:space="preserve">
+    <value>保存</value>
+  </data>
+  <data name="tabPage1.Text" xml:space="preserve">
+    <value>大小范围</value>
+  </data>
+  <data name="tabPage2.Text" xml:space="preserve">
+    <value>高级</value>
+  </data>
+  <data name="btnRrotatePoint.Text" xml:space="preserve">
+    <value>旋转点</value>
+  </data>
+  <data name="dataGridViewImageColumn1.HeaderText" xml:space="preserve">
+    <value>符号</value>
   </data>
   <data name="colSymbol.HeaderText" xml:space="preserve">
     <value>符号</value>
+  </data>
+  <data name="colSelectedSymbol.HeaderText" xml:space="preserve">
+    <value>选择符号</value>
   </data>
   <data name="colValues.HeaderText" xml:space="preserve">
     <value>属性值</value>
@@ -328,67 +301,7 @@
   <data name="colCount.HeaderText" xml:space="preserve">
     <value>计数</value>
   </data>
-  <data name="dgvCategories.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="radCustom.Size" type="System.Drawing.Size, System.Drawing">
-    <value>47, 16</value>
-  </data>
-  <data name="radCustom.Text" xml:space="preserve">
-    <value>定制</value>
-  </data>
-  <data name="radCustom.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="angGradientAngle.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="featureSizeRangeControl1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="tccColorRange.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="btnImport.Text" xml:space="preserve">
-    <value>导入</value>
-  </data>
-  <data name="btnImport.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="btnSave.Text" xml:space="preserve">
-    <value>保存</value>
-  </data>
-  <data name="btnSave.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="tabPage1.Text" xml:space="preserve">
-    <value>大小范围</value>
-  </data>
-  <data name="tabPage1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="btnRrotatePoint.Text" xml:space="preserve">
-    <value>旋转点</value>
-  </data>
-  <data name="btnRrotatePoint.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="tabPage2.Text" xml:space="preserve">
-    <value>高级</value>
-  </data>
-  <data name="tabPage2.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="tabControl1.ToolTip" xml:space="preserve">
-    <value />
-  </data>
-  <data name="dataGridViewImageColumn1.HeaderText" xml:space="preserve">
-    <value>符号</value>
-  </data>
   <data name="$this.Size" type="System.Drawing.Size, System.Drawing">
     <value>814, 569</value>
-  </data>
-  <data name="$this.ToolTip" xml:space="preserve">
-    <value />
   </data>
 </root>

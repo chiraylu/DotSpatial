@@ -320,7 +320,8 @@ namespace DotSpatial.Symbology
         /// <param name="index">Index of the category that gets drawn.</param>
         /// <param name="g">graphics object used for drawing.</param>
         /// <param name="bounds">Rectangle to draw the category to.</param>
-        public override void DrawCategory(int index, Graphics g, Rectangle bounds)
+        /// <param name="isSelectionSymbolizer">True,if draw SselectionSymbolizer</param>
+        public override void DrawCategory(int index, Graphics g, Rectangle bounds, bool isSelectionSymbolizer = false)
         {
             _categories[index].LegendSymbolPainted(g, bounds);
         }

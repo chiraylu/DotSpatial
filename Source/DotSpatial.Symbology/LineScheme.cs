@@ -152,9 +152,17 @@ namespace DotSpatial.Symbology
         /// <param name="index">The integer index of the feature to draw.</param>
         /// <param name="g">The Graphics object to draw to</param>
         /// <param name="bounds">The rectangular bounds to draw in</param>
-        public override void DrawCategory(int index, Graphics g, Rectangle bounds)
+        /// <param name="isSelectionSymbolizer">True,if draw SselectionSymbolizer</param>
+        public override void DrawCategory(int index, Graphics g, Rectangle bounds, bool isSelectionSymbolizer = false)
         {
-            Categories[index].Symbolizer.Draw(g, bounds);
+            if (isSelectionSymbolizer)
+            {
+                Categories[index].SelectionSymbolizer.Draw(g, bounds);
+            }
+            else
+            {
+                Categories[index].Symbolizer.Draw(g, bounds);
+            }
         }
 
         /// <summary>

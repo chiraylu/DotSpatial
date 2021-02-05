@@ -118,7 +118,8 @@ namespace DotSpatial.Symbology
         /// <param name="index">The integer index of the feature to draw.</param>
         /// <param name="g">The Graphics object to draw to</param>
         /// <param name="bounds">The rectangular bounds to draw in</param>
-        public abstract void DrawCategory(int index, Graphics g, Rectangle bounds);
+        /// <param name="isSelectionSymbolizer">True,if draw SselectionSymbolizer</param>
+        public abstract void DrawCategory(int index, Graphics g, Rectangle bounds, bool isSelectionSymbolizer = false);
 
         /// <summary>
         /// Re-orders the specified member by attempting to exchange it with the next higher
