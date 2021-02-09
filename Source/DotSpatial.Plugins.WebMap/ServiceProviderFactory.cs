@@ -192,12 +192,12 @@ namespace DotSpatial.Plugins.WebMap
         }
         private static ITileSource CreateTianDiTuTileSource(string urlFormatter)
         {
-            return new HttpTileSource(new GlobalSphericalMercator(), urlFormatter, new[] { "0", "1", "2", "3", "4", "5", "6", "7" }, tileFetcher: FetchTianDiTuTile);
+            return new HttpTileSource(new GlobalSphericalMercator(1, 18), urlFormatter, new[] { "0", "1", "2", "3", "4", "5", "6", "7" }, tileFetcher: FetchTianDiTuTile);
         }
         private static HttpClient _googleHttpClient;
         private static HttpClient GoogleHttpClient
         {
-            get 
+            get
             {
                 if (_googleHttpClient == null)
                 {
@@ -205,7 +205,7 @@ namespace DotSpatial.Plugins.WebMap
                     _googleHttpClient.DefaultRequestHeaders.TryAddWithoutValidation("Referer", "http://maps.google.com/");
                     _googleHttpClient.DefaultRequestHeaders.TryAddWithoutValidation("User-Agent", @"Mozilla / 5.0(Windows; U; Windows NT 6.0; en - US; rv: 1.9.1.7) Gecko / 20091221 Firefox / 3.5.7");
                 }
-                return _googleHttpClient; 
+                return _googleHttpClient;
             }
         }
         private static HttpClient _tianDiTuClient;
@@ -223,7 +223,7 @@ namespace DotSpatial.Plugins.WebMap
         }
         private static byte[] FetchGoogleTile(Uri arg)
         {
-            return GoogleHttpClient.GetByteArrayAsync(arg).ConfigureAwait(false).GetAwaiter().GetResult(); 
+            return GoogleHttpClient.GetByteArrayAsync(arg).ConfigureAwait(false).GetAwaiter().GetResult();
         }
         private static byte[] FetchTianDiTuTile(Uri arg)
         {

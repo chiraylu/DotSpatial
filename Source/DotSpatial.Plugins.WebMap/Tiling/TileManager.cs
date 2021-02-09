@@ -5,6 +5,7 @@ using System;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
+using System.Linq;
 using System.Threading.Tasks;
 using DotSpatial.Plugins.WebMap.Properties;
 using DotSpatial.Serialization;
@@ -52,7 +53,17 @@ namespace DotSpatial.Plugins.WebMap.Tiling
 
             mapBottomRight.Y = TileCalculator.Clip(mapBottomRight.Y, TileCalculator.MinLatitude, TileCalculator.MaxLatitude);
             mapBottomRight.X = TileCalculator.Clip(mapBottomRight.X, TileCalculator.MinLongitude, TileCalculator.MaxLongitude);
-            var zoom = TileCalculator.DetermineZoomLevel(wgs84Envelope, bounds, 0, 18);
+            int minZoom = 0, maxZoom = 18;
+            if (ServiceProvider is BrutileServiceProvider brutileServiceProvider)
+            {
+                var levels = brutileServiceProvider.TileSource.Schema.Resolutions.Keys;
+                if (levels.Count > 0)
+                {
+                    minZoom = levels.First();
+                    maxZoom = levels.Last();
+                }
+            }
+            var zoom = TileCalculator.DetermineZoomLevel(wgs84Envelope, bounds, minZoom, maxZoom);
             var topLeftTileXy = TileCalculator.LatLongToTileXy(mapTopLeft, zoom);
             var btmRightTileXy = TileCalculator.LatLongToTileXy(mapBottomRight, zoom);
 

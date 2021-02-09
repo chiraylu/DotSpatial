@@ -49,6 +49,7 @@ namespace DotSpatial.Plugins.WebMap
         /// </summary>
         public ITileSource TileSource { get; set; }
 
+
         #endregion
 
         #region Methods

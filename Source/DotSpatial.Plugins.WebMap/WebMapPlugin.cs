@@ -221,6 +221,26 @@ namespace DotSpatial.Plugins.WebMap
                 {
                     _baseLayer.WebMapUrl = wmtsServiceProvider.CapabilitiesUrl;
                 }
+                if (_baseLayer.TileManager == null)
+                {
+                    _baseLayer.TileManager = new TileManager(serviceProvider);
+                    if (serviceProvider is BrutileServiceProvider brutileServiceProvider)
+                    {
+                        if (brutileServiceProvider.TileSource != null)
+                        {
+                            var extent = brutileServiceProvider.TileSource.Schema.Extent;
+                            _baseLayer.WebMapExtent = new Extent(extent.MinX, extent.MinY, extent.MaxX, extent.MaxY);
+                        }
+                    }
+                    else
+                    {
+                        var xmin = TileCalculator.MinWebMercX;
+                        var ymin = TileCalculator.MinWebMercY;
+                        var xmax = TileCalculator.MaxWebMercX;
+                        var ymax = TileCalculator.MaxWebMercY;
+                        _baseLayer.WebMapExtent = new Extent(xmin, ymin, xmax, ymax);
+                    }
+                }
                 _baseLayer.RemoveItem += BaseMapLayerRemoveItem;
                 App.Map.Layers.Insert(0, _baseLayer);
             }
