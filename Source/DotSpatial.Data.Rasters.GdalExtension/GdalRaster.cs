@@ -379,6 +379,10 @@ namespace DotSpatial.Data.Rasters.GdalExtension
             if (w < blockXsize)
             {
                 blockXsize = (int)Math.Ceiling(w);
+                if (blockXsize <= 0)
+                {
+                    return;
+                }
                 nbX = 1;
             }
             else if (w == blockXsize)
@@ -394,6 +398,10 @@ namespace DotSpatial.Data.Rasters.GdalExtension
             {
                 blockYsize = (int)Math.Ceiling(h);
                 nbY = 1;
+                if (blockYsize <= 0)
+                {
+                    return;
+                }
             }
             else if (h == blockYsize)
             {
