@@ -617,7 +617,7 @@ namespace DotSpatial.NTSExtension
         /// <returns>A new segment from this vector, where the StartPoint is 0, 0, 0 and the End Point is the tip of this vector.</returns>
         public LineSegment ToLineSegment()
         {
-            return new LineSegment(new Coordinate(0, 0, 0), ToCoordinate());
+            return new LineSegment(new Coordinate(0, 0), ToCoordinate());
         }
 
         /// <summary>

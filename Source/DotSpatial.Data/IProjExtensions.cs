@@ -48,7 +48,7 @@ namespace DotSpatial.Data
                 y = self.GeographicExtents.MaxY - (y - self.ImageRectangle.Y) * self.GeographicExtents.Height / self.ImageRectangle.Height;
             }
 
-            return new Coordinate(x, y, 0.0);
+            return new Coordinate(x, y);
         }
         /// <summary>
         /// Converts a single point location into an equivalent geographic coordinate
@@ -66,7 +66,7 @@ namespace DotSpatial.Data
                 y = self.GeographicExtents.MaxY - (y - self.ImageRectangle.Y) * self.GeographicExtents.Height / self.ImageRectangle.Height;
             }
 
-            return new Coordinate(x, y, 0.0);
+            return new Coordinate(x, y);
         }
 
         /// <summary>
