@@ -28,6 +28,12 @@ namespace DotSpatial.Symbology
         /// </summary>
         bool SelectionEnabled { get; set; }
 
+        /// <summary>
+        /// Gets a value indicating whether changes are suspended. To suspend events, call SuspendSelectionChanges. Then to resume events, call ResumeSelectionChanges. If the
+        /// suspension is greater than 0, then events are suspended.
+        /// </summary>
+        bool SelectionChangesIsSuspended { get; }
+
         #endregion
 
         #region Methods
@@ -72,6 +78,17 @@ namespace DotSpatial.Symbology
         /// <returns>Boolean, true if any members were removed from the selection</returns>
         bool UnSelect(Envelope tolerant, Envelope strict, SelectionMode mode, out Envelope affectedArea);
 
+        /// <summary>
+        /// Resumes the events. If any changes occured during the period of time when
+        /// the events were suspended, this will automatically fire the chnaged event.
+        /// </summary>
+        void ResumeSelectionChanges();
+
+        /// <summary>
+        /// Causes this filter collection to suspend the Changed event, so that
+        /// it will only be fired once after a series of updates.
+        /// </summary>
+        void SuspendSelectionChanges();
         #endregion
     }
 }

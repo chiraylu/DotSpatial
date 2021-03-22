@@ -526,6 +526,19 @@ namespace DotSpatial.Controls
         /// </summary>
         IFrame IBasicMap.MapFrame => _geoMapFrame;
 
+        public bool SelectionChangesIsSuspended
+        {
+            get
+            {
+                bool ret = false;
+                if (MapFrame != null)
+                {
+                    ret = MapFrame.SelectionChangesIsSuspended;
+                }
+                return ret;
+            }
+        }
+
         #endregion
 
         #region Methods
@@ -1635,6 +1648,16 @@ namespace DotSpatial.Controls
 
             _oldSize = Size;
             OnResized();
+        }
+
+        public void ResumeSelectionChanges()
+        {
+            MapFrame?.ResumeSelectionChanges();
+        }
+
+        public void SuspendSelectionChanges()
+        {
+            MapFrame?.SuspendSelectionChanges();
         }
 
         #endregion

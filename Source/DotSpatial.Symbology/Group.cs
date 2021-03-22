@@ -19,7 +19,9 @@ namespace DotSpatial.Symbology
         #region Fields
 
         private ILayerCollection _layers;
-
+        private bool _changed;
+        private bool _ignoreChanges;
+        private int _suspendLevel;
         #endregion
 
         #region  Constructors
@@ -222,6 +224,8 @@ namespace DotSpatial.Symbology
         /// </summary>
         public bool StateLocked { get; set; }
 
+        public override bool SelectionChangesIsSuspended => _suspendLevel > 0;
+
         /// <summary>
         /// gets or sets the list of layers.
         /// </summary>
@@ -249,9 +253,6 @@ namespace DotSpatial.Symbology
                 }
             }
         }
-
-        protected bool IgnoreSelectionChanged { get; set; }
-
         #endregion
 
         #region Indexers
@@ -298,19 +299,12 @@ namespace DotSpatial.Symbology
             _layers.Clear();
         }
 
-        protected override void OnSelectionChanged()
-        {
-            if (!IgnoreSelectionChanged)
-            {
-                base.OnSelectionChanged();
-            }
-        }
         /// <inheritdoc />
         public override bool ClearSelection(out Envelope affectedAreas, bool force = false)
         {
             affectedAreas = new Envelope();
             bool changed = false;
-            IgnoreSelectionChanged = true;
+            SuspendSelectionChanges();
             MapFrame.SuspendEvents();
             foreach (ILayer layer in GetAllLayers())
             {
@@ -321,9 +315,9 @@ namespace DotSpatial.Symbology
                     affectedAreas.ExpandToInclude(layerArea);
                 }
             }
-            IgnoreSelectionChanged = false;
+
             MapFrame.ResumeEvents();
-            OnSelectionChanged(); // fires only AFTER the individual layers have fired their events.
+            ResumeSelectionChanges();
             return changed;
         }
 
@@ -554,7 +548,7 @@ namespace DotSpatial.Symbology
         {
             affectedArea = new Envelope();
             bool somethingChanged = false;
-            IgnoreSelectionChanged = true;
+            SuspendSelectionChanges();
             MapFrame.SuspendEvents();
 
             foreach (var s in GetAllLayers().Where(_ => _.SelectionEnabled && _.IsVisible))
@@ -567,9 +561,8 @@ namespace DotSpatial.Symbology
                 }
             }
 
-            IgnoreSelectionChanged = false;
             MapFrame.ResumeEvents();
-            OnSelectionChanged(); // fires only AFTER the individual layers have fired their events.
+            ResumeSelectionChanges(); // fires only AFTER the individual layers have fired their events.
             return somethingChanged;
         }
 
@@ -601,6 +594,33 @@ namespace DotSpatial.Symbology
             return somethingChanged;
         }
 
+        public override void ResumeSelectionChanges()
+        {
+            _suspendLevel -= 1;
+            if (SelectionChangesIsSuspended == false)
+            {
+                if (_changed)
+                {
+                    OnSelectionChanged();
+                }
+            }
+
+            if (_suspendLevel < 0) _suspendLevel = 0;
+        }
+
+        public override void SuspendSelectionChanges()
+        {
+            if (_suspendLevel == 0)
+            {
+                _changed = false;
+            }
+
+            _suspendLevel += 1;
+
+            // using an integer allows many nested levels of suspension to exist,
+            // resuming events only once all the nested resumes are called.
+        }
+
         /// <inheritdoc />
         IEnumerator IEnumerable.GetEnumerator()
         {
@@ -617,6 +637,21 @@ namespace DotSpatial.Symbology
             {
                 OnZoomToLayer(extent.ToEnvelope());
             }
+        }
+
+        protected override void OnSelectionChanged()
+        {
+            if (_ignoreChanges) return; // this prevents infinite loops by ignoring changes that were initiated by the OnChanged event
+
+            if (SelectionChangesIsSuspended)
+            {
+                _changed = true;
+                return;
+            }
+
+            _ignoreChanges = true;
+            base.OnSelectionChanged();
+            _ignoreChanges = false;
         }
 
         /// <summary>

@@ -495,6 +495,8 @@ namespace DotSpatial.Symbology
             }
         }
 
+        public override bool SelectionChangesIsSuspended => Selection.ChangesSuspended;
+
         /// <summary>
         /// Gets or sets the chunk size on the drawing filter. This should be controlled
         /// by drawing layers.
@@ -2018,6 +2020,15 @@ namespace DotSpatial.Symbology
             UnSelectAll();
         }
 
+        public override void SuspendSelectionChanges()
+        {
+            Selection.SuspendChanges();
+        }
+
+        public override void ResumeSelectionChanges()
+        {
+            Selection.ResumeChanges();
+        }
         #endregion
     }
 }

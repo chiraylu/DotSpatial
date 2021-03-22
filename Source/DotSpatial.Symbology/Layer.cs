@@ -415,6 +415,8 @@ namespace DotSpatial.Symbology
             }
         }
 
+        public virtual bool SelectionChangesIsSuspended => false;
+
         #endregion
 
         #region Methods
@@ -862,6 +864,14 @@ namespace DotSpatial.Symbology
         private void ZoomToLayerClick(object sender, EventArgs e)
         {
             OnZoomToLayer();
+        }
+
+        public virtual void ResumeSelectionChanges()
+        {
+        }
+
+        public virtual void SuspendSelectionChanges()
+        {
         }
 
         #endregion

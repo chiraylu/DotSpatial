@@ -598,7 +598,7 @@ namespace DotSpatial.Controls
         /// <inheritdoc />
         public override bool ClearSelection(out Envelope affectedAreas, bool force = false)
         {
-            IgnoreSelectionChanged = true;
+            SuspendSelectionChanges();
             SuspendEvents();
             affectedAreas = new Envelope();
             bool changed = false;
@@ -613,8 +613,7 @@ namespace DotSpatial.Controls
             }
 
             ResumeEvents();
-            IgnoreSelectionChanged = false;
-            OnSelectionChanged();
+            ResumeSelectionChanges();
             return changed;
         }
 
