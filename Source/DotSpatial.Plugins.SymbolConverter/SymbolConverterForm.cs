@@ -20,7 +20,20 @@ namespace DotSpatial.Plugins.SymbolConverter
             InitializeComponent();
             Map = map;
         }
-
+        private void ConvertSymbolizer(IPointSymbolizer symbolizer,double ratio)
+        {
+            symbolizer.ScaleMode = ScaleMode.Geographic;
+            symbolizer.Units = GraphicsUnit.World;
+            foreach (var symbol in symbolizer.Symbols)
+            {
+                var oldSize = symbol.Size;
+                symbol.Size = new Size2D(oldSize.Width * ratio, oldSize.Height * ratio);
+                if (symbol is IOutlinedSymbol outlinedSymbol)
+                {
+                    outlinedSymbol.OutlineWidth *= ratio;
+                }
+            }
+        }
         private void convertBtn_Click(object sender, EventArgs e)
         {
             var featureLayers = Map.MapFrame.GetAllFeatureLayers();
@@ -33,18 +46,8 @@ namespace DotSpatial.Plugins.SymbolConverter
                 {
                     foreach (var category in pointLayer.Symbology.Categories)
                     {
-                        var symbolizer = category.Symbolizer; 
-                        symbolizer.ScaleMode = ScaleMode.Geographic;
-                        symbolizer.Units = GraphicsUnit.World;
-                        foreach (var symbol in symbolizer.Symbols)
-                        {
-                            var oldSize = symbol.Size;
-                            symbol.Size = new Size2D(oldSize.Width * ratio, oldSize.Height * ratio);
-                            if(symbol is IOutlinedSymbol outlinedSymbol)
-                            {
-                                outlinedSymbol.OutlineWidth *= ratio;
-                            }
-                        }
+                        ConvertSymbolizer(category.Symbolizer,ratio);
+                        ConvertSymbolizer(category.SelectionSymbolizer, ratio);
                     }
                     pointLayer.AssignFastDrawnStates();//重新计算符号
                 }
@@ -68,6 +71,7 @@ namespace DotSpatial.Plugins.SymbolConverter
                 //    pointLayer.AssignFastDrawnStates();//重新计算符号
                 //}
             }
+            MessageBox.Show(this, "ok");
         }
     }
 }
