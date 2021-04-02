@@ -28,6 +28,8 @@ namespace DotSpatial.Plugins.SymbolConverter
             {
                 var oldSize = symbol.Size;
                 symbol.Size = new Size2D(oldSize.Width * ratio, oldSize.Height * ratio);
+                symbol.Offset.X *= ratio;
+                symbol.Offset.Y *= ratio;
                 if (symbol is IOutlinedSymbol outlinedSymbol)
                 {
                     outlinedSymbol.OutlineWidth *= ratio;
