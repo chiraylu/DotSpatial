@@ -23,7 +23,7 @@ namespace DotSpatial.Plugins.SymbolConverter
         private void ConvertSymbolizer(IPointSymbolizer symbolizer,double ratio)
         {
             symbolizer.ScaleMode = ScaleMode.Geographic;
-            symbolizer.Units = GraphicsUnit.World;
+            symbolizer.Units = GraphicsUnit.World; 
             foreach (var symbol in symbolizer.Symbols)
             {
                 var oldSize = symbol.Size;

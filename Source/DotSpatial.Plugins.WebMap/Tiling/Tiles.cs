@@ -1,6 +1,7 @@
 ﻿// Copyright (c) DotSpatial Team. All rights reserved.
 // Licensed under the MIT license. See License.txt file in the project root for full license information.
 
+using System;
 using System.Drawing;
 using GeoAPI.Geometries;
 
@@ -9,7 +10,7 @@ namespace DotSpatial.Plugins.WebMap.Tiling
     /// <summary>
     /// Tiles can be used to return the tiles that the provider returned.
     /// </summary>
-    public class Tiles
+    public class Tiles : IDisposable
     {
         #region  Constructors
 
@@ -47,6 +48,17 @@ namespace DotSpatial.Plugins.WebMap.Tiling
         /// </summary>
         public Envelope TopLeftTile { get; private set; }
         public int Zoom { get; private set; }
+
+        public void Dispose()
+        {
+            if (Bitmaps != null && Bitmaps.Length > 0)
+            {
+                foreach (var item in Bitmaps)
+                {
+                    item?.Dispose();
+                }
+            }
+        }
 
         #endregion
     }

@@ -345,6 +345,7 @@ namespace DotSpatial.Plugins.WebMap
                             tileImage.Projection = Map.Projection;
                         }
                     }
+                    tiles.Dispose();
 
                     if (bwProgress?.Invoke(90) == false) return tileImage;
                 }

@@ -53,6 +53,7 @@
     </Compile>
     <Compile Include="SymbolConverterPlugin.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SymbolConverterViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DotSpatial.Controls\DotSpatial.Controls.csproj">

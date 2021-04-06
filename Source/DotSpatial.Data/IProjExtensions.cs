@@ -170,6 +170,52 @@ namespace DotSpatial.Data
             return distance * self.ImageRectangle.Width / self.GeographicExtents.Width;
         }
 
+        public static Point ProjToPixel(this Coordinate location, Rectangle rectangle, Extent extent)
+        {
+            if (extent.Width == 0 || extent.Height == 0) return Point.Empty;
+            try
+            {
+                int x = Convert.ToInt32(rectangle.X + (location.X - extent.MinX) *
+                                    (rectangle.Width / extent.Width));
+                int y = Convert.ToInt32(rectangle.Y + (extent.MaxY - location.Y) *
+                                        (rectangle.Height / extent.Height));
+
+                return new Point(x, y);
+            }
+            catch (OverflowException)
+            {
+                return Point.Empty;
+            }
+        }
+        public static Rectangle ProjToPixel(this Extent env, Rectangle rectangle, Extent extent)
+        {
+            Coordinate tl = new Coordinate(env.MinX, env.MaxY);
+            Coordinate br = new Coordinate(env.MaxX, env.MinY);
+            Point topLeft = ProjToPixel(tl, rectangle, extent);
+            Point bottomRight = ProjToPixel(br, rectangle, extent);
+            return new Rectangle(topLeft.X, topLeft.Y, bottomRight.X - topLeft.X, bottomRight.Y - topLeft.Y);
+        }
+
+        public static Coordinate PixelToProj(this PointF position, Rectangle rectangle, Extent extent)
+        {
+            double x = Convert.ToDouble(position.X);
+            double y = Convert.ToDouble(position.Y);
+            if (extent != null)
+            {
+                x = (x - rectangle.X) * extent.Width / rectangle.Width + extent.MinX;
+                y = extent.MaxY - (y - rectangle.Y) * extent.Height / rectangle.Height;
+            }
+            return new Coordinate(x, y);
+        }
+
+        public static Extent PixelToProj(this Rectangle rect, Rectangle rectangle, Extent extent)
+        {
+            Point tl = new Point(rect.X, rect.Y);
+            Point br = new Point(rect.Right, rect.Bottom);
+            Coordinate topLeft = PixelToProj(tl, rectangle, extent);
+            Coordinate bottomRight = PixelToProj(br, rectangle, extent);
+            return new Extent(topLeft.X, bottomRight.Y, bottomRight.X, topLeft.Y);
+        }
         #endregion
     }
 }
