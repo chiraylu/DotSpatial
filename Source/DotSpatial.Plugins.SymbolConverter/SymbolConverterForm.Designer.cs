@@ -53,7 +53,7 @@ namespace DotSpatial.Plugins.SymbolConverter
             // pixelNUDown
             // 
             this.pixelNUDown.Location = new System.Drawing.Point(95, 26);
-            this.pixelNUDown.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.pixelNUDown.Margin = new System.Windows.Forms.Padding(4);
             this.pixelNUDown.Name = "pixelNUDown";
             this.pixelNUDown.Size = new System.Drawing.Size(209, 25);
             this.pixelNUDown.TabIndex = 1;
@@ -61,7 +61,7 @@ namespace DotSpatial.Plugins.SymbolConverter
             // worldNUDown
             // 
             this.worldNUDown.Location = new System.Drawing.Point(95, 60);
-            this.worldNUDown.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.worldNUDown.Margin = new System.Windows.Forms.Padding(4);
             this.worldNUDown.Name = "worldNUDown";
             this.worldNUDown.Size = new System.Drawing.Size(209, 25);
             this.worldNUDown.TabIndex = 3;
@@ -79,8 +79,8 @@ namespace DotSpatial.Plugins.SymbolConverter
             // convertBtn
             // 
             this.convertBtn.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
-            this.convertBtn.Location = new System.Drawing.Point(121, 224);
-            this.convertBtn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.convertBtn.Location = new System.Drawing.Point(157, 431);
+            this.convertBtn.Margin = new System.Windows.Forms.Padding(4);
             this.convertBtn.Name = "convertBtn";
             this.convertBtn.Size = new System.Drawing.Size(100, 29);
             this.convertBtn.TabIndex = 4;
@@ -98,22 +98,22 @@ namespace DotSpatial.Plugins.SymbolConverter
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.RowHeadersWidth = 51;
             this.dataGridView1.RowTemplate.Height = 27;
-            this.dataGridView1.Size = new System.Drawing.Size(316, 125);
+            this.dataGridView1.Size = new System.Drawing.Size(388, 332);
             this.dataGridView1.TabIndex = 5;
             // 
             // SymbolConverterForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(340, 268);
+            this.ClientSize = new System.Drawing.Size(412, 475);
             this.Controls.Add(this.dataGridView1);
             this.Controls.Add(this.convertBtn);
             this.Controls.Add(this.worldNUDown);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.pixelNUDown);
             this.Controls.Add(this.label1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
-            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
+            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "SymbolConverterForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "符号转换";

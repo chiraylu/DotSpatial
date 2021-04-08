@@ -14,66 +14,39 @@ namespace DotSpatial.Plugins.SymbolConverter
 {
     public partial class SymbolConverterForm : Form
     {
-        IMap Map { get; }
+        SymbolConverterViewModel ViewModel { get; }
         public SymbolConverterForm(IMap map)
         {
             InitializeComponent();
-            Map = map;
+            Load += SymbolConverterForm_Load;
+            ViewModel = new SymbolConverterViewModel(map);
         }
-        private void ConvertSymbolizer(IPointSymbolizer symbolizer,double ratio)
+
+        private void SymbolConverterForm_Load(object sender, EventArgs e)
         {
-            symbolizer.ScaleMode = ScaleMode.Geographic;
-            symbolizer.Units = GraphicsUnit.World; 
-            foreach (var symbol in symbolizer.Symbols)
+            pixelNUDown.DataBindings.Add("Value", ViewModel, nameof(ViewModel.PixelSize), false, DataSourceUpdateMode.OnPropertyChanged);
+            worldNUDown.DataBindings.Add("Value", ViewModel, nameof(ViewModel.WorldSize), false, DataSourceUpdateMode.OnPropertyChanged);
+            dataGridView1.DataSource = ViewModel.LayerInfos;
+            foreach (DataGridViewColumn item in dataGridView1.Columns)
             {
-                var oldSize = symbol.Size;
-                symbol.Size = new Size2D(oldSize.Width * ratio, oldSize.Height * ratio);
-                symbol.Offset.X *= ratio;
-                symbol.Offset.Y *= ratio;
-                if (symbol is IOutlinedSymbol outlinedSymbol)
+                if (item.Name == "Layer")
                 {
-                    outlinedSymbol.OutlineWidth *= ratio;
+                    item.Visible = false;
                 }
             }
         }
+
         private void convertBtn_Click(object sender, EventArgs e)
         {
-            var featureLayers = Map.MapFrame.GetAllFeatureLayers();
-            double pixelSize = (double)pixelNUDown.Value;
-            double worldSize = (double)worldNUDown.Value;
-            var ratio = worldSize / pixelSize;
-            foreach (var item in featureLayers)
+            string error = ViewModel.Convert();
+            if (string.IsNullOrEmpty(error))
             {
-                if (item is IMapPointLayer pointLayer)
-                {
-                    foreach (var category in pointLayer.Symbology.Categories)
-                    {
-                        ConvertSymbolizer(category.Symbolizer,ratio);
-                        ConvertSymbolizer(category.SelectionSymbolizer, ratio);
-                    }
-                    pointLayer.AssignFastDrawnStates();//重新计算符号
-                }
-                //else if (item is IMapLineLayer lineLayer)
-                //{
-                //    foreach (var category in pointLayer.Symbology.Categories)
-                //    {
-                //        var symbolizer = category.Symbolizer;
-                //        symbolizer.ScaleMode = ScaleMode.Geographic;
-                //        symbolizer.Units = GraphicsUnit.World;
-                //        foreach (var symbol in symbolizer.Symbols)
-                //        {
-                //            var oldSize = symbol.Size;
-                //            symbol.Size = new Size2D(oldSize.Width * ratio, oldSize.Height * ratio);
-                //            if (symbol is IOutlinedSymbol outlinedSymbol)
-                //            {
-                //                outlinedSymbol.OutlineWidth *= ratio;
-                //            }
-                //        }
-                //    }
-                //    pointLayer.AssignFastDrawnStates();//重新计算符号
-                //}
+                MessageBox.Show(this, "ok");
             }
-            MessageBox.Show(this, "ok");
+            else
+            {
+                MessageBox.Show(this, $"转换失败，{error}");
+            }
         }
     }
 }
