@@ -175,6 +175,7 @@ namespace DotSpatial.Controls
             if (string.IsNullOrWhiteSpace(txt)) return;
 
             SizeF labelSize = g.MeasureString(txt, CacheList.GetFont(symb));
+            labelSize.Width += 1;
 
             IGeometry geo = f.Geometry.Copy();
 
@@ -250,6 +251,7 @@ namespace DotSpatial.Controls
             if (txt == null) return;
             var angle = GetClockwiseAngleToRotate(symb, f);
             SizeF labelSize = g.MeasureString(txt, CacheList.GetFont(symb));
+            labelSize.Width += 1;
             // Depending on the labeling strategy we do different things
             if (symb.PartsLabelingMethod == PartLabelingMethod.LabelAllParts)
             {
@@ -284,6 +286,7 @@ namespace DotSpatial.Controls
             if (txt == null) return;
             var angle = GetClockwiseAngleToRotate(symb, f);
             SizeF labelSize = g.MeasureString(txt, CacheList.GetFont(symb));
+            labelSize.Width += 1;
 
             IGeometry geo = f.Geometry;
 
@@ -617,7 +620,7 @@ namespace DotSpatial.Controls
 
             // Text graphics path
             var gp = new GraphicsPath();
-            gp.AddString(labelText, textFont.FontFamily, (int)textFont.Style, textFont.SizeInPoints * g.DpiX / 72F, labelBounds, format);
+            gp.AddString(labelText, textFont.FontFamily, (int)textFont.Style,textFont.SizeInPoints * g.DpiX / 72F, labelBounds, format);
 
             // Rotate text
             RotateAt(g, labelBounds.X, labelBounds.Y, angle);
