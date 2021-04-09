@@ -823,7 +823,11 @@ namespace DotSpatial.Controls
         {
             Coordinate c = f.GetGeometryN(1).Coordinates[0];
             if (!e.GeographicExtents.Intersects(c)) return RectangleF.Empty;
-            PointF adjustment = GetPointLabelPosition(symb, labelSize, symbolizer);
+            var symbolSize = symbolizer.GetSize();
+            var scale = symbolizer.GetScale(e);
+            symbolSize.Width *= scale;
+            symbolSize.Height *= scale;
+            PointF adjustment = GetPointLabelPosition(symb, labelSize, symbolSize);
             return PlaceLabel(e, c, adjustment, angle, labelSize);
         }
 
@@ -893,10 +897,9 @@ namespace DotSpatial.Controls
             }
             return new PointF(0, 0);
         }
-        private static PointF GetPointLabelPosition(ILabelSymbolizer symb, SizeF labelSize, IPointSymbolizer symbolizer)
+        private static PointF GetPointLabelPosition(ILabelSymbolizer symb, SizeF labelSize, Size2D symbolSize2d)
         {
             ContentAlignment orientation = symb.Orientation;
-            var symbolSize2d = symbolizer.GetSize();
             var symbolSize = new SizeF(Convert.ToSingle(symbolSize2d.Width), Convert.ToSingle(symbolSize2d.Height));
             var halfWidth = symbolSize.Width / 2;
             var halfHeight = symbolSize.Height / 2;
