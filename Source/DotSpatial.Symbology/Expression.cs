@@ -239,7 +239,7 @@ namespace DotSpatial.Symbology
                 if (_valid) return true;
             }
 
-            if (s.Length == 0) return false;
+            if (s == null || s.Length == 0) return false;
 
             // ExpressionPart bracket = new ExpressionPart();
             _saveOperations = true;

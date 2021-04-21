@@ -52,8 +52,8 @@ namespace DotSpatial.Data
         /// <param name="rawImage">The raw image.</param>
         public InRamImageData(Image rawImage)
         {
-            _myImage = new Bitmap(rawImage.Width, rawImage.Height);
-            Width = rawImage.Width;
+            _myImage = new Bitmap(rawImage.Width, rawImage.Height); 
+             Width = rawImage.Width;
             Height = rawImage.Height;
             using (var g = Graphics.FromImage(_myImage))
                 g.DrawImageUnscaled(rawImage, 0, 0);
@@ -364,7 +364,11 @@ namespace DotSpatial.Data
         {
             if (disposeManagedResources)
             {
-                _myImage?.Dispose();
+                if (_myImage != null)
+                {
+                    _myImage.Dispose();
+                    _myImage = null;
+                }
             }
 
             base.Dispose(disposeManagedResources);

@@ -53,10 +53,18 @@ namespace DotSpatial.Plugins.WebMap.Tiling
         {
             if (Bitmaps != null && Bitmaps.Length > 0)
             {
-                foreach (var item in Bitmaps)
+                for (var y = 0; y < Bitmaps.GetLength(1); y++)
                 {
-                    item?.Dispose();
+                    for (var x = 0; x < Bitmaps.GetLength(0); x++)
+                    {
+                        if (Bitmaps[x, y] != null)
+                        {
+                            Bitmaps[x, y].Dispose();
+                            Bitmaps[x, y] = null;
+                        }
+                    }
                 }
+                Bitmaps = null;
             }
         }
 

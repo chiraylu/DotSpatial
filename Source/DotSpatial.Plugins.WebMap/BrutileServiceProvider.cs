@@ -93,13 +93,17 @@ namespace DotSpatial.Plugins.WebMap
 
                     tileInfo.Index = index;
                     bytes = ts.GetTile(tileInfo);
-                    bitMap = new Bitmap(new MemoryStream(bytes));
                     tc?.Add(index, bytes);
-
-                    return bitMap;
                 }
-
-                return new Bitmap(new MemoryStream(bytes));
+                if (bytes != null)
+                {
+                    using (MemoryStream ms = new MemoryStream(bytes))
+                    {
+                        bitMap = new Bitmap(ms);
+                        ms.Close();
+                        return bitMap;
+                    }
+                }
             }
             catch (Exception ex)
             {

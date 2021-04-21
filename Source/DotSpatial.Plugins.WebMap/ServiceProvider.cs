@@ -90,6 +90,7 @@ namespace DotSpatial.Plugins.WebMap
         /// <returns>The bitmap with the exception.</returns>
         protected static Bitmap ExceptionToBitmap(Exception ex, int width, int height)
         {
+            Bitmap destBmp = null;
             using (var bitmap = new Bitmap(width, height))
             {
                 using (var graphics = Graphics.FromImage(bitmap))
@@ -100,9 +101,11 @@ namespace DotSpatial.Plugins.WebMap
                 using (var m = new MemoryStream())
                 {
                     bitmap.Save(m, ImageFormat.Png);
-                    return new Bitmap(m);
+                    destBmp = new Bitmap(m);
+                    m.Close();
                 }
             }
+            return destBmp;
         }
 
         #endregion

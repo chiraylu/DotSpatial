@@ -345,6 +345,8 @@ namespace DotSpatial.Plugins.WebMap
                             tileImage.Projection = Map.Projection;
                         }
                     }
+                    stitchedBasemap.Dispose();
+                    stitchedBasemap = null;
                     tiles.Dispose();
 
                     if (bwProgress?.Invoke(90) == false) return tileImage;
@@ -411,8 +413,10 @@ namespace DotSpatial.Plugins.WebMap
         public override void Print(MapArgs args, List<Extent> regions, bool selected)
         {
             if (selected) return;
-            var dataset = GetImageData(args.GeographicExtents, args.ImageRectangle, null);
-            DrawRegions(dataset, args, regions, selected);
+            using (var dataset = GetImageData(args.GeographicExtents, args.ImageRectangle, null))
+            {
+                DrawRegions(dataset, args, regions, selected);
+            }
         }
         private void DrawRegions(IImageData dataset, MapArgs args, List<Extent> regions, bool selected)
         {
@@ -458,33 +462,33 @@ namespace DotSpatial.Plugins.WebMap
                 try
                 {
                     bmp = dataSet.GetBitmap(env, r);
+                    if (bmp == null) continue;
+                    if (Symbolizer != null && Symbolizer.Opacity < 1)
+                    {
+                        ColorMatrix matrix = new ColorMatrix
+                        {
+                            Matrix33 = Symbolizer.Opacity // draws the image not completely opaque
+                        }; 
+                        using (var attributes = new ImageAttributes())
+                        {
+                            attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
+                            g.DrawImage(bmp, new Rectangle(0, 0, r.Width, r.Height), 0, 0, bmp.Width, bmp.Height, GraphicsUnit.Pixel, attributes);
+                        }
+                    }
+                    else
+                    {
+                        g.DrawImage(bmp, new Rectangle(0, 0, r.Width, r.Height));
+                    }
                 }
                 catch (Exception e)
                 {
                     Debug.WriteLine($"绘制失败：{e}");
-                    bmp?.Dispose();
                     continue;
                 }
-
-                if (bmp == null) continue;
-
-                if (Symbolizer != null && Symbolizer.Opacity < 1)
+                finally
                 {
-                    ColorMatrix matrix = new ColorMatrix
-                    {
-                        Matrix33 = Symbolizer.Opacity // draws the image not completely opaque
-                    };
-                    using (var attributes = new ImageAttributes())
-                    {
-                        attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);
-                        g.DrawImage(bmp, new Rectangle(0, 0, r.Width, r.Height), 0, 0, bmp.Width, bmp.Height, GraphicsUnit.Pixel, attributes);
-                    }
+                    bmp?.Dispose();
                 }
-                else
-                {
-                    g.DrawImage(bmp, new Rectangle(0, 0, r.Width, r.Height));
-                }
-                bmp.Dispose();
             }
             g.Transform = originMatrix;
             if (args.Device == null) g.Dispose();
