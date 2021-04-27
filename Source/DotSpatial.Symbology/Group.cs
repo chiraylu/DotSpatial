@@ -22,7 +22,6 @@ namespace DotSpatial.Symbology
         private bool _changed;
         private bool _ignoreChanges;
         private int _suspendLevel;
-        private int _visibleChangedCount;
         #endregion
 
         #region  Constructors
@@ -154,14 +153,12 @@ namespace DotSpatial.Symbology
 
             set
             {
-                SuspendVisibleChanges();
                 foreach (var lyr in GetLayers())
                 {
                     lyr.IsVisible = value;
                 }
 
                 base.IsVisible = value;
-                ResumeVisibleChanges();
             }
         }
 
@@ -256,27 +253,6 @@ namespace DotSpatial.Symbology
                 }
             }
         }
-
-        private bool IsVisibleChanged
-        {
-            get => _visibleChangedCount > 0;
-            set
-            {
-                if (value)
-                {
-                    _visibleChangedCount++;
-                }
-                else
-                {
-                    _visibleChangedCount--;
-                }
-                if (_visibleChangedCount < 0)
-                {
-                    _visibleChangedCount = 0;
-                }
-            }
-        }
-
         #endregion
 
         #region Indexers
@@ -762,21 +738,6 @@ namespace DotSpatial.Symbology
             LayerRemoved?.Invoke(sender, e);
         }
 
-        protected void SuspendVisibleChanges()
-        {
-            IsVisibleChanged = true;
-        }
-
-        protected void ResumeVisibleChanges()
-        {
-            if (IsVisibleChanged)
-            {
-                IsVisibleChanged = false;
-                LayersLayerVisibleChanged(this, EventArgs.Empty);
-            }
-        }
-
-
         /// <summary>
         /// Recursively adds all the groups to groupList.
         /// </summary>
@@ -891,11 +852,6 @@ namespace DotSpatial.Symbology
 
         private void LayersLayerVisibleChanged(object sender, EventArgs e)
         {
-            if (IsVisibleChanged)
-            {
-                return;
-            }
-
             OnVisibleChanged(sender, e);
         }
 
