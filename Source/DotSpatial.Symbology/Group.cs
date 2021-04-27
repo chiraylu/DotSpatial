@@ -141,28 +141,6 @@ namespace DotSpatial.Symbology
         public virtual bool IsReadOnly => _layers.IsReadOnly;
 
         /// <summary>
-        /// Gets or sets a value indicating whether any sub-layers in the group are visible. Setting this
-        /// will force all the layers in this group to become visible.
-        /// </summary>
-        public override bool IsVisible
-        {
-            get
-            {
-                return GetLayers().Any(lyr => lyr.IsVisible);
-            }
-
-            set
-            {
-                foreach (var lyr in GetLayers())
-                {
-                    lyr.IsVisible = value;
-                }
-
-                base.IsVisible = value;
-            }
-        }
-
-        /// <summary>
         /// Gets the count of the layers that are currently stored in this map frame.
         /// </summary>
         public int LayerCount => _layers.Count;

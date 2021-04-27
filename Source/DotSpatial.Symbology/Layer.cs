@@ -625,7 +625,7 @@ namespace DotSpatial.Symbology
         /// <returns>Boolean, true if this layer should be visible for this extent.</returns>
         public bool VisibleAtExtent(Extent geographicExtent)
         {
-            if (!IsVisible) return false;
+            if (!GetLayerIsVisible(this)) return false;
 
             if (UseDynamicVisibility)
             {
@@ -795,6 +795,25 @@ namespace DotSpatial.Symbology
         protected virtual void OnZoomToLayer(Envelope env)
         {
             ZoomToLayer?.Invoke(this, new EnvelopeArgs(env));
+        }
+
+        private bool GetLayerIsVisible(ILegendItem legendItem)
+        {
+            bool ret = false;
+            if (legendItem != null)
+            {
+                ret = legendItem.Checked;
+                if (ret)
+                {
+                    var parent = legendItem.GetParentItem();
+                    if (parent != null)
+                    {
+                        ret = ret && GetLayerIsVisible(parent);
+                    }
+                }
+            }
+
+            return ret;
         }
 
         private void Configure()
