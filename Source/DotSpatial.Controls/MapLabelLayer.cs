@@ -620,7 +620,7 @@ namespace DotSpatial.Controls
 
             // Text graphics path
             var gp = new GraphicsPath();
-            gp.AddString(labelText, textFont.FontFamily, (int)textFont.Style,textFont.SizeInPoints * g.DpiX / 72F, labelBounds, format);
+            gp.AddString(labelText, textFont.FontFamily, (int)textFont.Style, textFont.SizeInPoints * g.DpiX / 72F, labelBounds, format);
 
             // Rotate text
             RotateAt(g, labelBounds.X, labelBounds.Y, angle);
@@ -1019,27 +1019,25 @@ namespace DotSpatial.Controls
             Matrix origTransform = g.Transform;
 
             // Only draw features that are currently visible.
-            //if (FastDrawnStates == null)
-            //{
-            //    CreateIndexedLabels();
-            //}
+            if (FastDrawnStates == null)
+            {
+                CreateIndexedLabels();
+            }
 
-            //FastLabelDrawnState[] drawStates = FastDrawnStates;
-            //if (drawStates == null) return;
+            if (FastDrawnStates == null) return;
 
             // Sets the graphics objects smoothing modes
             g.TextRenderingHint = TextRenderingHint.AntiAlias;
             g.SmoothingMode = SmoothingMode.AntiAlias;
 
-            Action<ILabelCategory, IFeature> drawFeature;
-            bool selected = false;
+            Action<ILabelCategory, IFeature, bool> drawFeature;
             switch (FeatureSet.FeatureType)
             {
                 case FeatureType.Polygon:
-                    drawFeature = (category, feature) => DrawPolygonFeature(e, g, feature, category, selected, ExistingLabels);
+                    drawFeature = (category, feature, selected) => DrawPolygonFeature(e, g, feature, category, selected, ExistingLabels);
                     break;
                 case FeatureType.Line:
-                    drawFeature = (category, feature) =>
+                    drawFeature = (category, feature, selected) =>
                     {
                         var symbolizer = FeatureLayer.GetCategory(feature).Symbolizer as ILineSymbolizer;
                         DrawLineFeature(e, g, feature, category, selected, ExistingLabels, symbolizer);
@@ -1047,7 +1045,7 @@ namespace DotSpatial.Controls
                     break;
                 case FeatureType.Point:
                 case FeatureType.MultiPoint:
-                    drawFeature = (category, feature) =>
+                    drawFeature = (category, feature, selected) =>
                     {
                         var symbolizer = FeatureLayer.GetCategory(feature).Symbolizer as IPointSymbolizer;
                         DrawPointFeature(e, g, feature, category, selected, ExistingLabels, symbolizer);
@@ -1060,22 +1058,25 @@ namespace DotSpatial.Controls
             foreach (var category in Symbology.Categories)
             {
                 category.UpdateExpressionColumns(FeatureSet.DataTable.Columns);
-                var catFeatures = new List<int>();
+                var catFeatures = new Dictionary<int, bool>();
                 foreach (int fid in features)
                 {
-                    //if (drawStates[fid] == null || drawStates[fid].Category == null) continue;
-                    //if (drawStates[fid].Category == category)
-                    //{
-                    //    catFeatures.Add(fid);
-                    //}
-                    catFeatures.Add(fid);
+                    if (FastDrawnStates.ContainsKey(fid))
+                    {
+                        var labelDrawState = FastDrawnStates[fid].FirstOrDefault(x => x.Category == category);
+                        if (labelDrawState != null)
+                        {
+                            catFeatures.Add(fid, labelDrawState.Selected);
+                        }
+                    }
                 }
 
+                IEnumerable<KeyValuePair<int, bool>> destFeatures = catFeatures;
                 // Now that we are restricted to a certain category, we can look at priority
                 if (category.Symbolizer.PriorityField != "FID")
                 {
                     Feature.ComparisonField = category.Symbolizer.PriorityField;
-                    catFeatures.Sort();
+                    destFeatures = destFeatures.OrderBy(x => x.Key);
 
                     // When preventing collisions, we want to do high priority first.
                     // Otherwise, do high priority last.
@@ -1083,23 +1084,23 @@ namespace DotSpatial.Controls
                     {
                         if (!category.Symbolizer.PrioritizeLowValues)
                         {
-                            catFeatures.Reverse();
+                            destFeatures = destFeatures.Reverse();
                         }
                     }
                     else
                     {
                         if (category.Symbolizer.PrioritizeLowValues)
                         {
-                            catFeatures.Reverse();
+                            destFeatures = destFeatures.Reverse();
                         }
                     }
                 }
 
-                foreach (var fid in catFeatures)
+                foreach (var item in destFeatures)
                 {
-                    if (!FeatureLayer.DrawnStates[fid].Visible) continue;
-                    var feature = FeatureSet.GetFeature(fid);
-                    drawFeature(category, feature);
+                    if (!FeatureLayer.DrawnStates[item.Key].Visible) continue;
+                    var feature = FeatureSet.GetFeature(item.Key);
+                    drawFeature(category, feature, item.Value);
                 }
             }
 
@@ -1127,23 +1128,20 @@ namespace DotSpatial.Controls
                 CreateLabels();
             }
 
-            //Dictionary<IFeature, LabelDrawState> drawStates = DrawnStates;
-            //if (drawStates == null) return;
+            if (DrawnStates == null) return;
 
             // Sets the graphics objects smoothing modes
             g.TextRenderingHint = TextRenderingHint.AntiAlias;
             g.SmoothingMode = SmoothingMode.AntiAlias;
 
-            bool selected = false;
-            Action<IFeature, ILabelCategory> drawFeature;
+            Action<IFeature, ILabelCategory, bool> drawFeature;
             switch (featureList.First().FeatureType)
             {
                 case FeatureType.Polygon:
-                    // drawFeature = (f, category) => DrawPolygonFeature(e, g, f, category, drawStates[f].Selected, ExistingLabels);
-                    drawFeature = (f, category) => DrawPolygonFeature(e, g, f, category, selected, ExistingLabels);
+                    drawFeature = (f, category, selected) => DrawPolygonFeature(e, g, f, category, selected, ExistingLabels);
                     break;
                 case FeatureType.Line:
-                    drawFeature = (f, category) =>
+                    drawFeature = (f, category, selected) =>
                     {
                         var symbolizer = FeatureLayer.GetCategory(f).Symbolizer as ILineSymbolizer;
                         DrawLineFeature(e, g, f, category, selected, ExistingLabels, symbolizer);
@@ -1151,7 +1149,7 @@ namespace DotSpatial.Controls
                     break;
                 case FeatureType.Point:
                 case FeatureType.MultiPoint:
-                    drawFeature = (f, category) =>
+                    drawFeature = (f, category, selected) =>
                     {
                         var symbolizer = FeatureLayer.GetCategory(f).Symbolizer as IPointSymbolizer;
                         DrawPointFeature(e, g, f, category, selected, ExistingLabels, symbolizer);
@@ -1165,22 +1163,26 @@ namespace DotSpatial.Controls
             {
                 category.UpdateExpressionColumns(FeatureSet.DataTable.Columns);
                 var cat = category; // prevent access to unmodified closure problems
-                List<IFeature> catFeatures = new List<IFeature>();
+                var catFeatures = new Dictionary<IFeature, bool>();
                 foreach (IFeature f in featureList)
                 {
-                    //if (drawStates.ContainsKey(f) && drawStates[f].Category == cat)
-                    //{
-                    //    catFeatures.Add(f);
-                    //}
-                    catFeatures.Add(f);
+                    if (DrawnStates.ContainsKey(f))
+                    {
+                        var labelDrawState = DrawnStates[f].FirstOrDefault(x => x.Category == category);
+                        if (labelDrawState != null)
+                        {
+                            catFeatures.Add(f, labelDrawState.Selected);
+                        }
+                    }
                 }
 
+                IEnumerable<KeyValuePair<IFeature, bool>> destFeatures = catFeatures;
                 // Now that we are restricted to a certain category, we can look at
                 // priority
                 if (category.Symbolizer.PriorityField != "FID")
                 {
                     Feature.ComparisonField = cat.Symbolizer.PriorityField;
-                    catFeatures.Sort();
+                    destFeatures = destFeatures.OrderBy(x => x.Key);
 
                     // When preventing collisions, we want to do high priority first.
                     // otherwise, do high priority last.
@@ -1188,22 +1190,20 @@ namespace DotSpatial.Controls
                     {
                         if (!cat.Symbolizer.PrioritizeLowValues)
                         {
-                            catFeatures.Reverse();
+                            destFeatures = destFeatures.Reverse();
                         }
                     }
                     else
                     {
                         if (cat.Symbolizer.PrioritizeLowValues)
                         {
-                            catFeatures.Reverse();
+                            destFeatures = destFeatures.Reverse();
                         }
                     }
                 }
-
-                for (int i = 0; i < catFeatures.Count; i++)
+                foreach (var item in destFeatures)
                 {
-                    if (!FeatureLayer.DrawnStates[i].Visible) continue;
-                    drawFeature(catFeatures[i], category);
+                    drawFeature(item.Key, category, item.Value);
                 }
             }
 

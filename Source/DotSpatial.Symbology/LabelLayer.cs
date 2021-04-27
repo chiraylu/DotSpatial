@@ -76,12 +76,14 @@ namespace DotSpatial.Symbology
         /// each label.
         /// </summary>
         [ShallowCopy]
-        public Dictionary<IFeature, LabelDrawState> DrawnStates { get; set; }
+        public Dictionary<IFeature, List<LabelDrawState>> DrawnStates { get; set; }
 
         /// <summary>
         /// Gets or sets the indexed collection of drawn states
         /// </summary>
-        public FastLabelDrawnState[] FastDrawnStates { get; set; }
+        [ShallowCopy]
+        public Dictionary<int, List<LabelDrawState>> FastDrawnStates { get; set; }
+        //public FastLabelDrawnState[] FastDrawnStates { get; set; }
 
         /// <summary>
         /// Gets or sets an optional layer to link this layer to. If this is specified, then drawing will
@@ -189,17 +191,20 @@ namespace DotSpatial.Symbology
                 return;
             }
 
-            DrawnStates = new Dictionary<IFeature, LabelDrawState>();
+            DrawnStates = new Dictionary<IFeature, List<LabelDrawState>>();
             if (FeatureSet == null || Symbology == null) return;
 
             foreach (ILabelCategory category in Symbology.Categories)
             {
                 List<IFeature> features = !string.IsNullOrWhiteSpace(category.FilterExpression) ? FeatureSet.SelectByAttribute(category.FilterExpression) : FeatureSet.Features.ToList();
-
                 foreach (IFeature feature in features)
                 {
-                    if (DrawnStates.ContainsKey(feature)) DrawnStates[feature] = new LabelDrawState(category);
-                    else DrawnStates.Add(feature, new LabelDrawState(category));
+                    var labelDrawState = new LabelDrawState(category);
+                    if (!DrawnStates.ContainsKey(feature))
+                    {
+                        DrawnStates[feature] = new List<LabelDrawState>();
+                    }
+                    DrawnStates[feature].Add(labelDrawState);
                 }
             }
         }
@@ -218,7 +223,10 @@ namespace DotSpatial.Symbology
 
             foreach (IFeature feature in features)
             {
-                DrawnStates[feature].Selected = true;
+                foreach (var labelDrawState in DrawnStates[feature])
+                {
+                    labelDrawState.Selected = true;
+                }
             }
 
             return true;
@@ -236,7 +244,10 @@ namespace DotSpatial.Symbology
 
             foreach (IFeature feature in features)
             {
-                DrawnStates[feature].Selected = false;
+                foreach (var labelDrawState in DrawnStates[feature])
+                {
+                    labelDrawState.Selected = false;
+                }
             }
 
             return true;
@@ -249,26 +260,35 @@ namespace DotSpatial.Symbology
         {
             if (FeatureSet == null) return;
 
-            FastDrawnStates = new FastLabelDrawnState[FeatureSet.ShapeIndices.Count];
+            FastDrawnStates = new Dictionary<int, List<LabelDrawState>>();
 
             // DataTable dt = _featureSet.DataTable; // if working correctly, this should auto-populate
             if (Symbology == null) return;
 
             foreach (ILabelCategory category in Symbology.Categories)
             {
+                var labelDrawState = new LabelDrawState(category);
                 if (category.FilterExpression != null)
                 {
                     List<int> features = FeatureSet.SelectIndexByAttribute(category.FilterExpression);
                     foreach (int feature in features)
                     {
-                        FastDrawnStates[feature] = new FastLabelDrawnState(category);
+                        if (!FastDrawnStates.ContainsKey(feature))
+                        {
+                            FastDrawnStates[feature] = new List<LabelDrawState>();
+                        }
+                        FastDrawnStates[feature].Add(labelDrawState);
                     }
                 }
                 else
                 {
-                    for (int i = 0; i < FastDrawnStates.Length; i++)
+                    for (int feature = 0; feature < FeatureSet.ShapeIndices.Count; feature++)
                     {
-                        FastDrawnStates[i] = new FastLabelDrawnState(category);
+                        if (!FastDrawnStates.ContainsKey(feature))
+                        {
+                            FastDrawnStates[feature] = new List<LabelDrawState>();
+                        }
+                        FastDrawnStates[feature].Add(labelDrawState);
                     }
                 }
             }
