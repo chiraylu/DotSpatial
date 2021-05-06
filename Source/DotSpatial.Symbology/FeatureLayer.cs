@@ -1827,7 +1827,7 @@ namespace DotSpatial.Symbology
         /// <returns>Boolean, true if members were affected by the action.</returns>
         private bool DoSelectAction(Envelope tolerant, Envelope strict, SelectionMode selectionMode, ClearStates clear, out Envelope affectedArea, SelectAction action)
         {
-            if (!SelectionEnabled && clear != ClearStates.Force)
+            if ((!SelectionEnabled && clear != ClearStates.Force) || !VisibleAtExtent(Extent))
             {
                 affectedArea = new Envelope();
                 return false;

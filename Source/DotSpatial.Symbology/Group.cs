@@ -529,7 +529,7 @@ namespace DotSpatial.Symbology
             SuspendSelectionChanges();
             MapFrame.SuspendEvents();
 
-            foreach (var s in GetAllLayers().Where(_ => _.SelectionEnabled && _.IsVisible))
+            foreach (var s in GetAllLayers().Where(_ => _.SelectionEnabled && _.VisibleAtExtent(_.Extent)))
             {
                 Envelope layerArea;
                 if (s.Select(tolerant, strict, mode, out layerArea, clear))
