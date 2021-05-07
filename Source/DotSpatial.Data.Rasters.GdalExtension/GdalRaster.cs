@@ -361,12 +361,12 @@ namespace DotSpatial.Data.Rasters.GdalExtension
             {
                 using (var overview = _band.GetOverview(_overview))
                 {
-                    ComputeBlockSize(overview, out blockXsize, out blockYsize);
+                    overview.ComputeBlockSize(out blockXsize, out blockYsize);
                 }
             }
             else
             {
-                ComputeBlockSize(_band, out blockXsize, out blockYsize);
+                _band.ComputeBlockSize(out blockXsize, out blockYsize);
             }
 
             int nbX, nbY;
@@ -441,58 +441,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
             }
         }
 
-        /// <summary>
-        /// 计算读取块大小
-        /// </summary>
-        /// <param name="band"></param>
-        /// <param name="blockXsize"></param>
-        /// <param name="blockYsize"></param>
-        private void ComputeBlockSize(Band band, out int blockXsize, out int blockYsize)
-        {
-            int minSize = 1024;
-            int maxSize = 4096;
-            band.GetBlockSize(out blockXsize, out blockYsize);
-            if (blockXsize > maxSize)
-            {
-                blockXsize = Math.Min(maxSize, blockXsize);
-            }
-            else if (blockXsize < minSize)
-            {
-                blockXsize = Math.Min(minSize, band.XSize);
-            }
-            if (blockYsize > maxSize)
-            {
-                blockYsize = Math.Min(maxSize, blockYsize);
-            }
-            else if (blockYsize < minSize)
-            {
-                blockYsize = Math.Min(minSize, band.YSize);
-            }
-        }
 
-        private Bitmap ReadGrayIndex(int xOffset, int yOffset, int xSize, int ySize)
-        {
-            Band firstBand;
-            var disposeBand = false;
-            if (_overview >= 0 && _overviewCount > 0)
-            {
-                firstBand = _band.GetOverview(_overview);
-                disposeBand = true;
-            }
-            else
-            {
-                firstBand = _band;
-            }
-            GdalExtensions.NormalizeSizeToBand(firstBand.XSize, firstBand.YSize, xOffset, yOffset, xSize, ySize, out int width, out int height);
-            byte[] rBuffer = firstBand.ReadBand(xOffset, yOffset, width, height, width, height);
-            if (disposeBand)
-            {
-                firstBand.Dispose();
-            }
-            Bitmap result = GdalExtensions.GetBitmap(width, height, rBuffer, rBuffer, rBuffer, noDataValue: NoDataValue);
-            rBuffer = null;
-            return result;
-        }
         private Bitmap ReadRgb(int xOffset, int yOffset, int xSize, int ySize)
         {
             if (Bands.Count < 3)
@@ -517,7 +466,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                 bBand = (Bands[2] as GdalRaster<T>)._band;
             }
 
-            GdalExtensions.NormalizeSizeToBand(rBand.XSize, rBand.YSize, xOffset, yOffset, xSize, ySize,  out int width, out int height);
+            GdalExtensions.NormalizeSizeToBand(rBand.XSize, rBand.YSize, xOffset, yOffset, xSize, ySize, out int width, out int height);
             byte[] rBuffer = rBand.ReadBand(xOffset, yOffset, width, height, width, height);
             byte[] gBuffer = gBand.ReadBand(xOffset, yOffset, width, height, width, height);
             byte[] bBuffer = bBand.ReadBand(xOffset, yOffset, width, height, width, height);
@@ -527,7 +476,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                 gBand.Dispose();
                 bBand.Dispose();
             }
-            Bitmap result = GdalExtensions.GetBitmap(width, height, rBuffer, gBuffer, bBuffer,noDataValue: NoDataValue);
+            Bitmap result = GdalExtensions.GetBitmap(width, height, rBuffer, gBuffer, bBuffer, noDataValue: NoDataValue);
             return result;
         }
 
@@ -704,7 +653,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                         break;
                     case 1:
                     case 2:
-                        result = ReadGrayIndex(xOffset, yOffset, xSize, ySize);
+                        result = _band.ReadGrayIndex(xOffset, yOffset, xSize, ySize, _overview, _overviewCount, NoDataValue);
                         break;
                     case 3:
                         result = ReadRgb(xOffset, yOffset, xSize, ySize);
@@ -728,7 +677,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                     result = ReadPaletteBuffered(xOffset, yOffset, xSize, ySize);
                     break;
                 case ColorInterp.GCI_GrayIndex:
-                    result = ReadGrayIndex(xOffset, yOffset, xSize, ySize);
+                    result = _band.ReadGrayIndex(xOffset, yOffset, xSize, ySize, _overview, _overviewCount, NoDataValue);
                     break;
                 case ColorInterp.GCI_RedBand:
                     action.Invoke();

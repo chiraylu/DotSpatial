@@ -19,7 +19,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
         {
             GdalConfiguration.ConfigureGdal();
         }
-        
+
         #endregion
 
         #region Properties
@@ -164,7 +164,6 @@ namespace DotSpatial.Data.Rasters.GdalExtension
 
             return null;
         }
-
         private IImageData OpenFile(string fileName)
         {
             bool hasOverviews;
@@ -172,13 +171,13 @@ namespace DotSpatial.Data.Rasters.GdalExtension
             {
                 using (var red = dataset.GetRasterBand(1))
                 {
-                    //ColorInterp bandType = red.GetRasterColorInterpretation();
-                    //if (bandType != ColorInterp.GCI_PaletteIndex && bandType != ColorInterp.GCI_GrayIndex && bandType != ColorInterp.GCI_RedBand && bandType != ColorInterp.GCI_AlphaBand)
-                    //{
-                    //    // This is an image, not a raster, so return null.
-                    //    dataset.Dispose();
-                    //    return null;
-                    //}
+                    ColorInterp bandType = red.GetRasterColorInterpretation();
+                    if (bandType != ColorInterp.GCI_PaletteIndex && bandType != ColorInterp.GCI_GrayIndex && bandType != ColorInterp.GCI_RedBand && bandType != ColorInterp.GCI_AlphaBand)
+                    {
+                        // This is an image, not a raster, so return null.
+                        dataset.Dispose();
+                        return null;
+                    }
 
                     hasOverviews = red.GetOverviewCount() > 0;
                 }

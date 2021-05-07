@@ -266,6 +266,18 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                 height = rasterYSize - yOffset;
             }
         }
+
+        /// <summary>
+        /// 根据像素值获取图片
+        /// </summary>
+        /// <param name="width"></param>
+        /// <param name="height"></param>
+        /// <param name="rBuffer"></param>
+        /// <param name="gBuffer"></param>
+        /// <param name="bBuffer"></param>
+        /// <param name="aBuffer"></param>
+        /// <param name="noDataValue"></param>
+        /// <returns></returns>
         public static unsafe Bitmap GetBitmap(int width, int height, byte[] rBuffer, byte[] gBuffer, byte[] bBuffer, byte[] aBuffer = null, double? noDataValue = null)
         {
             Bitmap result = null;
@@ -299,7 +311,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
             byte* scan0 = (byte*)bData.Scan0;
             int stride = bData.Stride;
             int dWidth = stride - width * bytesPerPixel;
-            int ptrIndex =0;
+            int ptrIndex = 0;
             int bufferIndex = 0;
             if (aBuffer == null)
             {
@@ -388,6 +400,41 @@ namespace DotSpatial.Data.Rasters.GdalExtension
             return result;
         }
 
+        public static Bitmap ReadGrayIndex(this Band band, int xOffset, int yOffset, int xSize, int ySize, int overview, int overviewCount, double noDataValue)
+        {
+            Band firstBand;
+            var disposeBand = false;
+            if (overview >= 0 && overviewCount > 0)
+            {
+                firstBand = band.GetOverview(overview);
+                disposeBand = true;
+            }
+            else
+            {
+                firstBand = band;
+            }
+            NormalizeSizeToBand(firstBand.XSize, firstBand.YSize, xOffset, yOffset, xSize, ySize, out int width, out int height);
+            byte[] rBuffer = firstBand.ReadBand(xOffset, yOffset, width, height, width, height);
+            if (disposeBand)
+            {
+                firstBand.Dispose();
+            }
+            Bitmap result = GetBitmap(width, height, rBuffer, rBuffer, rBuffer, noDataValue: noDataValue);
+            rBuffer = null;
+            return result;
+        }
+
+        public static Bitmap GetGrayBitmap(this Band band, int xOffset, int yOffset, int xSize, int ySize, double noDataValue)
+        {
+            Bitmap result = null;
+            if (band != null)
+            {
+                NormalizeSizeToBand(band.XSize, band.YSize, xOffset, yOffset, xSize, ySize, out int width, out int height);
+                byte[] rBuffer = band.ReadBand(xOffset, yOffset, width, height, width, height);
+                result = GetBitmap(width, height, rBuffer, rBuffer, rBuffer, noDataValue: noDataValue);
+            }
+            return result;
+        }
         public static Dataset ToMemDataset(this Image image, string memPath = "/vsimem/inmemfile")
         {
             Dataset dataset = null;
@@ -569,6 +616,45 @@ namespace DotSpatial.Data.Rasters.GdalExtension
             }
             return buffer;
         }
+
+        /// <summary>
+        /// 计算读取块大小
+        /// </summary>
+        /// <param name="band">波段</param>
+        /// <param name="blockXsize">块宽度</param>
+        /// <param name="blockYsize">块高度</param>
+        public static void ComputeBlockSize(this Band band, out int blockXsize, out int blockYsize)
+        {
+            if (band == null)
+            {
+                blockXsize = 0;
+                blockYsize = 0;
+            }
+            else
+            {
+                int minSize = 1024;
+                int maxSize = 4096;
+                band.GetBlockSize(out blockXsize, out blockYsize);
+                if (blockXsize > maxSize)
+                {
+                    blockXsize = Math.Min(maxSize, blockXsize);
+                }
+                else if (blockXsize < minSize)
+                {
+                    blockXsize = Math.Min(minSize, band.XSize);
+                }
+                if (blockYsize > maxSize)
+                {
+                    blockYsize = Math.Min(maxSize, blockYsize);
+                }
+                else if (blockYsize < minSize)
+                {
+                    blockYsize = Math.Min(minSize, band.YSize);
+                }
+            }
+        }
+
+
         private static unsafe void BufferToScan0(BitmapData bData, int width, int height, int bytesPerPixel, byte[] bmpBuffer)
         {
             byte* scan0 = (byte*)bData.Scan0;
@@ -617,5 +703,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                 scan0 += dWidth;
             }
         }
+
+
     }
 }

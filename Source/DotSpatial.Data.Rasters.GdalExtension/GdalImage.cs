@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
@@ -30,7 +31,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
         private Bitmap _image;
         private bool _isOpened;
         private int _overview;
-        private Band _red;
+        private Band _band;
 
         #endregion
 
@@ -256,7 +257,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
         {
             _dataset = Helpers.Open(Filename);
             int numBands = _dataset.RasterCount;
-            _red = _dataset.GetRasterBand(1);
+            _band = _dataset.GetRasterBand(1);
             BandType = ImageBandType.RGB;
             for (int i = 1; i <= numBands; i++)
             {
@@ -265,14 +266,14 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                 {
                     case ColorInterp.GCI_GrayIndex:
                         BandType = ImageBandType.Gray;
-                        _red = tempBand;
+                        _band = tempBand;
                         break;
                     case ColorInterp.GCI_PaletteIndex:
                         BandType = ImageBandType.PalletCoded;
-                        _red = tempBand;
+                        _band = tempBand;
                         break;
                     case ColorInterp.GCI_RedBand:
-                        _red = tempBand;
+                        _band = tempBand;
                         break;
                     case ColorInterp.GCI_AlphaBand:
                         _alpha = tempBand;
@@ -452,8 +453,8 @@ namespace DotSpatial.Data.Rasters.GdalExtension
             _image?.Dispose();
             _image = null;
 
-            _red?.Dispose();
-            _red = null;
+            _band?.Dispose();
+            _band = null;
 
             _blue?.Dispose();
             _blue = null;
@@ -709,14 +710,14 @@ namespace DotSpatial.Data.Rasters.GdalExtension
             float yShift = (float)((envelope.MaxY - t) * dy);
             g.PixelOffsetMode = PixelOffsetMode.Half;
 
-            int overviewCount = _red.GetOverviewCount();
+            int overviewCount = _band.GetOverviewCount();
             float xRatio = 1, yRatio = 1;
             if (overviewCount > 0)
             {
-                using (Band firstOverview = _red.GetOverview(0))
+                using (Band firstOverview = _band.GetOverview(0))
                 {
-                    xRatio = (float)firstOverview.XSize / _red.XSize;
-                    yRatio = (float)firstOverview.YSize / _red.XSize;
+                    xRatio = (float)firstOverview.XSize / _band.XSize;
+                    yRatio = (float)firstOverview.YSize / _band.XSize;
                 }
             }
             if (m11 > xRatio || m22 > yRatio)
@@ -759,22 +760,14 @@ namespace DotSpatial.Data.Rasters.GdalExtension
             // if the image is stored line by line then ask for a 100px stripe.
             if (_overview >= 0 && overviewCount > 0)
             {
-                using (var overview = _red.GetOverview(_overview))
+                using (var overview = _band.GetOverview(_overview))
                 {
-                    overview.GetBlockSize(out blockXsize, out blockYsize);
-                    if (blockYsize == 1)
-                    {
-                        blockYsize = Math.Min(100, overview.YSize);
-                    }
+                    overview.ComputeBlockSize(out blockXsize, out blockYsize);
                 }
             }
             else
             {
-                _red.GetBlockSize(out blockXsize, out blockYsize);
-                if (blockYsize == 1)
-                {
-                    blockYsize = Math.Min(100, _red.YSize);
-                }
+                _band.ComputeBlockSize(out blockXsize, out blockYsize);
             }
 
             int nbX, nbY;
@@ -800,21 +793,31 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                 nbY = (int)(h / blockYsize) + 1;
             }
 
+            int redundancy = (int)Math.Ceiling(Math.Abs(1 / Math.Min(m11, m22)));
             for (var i = 0; i < nbX; i++)
             {
                 for (var j = 0; j < nbY; j++)
                 {
                     // The +1 is to remove the white stripes artifacts
-                    int xOffset = (int)(tLx / overviewPow) + (i * blockXsize);
-                    int yOffset = (int)(tLy / overviewPow) + (j * blockYsize);
-                    int xSize = blockXsize + 1;
-                    int ySize = blockYsize + 1;
-                    using (var bitmap = ReadBlock(xOffset, yOffset, xSize, ySize))
+                    double xOffsetD = (tLx / overviewPow) + (i * blockXsize);
+                    double yOffsetD = (tLy / overviewPow) + (j * blockYsize);
+                    int xOffsetI = (int)Math.Floor(xOffsetD);
+                    int yOffsetI = (int)Math.Floor(yOffsetD);
+                    int xSize = blockXsize + redundancy;
+                    int ySize = blockYsize + redundancy;
+                    try
                     {
-                        if (bitmap != null)
+                        using (var bitmap = ReadBlock(xOffsetI, yOffsetI, xSize, ySize))
                         {
-                            g.DrawImage(bitmap, xOffset, yOffset);
+                            if (bitmap != null)
+                            {
+                                g.DrawImage(bitmap, xOffsetI, yOffsetI);
+                            }
                         }
+                    }
+                    catch (Exception e)
+                    {
+                        Trace.WriteLine($"获取图片失败，文件:{FilePath},xOffset:{xOffsetI},yOffset:{yOffsetI},xSize:{xSize},ySize:{ySize}，异常：{e}");
                     }
                 }
             }

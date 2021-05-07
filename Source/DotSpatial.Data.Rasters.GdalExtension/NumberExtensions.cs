@@ -33,6 +33,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
             }
             return destValue;
         }
+
         /// <summary>
         /// 拉伸值
         /// </summary>
