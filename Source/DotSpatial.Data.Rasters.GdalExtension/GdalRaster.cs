@@ -25,7 +25,6 @@ namespace DotSpatial.Data.Rasters.GdalExtension
         private readonly Dataset _dataset;
         private int _overviewCount;
         private ColorInterp _colorInterp;
-        private int _overview;
         private ImageBuffer _imageBuffer;
         #endregion
 
@@ -332,30 +331,31 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                     yRatio = (float)firstOverview.YSize / _band.YSize;
                 }
             }
+            int overview;
             if (m11 > xRatio || m22 > yRatio)
             {
                 // out of pyramids
                 g.InterpolationMode = InterpolationMode.NearestNeighbor;
-                _overview = -1; // don't use overviews when zooming behind the max res.
+                overview = -1; // don't use overviews when zooming behind the max res.
             }
             else
             {
                 // estimate the pyramids that we need.
                 // when using unreferenced images m11 or m22 can be negative resulting on inf logarithm.
                 // so the Math.abs
-                _overview = (int)Math.Min(Math.Log(Math.Abs(1 / m11), 2), Math.Log(Math.Abs(1 / m22), 2));
+                overview = (int)Math.Min(Math.Log(Math.Abs(1 / m11), 2), Math.Log(Math.Abs(1 / m22), 2));
 
                 // limit it to the available pyramids
-                _overview = Math.Min(_overview, _overviewCount - 1);
+                overview = Math.Min(overview, _overviewCount - 1);
 
                 // additional test but probably not needed
-                if (_overview < 0)
+                if (overview < 0)
                 {
-                    _overview = -1;
+                    overview = -1;
                 }
             }
 
-            var overviewPow = Math.Pow(2, _overview + 1);
+            var overviewPow = Math.Pow(2, overview + 1);
             m11 *= (float)overviewPow;
             m12 *= (float)overviewPow;
             m21 *= (float)overviewPow;
@@ -364,11 +364,11 @@ namespace DotSpatial.Data.Rasters.GdalExtension
 
             int blockXsize = 0, blockYsize = 0;
 
-            if (_overview >= 0 && _overviewCount > 0)
+            if (overview >= 0 && _overviewCount > 0)
             {
-                using (var overview = _band.GetOverview(_overview))
+                using (var overviewBand = _band.GetOverview(overview))
                 {
-                    overview.ComputeBlockSize(out blockXsize, out blockYsize);
+                    overviewBand.ComputeBlockSize(out blockXsize, out blockYsize);
                 }
             }
             else
@@ -419,6 +419,59 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                 nbY = (int)Math.Ceiling(h / blockYsize);
             }
             int redundancy = (int)Math.Ceiling(Math.Abs(1 / Math.Min(m11, m22)));
+
+            Func<int, int, int, int, Bitmap> getBitmapFunc = null;
+            Band rBand = null, gBand = null, bBand = null, aBand = null;
+            switch (_colorInterp)
+            {
+                case ColorInterp.GCI_PaletteIndex:
+                    rBand = overview > 0 ? _band.GetOverview(overview) : _band;
+                    getBitmapFunc = (xOffset, yOffset, xSize, ySize) => rBand.GetPaletteBitmap(xOffset, yOffset, xSize, ySize, NoDataValue);
+                    break;
+                case ColorInterp.GCI_GrayIndex:
+                    rBand = overview > 0 ? _band.GetOverview(overview) : _band;
+                    getBitmapFunc = (xOffset, yOffset, xSize, ySize) => rBand.GetGrayBitmap(xOffset, yOffset, xSize, ySize, NoDataValue);
+                    break;
+                default:
+                    switch (NumBands)
+                    {
+                        case 0:
+                            break;
+                        case 1:
+                        case 2:
+                            rBand = overview > 0 ? _band.GetOverview(overview) : _band;
+                            getBitmapFunc = (xOffset, yOffset, xSize, ySize) => rBand.GetGrayBitmap(xOffset, yOffset, xSize, ySize, NoDataValue);
+                            break;
+                        case 3:
+                            rBand = overview > 0 ? (Bands[0] as GdalRaster<T>)._band.GetOverview(overview) : (Bands[0] as GdalRaster<T>)._band;
+                            gBand = overview > 0 ? (Bands[1] as GdalRaster<T>)._band.GetOverview(overview) : (Bands[1] as GdalRaster<T>)._band;
+                            bBand = overview > 0 ? (Bands[2] as GdalRaster<T>)._band.GetOverview(overview) : (Bands[2] as GdalRaster<T>)._band;
+                            getBitmapFunc = (xOffset, yOffset, xSize, ySize) => GdalExtensions.GetRgbBitmap(rBand, gBand, bBand, xOffset, yOffset, xSize, ySize, NoDataValue);
+                            break;
+                        default:
+                            switch (_colorInterp)
+                            {
+                                case ColorInterp.GCI_RedBand:
+                                    rBand = overview > 0 ? (Bands[0] as GdalRaster<T>)._band.GetOverview(overview) : (Bands[0] as GdalRaster<T>)._band;
+                                    gBand = overview > 0 ? (Bands[1] as GdalRaster<T>)._band.GetOverview(overview) : (Bands[1] as GdalRaster<T>)._band;
+                                    bBand = overview > 0 ? (Bands[2] as GdalRaster<T>)._band.GetOverview(overview) : (Bands[2] as GdalRaster<T>)._band;
+                                    aBand = overview > 0 ? (Bands[3] as GdalRaster<T>)._band.GetOverview(overview) : (Bands[3] as GdalRaster<T>)._band;
+                                    getBitmapFunc = (xOffset, yOffset, xSize, ySize) => GdalExtensions.GetRgbaBitmap(rBand, gBand, bBand, aBand, xOffset, yOffset, xSize, ySize, NoDataValue);
+                                    break;
+                                case ColorInterp.GCI_AlphaBand:
+                                    aBand = overview > 0 ? (Bands[0] as GdalRaster<T>)._band.GetOverview(overview) : (Bands[0] as GdalRaster<T>)._band;
+                                    rBand = overview > 0 ? (Bands[1] as GdalRaster<T>)._band.GetOverview(overview) : (Bands[1] as GdalRaster<T>)._band;
+                                    gBand = overview > 0 ? (Bands[2] as GdalRaster<T>)._band.GetOverview(overview) : (Bands[2] as GdalRaster<T>)._band;
+                                    bBand = overview > 0 ? (Bands[3] as GdalRaster<T>)._band.GetOverview(overview) : (Bands[3] as GdalRaster<T>)._band;
+                                    getBitmapFunc = (xOffset, yOffset, xSize, ySize) => GdalExtensions.GetRgbaBitmap(rBand, gBand, bBand, aBand, xOffset, yOffset, xSize, ySize, NoDataValue);
+                                    break;
+                            }
+                            break;
+                    }
+                    break;
+            }
+
+            // ªÊ÷∆Õº∆¨
             for (var i = 0; i < nbX; i++)
             {
                 for (var j = 0; j < nbY; j++)
@@ -432,7 +485,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                     int ySize = blockYsize + redundancy;
                     try
                     {
-                        using (var bitmap = GetBitmap(xOffsetI, yOffsetI, xSize, ySize))
+                        using (var bitmap = getBitmapFunc(xOffsetI, yOffsetI, xSize, ySize))
                         {
                             if (bitmap != null)
                             {
@@ -446,259 +499,16 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                     }
                 }
             }
+
+            if (overview > 0)
+            {
+                rBand?.Dispose();
+                gBand?.Dispose();
+                bBand?.Dispose();
+                aBand?.Dispose();
+            }
         }
 
-
-        private Bitmap ReadRgb(int xOffset, int yOffset, int xSize, int ySize)
-        {
-            if (Bands.Count < 3)
-            {
-                throw new GdalException("RGB Format was indicated but there are only " + Bands.Count + " bands!");
-            }
-            Band rBand;
-            Band gBand;
-            Band bBand;
-            var disposeBand = false;
-            if (_overview >= 0 && _overviewCount > 0)
-            {
-                rBand = (Bands[0] as GdalRaster<T>)._band.GetOverview(_overview);
-                gBand = (Bands[1] as GdalRaster<T>)._band.GetOverview(_overview);
-                bBand = (Bands[2] as GdalRaster<T>)._band.GetOverview(_overview);
-                disposeBand = true;
-            }
-            else
-            {
-                rBand = (Bands[0] as GdalRaster<T>)._band;
-                gBand = (Bands[1] as GdalRaster<T>)._band;
-                bBand = (Bands[2] as GdalRaster<T>)._band;
-            }
-
-            GdalExtensions.NormalizeSizeToBand(rBand.XSize, rBand.YSize, xOffset, yOffset, xSize, ySize, out int width, out int height);
-            byte[] rBuffer = rBand.ReadBand(xOffset, yOffset, width, height, width, height);
-            byte[] gBuffer = gBand.ReadBand(xOffset, yOffset, width, height, width, height);
-            byte[] bBuffer = bBand.ReadBand(xOffset, yOffset, width, height, width, height);
-            if (disposeBand)
-            {
-                rBand.Dispose();
-                gBand.Dispose();
-                bBand.Dispose();
-            }
-            Bitmap result = GdalExtensions.GetBitmap(width, height, rBuffer, gBuffer, bBuffer, noDataValue: NoDataValue);
-            return result;
-        }
-
-        private Bitmap ReadArgb(int xOffset, int yOffset, int xSize, int ySize)
-        {
-            if (Bands.Count < 4)
-            {
-                throw new GdalException("ARGB Format was indicated but there are only " + Bands.Count + " bands!");
-            }
-            Band aBand;
-            Band rBand;
-            Band gBand;
-            Band bBand;
-            var disposeBand = false;
-            if (_overview >= 0 && _overviewCount > 0)
-            {
-                aBand = (Bands[0] as GdalRaster<T>)._band.GetOverview(_overview);
-                rBand = (Bands[1] as GdalRaster<T>)._band.GetOverview(_overview);
-                gBand = (Bands[2] as GdalRaster<T>)._band.GetOverview(_overview);
-                bBand = (Bands[3] as GdalRaster<T>)._band.GetOverview(_overview);
-                disposeBand = true;
-            }
-            else
-            {
-                aBand = (Bands[0] as GdalRaster<T>)._band;
-                rBand = (Bands[1] as GdalRaster<T>)._band;
-                gBand = (Bands[2] as GdalRaster<T>)._band;
-                bBand = (Bands[3] as GdalRaster<T>)._band;
-            }
-
-            GdalExtensions.NormalizeSizeToBand(rBand.XSize, rBand.YSize, xOffset, yOffset, xSize, ySize, out int width, out int height);
-            byte[] aBuffer = aBand.ReadBand(xOffset, yOffset, width, height, width, height);
-            byte[] rBuffer = rBand.ReadBand(xOffset, yOffset, width, height, width, height);
-            byte[] gBuffer = gBand.ReadBand(xOffset, yOffset, width, height, width, height);
-            byte[] bBuffer = bBand.ReadBand(xOffset, yOffset, width, height, width, height);
-            if (disposeBand)
-            {
-                aBand.Dispose();
-                rBand.Dispose();
-                gBand.Dispose();
-                bBand.Dispose();
-            }
-            Bitmap result = GdalExtensions.GetBitmap(width, height, rBuffer, gBuffer, bBuffer, aBuffer, NoDataValue);
-            rBuffer = null;
-            gBuffer = null;
-            bBuffer = null;
-            aBuffer = null;
-            return result;
-        }
-
-        private Bitmap ReadRgba(int xOffset, int yOffset, int xSize, int ySize)
-        {
-            if (Bands.Count < 4)
-            {
-                throw new GdalException("ARGB Format was indicated but there are only " + Bands.Count + " bands!");
-            }
-            Band aBand;
-            Band rBand;
-            Band gBand;
-            Band bBand;
-            var disposeBand = false;
-            if (_overview >= 0 && _overviewCount > 0)
-            {
-                rBand = (Bands[0] as GdalRaster<T>)._band.GetOverview(_overview);
-                gBand = (Bands[1] as GdalRaster<T>)._band.GetOverview(_overview);
-                bBand = (Bands[2] as GdalRaster<T>)._band.GetOverview(_overview);
-                aBand = (Bands[3] as GdalRaster<T>)._band.GetOverview(_overview);
-                disposeBand = true;
-            }
-            else
-            {
-                rBand = (Bands[0] as GdalRaster<T>)._band;
-                gBand = (Bands[1] as GdalRaster<T>)._band;
-                bBand = (Bands[2] as GdalRaster<T>)._band;
-                aBand = (Bands[3] as GdalRaster<T>)._band;
-            }
-
-            GdalExtensions.NormalizeSizeToBand(rBand.XSize, rBand.YSize, xOffset, yOffset, xSize, ySize, out int width, out int height);
-            byte[] aBuffer = aBand.ReadBand(xOffset, yOffset, width, height, width, height);
-            byte[] rBuffer = rBand.ReadBand(xOffset, yOffset, width, height, width, height);
-            byte[] gBuffer = gBand.ReadBand(xOffset, yOffset, width, height, width, height);
-            byte[] bBuffer = bBand.ReadBand(xOffset, yOffset, width, height, width, height);
-            if (disposeBand)
-            {
-                aBand.Dispose();
-                rBand.Dispose();
-                gBand.Dispose();
-                bBand.Dispose();
-            }
-            Bitmap result = GdalExtensions.GetBitmap(width, height, rBuffer, gBuffer, bBuffer, aBuffer, NoDataValue);
-            rBuffer = null;
-            gBuffer = null;
-            bBuffer = null;
-            aBuffer = null;
-            return result;
-        }
-        private Bitmap ReadPaletteBuffered(int xOffset, int yOffset, int xSize, int ySize)
-        {
-            ColorTable ct = _band.GetRasterColorTable();
-            if (ct == null)
-            {
-                throw new GdalException("Image was stored with a palette interpretation but has no color table.");
-            }
-
-            if (ct.GetPaletteInterpretation() != PaletteInterp.GPI_RGB)
-            {
-                throw new GdalException("Only RGB palette interpretation is currently supported by this " + " plug-in, " + ct.GetPaletteInterpretation() + " is not supported.");
-            }
-
-            int count = ct.GetCount();
-            byte[][] colorTable = new byte[ct.GetCount()][];
-            for (int i = 0; i < count; i++)
-            {
-                using (ColorEntry ce = ct.GetColorEntry(i))
-                {
-                    colorTable[i] = new[] { (byte)ce.c4, (byte)ce.c1, (byte)ce.c2, (byte)ce.c3 };
-                }
-            }
-            ct.Dispose();
-
-            Band firstBand;
-            bool disposeBand = false;
-            if (_overview >= 0 && _overviewCount > 0)
-            {
-                firstBand = _band.GetOverview(_overview);
-                disposeBand = true;
-            }
-            else
-            {
-                firstBand = _band;
-            }
-            GdalExtensions.NormalizeSizeToBand(firstBand.XSize, firstBand.YSize, xOffset, yOffset, xSize, ySize, out int width, out int height);
-            byte[] indexBuffer = firstBand.ReadBand(xOffset, yOffset, width, height, width, height);
-            if (disposeBand)
-            {
-                firstBand.Dispose();
-            }
-            byte[] rBuffer = new byte[indexBuffer.Length];
-            byte[] gBuffer = new byte[indexBuffer.Length];
-            byte[] bBuffer = new byte[indexBuffer.Length];
-            byte[] aBuffer = new byte[indexBuffer.Length];
-            for (int i = 0; i < indexBuffer.Length; i++)
-            {
-                int index = indexBuffer[i];
-                aBuffer[i] = colorTable[index][0];
-                rBuffer[i] = colorTable[index][1];
-                gBuffer[i] = colorTable[index][2];
-                bBuffer[i] = colorTable[index][3];
-            }
-            Bitmap result = GdalExtensions.GetBitmap(width, height, rBuffer, gBuffer, gBuffer, aBuffer, NoDataValue);
-            rBuffer = null;
-            gBuffer = null;
-            bBuffer = null;
-            aBuffer = null;
-            return result;
-        }
-        /// <summary>
-        /// Gets a block of data directly, converted into a bitmap.  This always writes
-        /// to the base layer, not the overviews.
-        /// </summary>
-        /// <param name="xOffset">The zero based integer column offset from the left</param>
-        /// <param name="yOffset">The zero based integer row offset from the top</param>
-        /// <param name="xSize">The integer number of pixel columns in the block. </param>
-        /// <param name="ySize">The integer number of pixel rows in the block.</param>
-        /// <returns>A Bitmap that is xSize, ySize.</returns>
-        private Bitmap GetBitmap(int xOffset, int yOffset, int xSize, int ySize)
-        {
-            Bitmap result = null;
-            Action action = new Action(() =>
-            {
-                switch (NumBands)
-                {
-                    case 0:
-                        break;
-                    case 1:
-                    case 2:
-                        result = _band.ReadGrayIndex(xOffset, yOffset, xSize, ySize, _overview, _overviewCount, NoDataValue);
-                        break;
-                    case 3:
-                        result = ReadRgb(xOffset, yOffset, xSize, ySize);
-                        break;
-                    default:
-                        switch (_colorInterp)
-                        {
-                            case ColorInterp.GCI_RedBand:
-                                result = ReadRgba(xOffset, yOffset, xSize, ySize);
-                                break;
-                            case ColorInterp.GCI_AlphaBand:
-                                result = ReadArgb(xOffset, yOffset, xSize, ySize);
-                                break;
-                        }
-                        break;
-                }
-            });
-            switch (_colorInterp)
-            {
-                case ColorInterp.GCI_PaletteIndex:
-                    result = ReadPaletteBuffered(xOffset, yOffset, xSize, ySize);
-                    break;
-                case ColorInterp.GCI_GrayIndex:
-                    result = _band.ReadGrayIndex(xOffset, yOffset, xSize, ySize, _overview, _overviewCount, NoDataValue);
-                    break;
-                case ColorInterp.GCI_RedBand:
-                    action.Invoke();
-                    break;
-                case ColorInterp.GCI_AlphaBand:
-                    result = ReadArgb(xOffset, yOffset, xSize, ySize);
-                    break;
-                default:
-                    action.Invoke();
-                    break;
-            }
-            // data set disposed on disposing this image
-            return result;
-        }
         /// <summary>
         /// Gets the category colors.
         /// </summary>

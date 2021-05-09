@@ -400,30 +400,16 @@ namespace DotSpatial.Data.Rasters.GdalExtension
             return result;
         }
 
-        public static Bitmap ReadGrayIndex(this Band band, int xOffset, int yOffset, int xSize, int ySize, int overview, int overviewCount, double noDataValue)
-        {
-            Band firstBand;
-            var disposeBand = false;
-            if (overview >= 0 && overviewCount > 0)
-            {
-                firstBand = band.GetOverview(overview);
-                disposeBand = true;
-            }
-            else
-            {
-                firstBand = band;
-            }
-            NormalizeSizeToBand(firstBand.XSize, firstBand.YSize, xOffset, yOffset, xSize, ySize, out int width, out int height);
-            byte[] rBuffer = firstBand.ReadBand(xOffset, yOffset, width, height, width, height);
-            if (disposeBand)
-            {
-                firstBand.Dispose();
-            }
-            Bitmap result = GetBitmap(width, height, rBuffer, rBuffer, rBuffer, noDataValue: noDataValue);
-            rBuffer = null;
-            return result;
-        }
-
+        /// <summary>
+        /// 获取灰度图
+        /// </summary>
+        /// <param name="band"></param>
+        /// <param name="xOffset"></param>
+        /// <param name="yOffset"></param>
+        /// <param name="xSize"></param>
+        /// <param name="ySize"></param>
+        /// <param name="noDataValue"></param>
+        /// <returns></returns>
         public static Bitmap GetGrayBitmap(this Band band, int xOffset, int yOffset, int xSize, int ySize, double noDataValue)
         {
             Bitmap result = null;
@@ -435,20 +421,19 @@ namespace DotSpatial.Data.Rasters.GdalExtension
             }
             return result;
         }
-        public static Bitmap GetArgbBitmap(Band aBand, Band rBand, Band gBand, Band bBand, int xOffset, int yOffset, int xSize, int ySize, double noDataValue)
-        {
-            Bitmap result = null;
-            if (aBand != null && rBand != null && gBand != null && bBand != null)
-            {
-                NormalizeSizeToBand(rBand.XSize, rBand.YSize, xOffset, yOffset, xSize, ySize, out int width, out int height);
-                byte[] aBuffer = aBand.ReadBand(xOffset, yOffset, width, height, width, height);
-                byte[] rBuffer = rBand.ReadBand(xOffset, yOffset, width, height, width, height);
-                byte[] gBuffer = gBand.ReadBand(xOffset, yOffset, width, height, width, height);
-                byte[] bBuffer = bBand.ReadBand(xOffset, yOffset, width, height, width, height);
-                result = GetBitmap(width, height, rBuffer, gBuffer, bBuffer, aBuffer, noDataValue);
-            }
-            return result;
-        }
+
+        /// <summary>
+        /// 获取彩色图
+        /// </summary>
+        /// <param name="rBand"></param>
+        /// <param name="gBand"></param>
+        /// <param name="bBand"></param>
+        /// <param name="xOffset"></param>
+        /// <param name="yOffset"></param>
+        /// <param name="xSize"></param>
+        /// <param name="ySize"></param>
+        /// <param name="noDataValue"></param>
+        /// <returns></returns>
         public static Bitmap GetRgbBitmap(Band rBand, Band gBand, Band bBand, int xOffset, int yOffset, int xSize, int ySize, double noDataValue)
         {
             Bitmap result = null;
@@ -460,6 +445,91 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                 byte[] bBuffer = bBand.ReadBand(xOffset, yOffset, width, height, width, height);
                 result = GetBitmap(width, height, rBuffer, gBuffer, bBuffer, noDataValue: noDataValue);
             }
+            return result;
+        }
+
+        /// <summary>
+        /// 获取透明的彩色图
+        /// </summary>
+        /// <param name="rBand"></param>
+        /// <param name="gBand"></param>
+        /// <param name="bBand"></param>
+        /// <param name="aBand"></param>
+        /// <param name="xOffset"></param>
+        /// <param name="yOffset"></param>
+        /// <param name="xSize"></param>
+        /// <param name="ySize"></param>
+        /// <param name="noDataValue"></param>
+        /// <returns></returns>
+        public static Bitmap GetRgbaBitmap(Band rBand, Band gBand, Band bBand, Band aBand, int xOffset, int yOffset, int xSize, int ySize, double noDataValue)
+        {
+            Bitmap result = null;
+            if (rBand != null && gBand != null && bBand != null && aBand != null)
+            {
+                NormalizeSizeToBand(rBand.XSize, rBand.YSize, xOffset, yOffset, xSize, ySize, out int width, out int height);
+                byte[] rBuffer = rBand.ReadBand(xOffset, yOffset, width, height, width, height);
+                byte[] gBuffer = gBand.ReadBand(xOffset, yOffset, width, height, width, height);
+                byte[] bBuffer = bBand.ReadBand(xOffset, yOffset, width, height, width, height);
+                byte[] aBuffer = aBand.ReadBand(xOffset, yOffset, width, height, width, height);
+                result = GetBitmap(width, height, rBuffer, gBuffer, bBuffer, aBuffer, noDataValue);
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 获取调色板图
+        /// </summary>
+        /// <param name="band"></param>
+        /// <param name="xOffset"></param>
+        /// <param name="yOffset"></param>
+        /// <param name="xSize"></param>
+        /// <param name="ySize"></param>
+        /// <param name="noDataValue"></param>
+        /// <returns></returns>
+        public static Bitmap GetPaletteBitmap(this Band band, int xOffset, int yOffset, int xSize, int ySize, double noDataValue)
+        {
+            Bitmap result = null;
+            if (band == null)
+            {
+                return result;
+            }
+            ColorTable ct = band.GetRasterColorTable();
+            if (ct == null)
+            {
+                throw new GdalException("Image was stored with a palette interpretation but has no color table.");
+            }
+
+            if (ct.GetPaletteInterpretation() != PaletteInterp.GPI_RGB)
+            {
+                throw new GdalException("Only RGB palette interpretation is currently supported by this " + " plug-in, " + ct.GetPaletteInterpretation() + " is not supported.");
+            }
+
+            int count = ct.GetCount();
+            byte[][] colorTable = new byte[ct.GetCount()][];
+            for (int i = 0; i < count; i++)
+            {
+                using (ColorEntry ce = ct.GetColorEntry(i))
+                {
+                    colorTable[i] = new[] { (byte)ce.c4, (byte)ce.c1, (byte)ce.c2, (byte)ce.c3 };
+                }
+            }
+            ct.Dispose();
+
+            NormalizeSizeToBand(band.XSize, band.YSize, xOffset, yOffset, xSize, ySize, out int width, out int height);
+            byte[] indexBuffer = band.ReadBand(xOffset, yOffset, width, height, width, height);
+            byte[] rBuffer = new byte[indexBuffer.Length];
+            byte[] gBuffer = new byte[indexBuffer.Length];
+            byte[] bBuffer = new byte[indexBuffer.Length];
+            byte[] aBuffer = new byte[indexBuffer.Length];
+            for (int i = 0; i < indexBuffer.Length; i++)
+            {
+                int index = indexBuffer[i];
+                aBuffer[i] = colorTable[index][0];
+                rBuffer[i] = colorTable[index][1];
+                gBuffer[i] = colorTable[index][2];
+                bBuffer[i] = colorTable[index][3];
+            }
+            result = GetBitmap(width, height, rBuffer, gBuffer, gBuffer, aBuffer, noDataValue);
             return result;
         }
         public static Dataset ToMemDataset(this Image image, string memPath = "/vsimem/inmemfile")
@@ -680,7 +750,6 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                 }
             }
         }
-
 
         private static unsafe void BufferToScan0(BitmapData bData, int width, int height, int bytesPerPixel, byte[] bmpBuffer)
         {
