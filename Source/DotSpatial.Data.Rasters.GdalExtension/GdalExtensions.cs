@@ -435,6 +435,33 @@ namespace DotSpatial.Data.Rasters.GdalExtension
             }
             return result;
         }
+        public static Bitmap GetArgbBitmap(Band aBand, Band rBand, Band gBand, Band bBand, int xOffset, int yOffset, int xSize, int ySize, double noDataValue)
+        {
+            Bitmap result = null;
+            if (aBand != null && rBand != null && gBand != null && bBand != null)
+            {
+                NormalizeSizeToBand(rBand.XSize, rBand.YSize, xOffset, yOffset, xSize, ySize, out int width, out int height);
+                byte[] aBuffer = aBand.ReadBand(xOffset, yOffset, width, height, width, height);
+                byte[] rBuffer = rBand.ReadBand(xOffset, yOffset, width, height, width, height);
+                byte[] gBuffer = gBand.ReadBand(xOffset, yOffset, width, height, width, height);
+                byte[] bBuffer = bBand.ReadBand(xOffset, yOffset, width, height, width, height);
+                result = GetBitmap(width, height, rBuffer, gBuffer, bBuffer, aBuffer, noDataValue);
+            }
+            return result;
+        }
+        public static Bitmap GetRgbBitmap(Band rBand, Band gBand, Band bBand, int xOffset, int yOffset, int xSize, int ySize, double noDataValue)
+        {
+            Bitmap result = null;
+            if (rBand != null && gBand != null && bBand != null)
+            {
+                NormalizeSizeToBand(rBand.XSize, rBand.YSize, xOffset, yOffset, xSize, ySize, out int width, out int height);
+                byte[] rBuffer = rBand.ReadBand(xOffset, yOffset, width, height, width, height);
+                byte[] gBuffer = gBand.ReadBand(xOffset, yOffset, width, height, width, height);
+                byte[] bBuffer = bBand.ReadBand(xOffset, yOffset, width, height, width, height);
+                result = GetBitmap(width, height, rBuffer, gBuffer, bBuffer, noDataValue: noDataValue);
+            }
+            return result;
+        }
         public static Dataset ToMemDataset(this Image image, string memPath = "/vsimem/inmemfile")
         {
             Dataset dataset = null;
