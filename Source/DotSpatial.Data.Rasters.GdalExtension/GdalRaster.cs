@@ -8,9 +8,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Drawing.Imaging;
 using System.IO;
-using System.Linq;
 using System.Runtime.InteropServices;
 
 namespace DotSpatial.Data.Rasters.GdalExtension
@@ -23,12 +21,12 @@ namespace DotSpatial.Data.Rasters.GdalExtension
         where T : IEquatable<T>, IComparable<T>
     {
         #region Fields
-
         private readonly Band _band;
         private readonly Dataset _dataset;
         private int _overviewCount;
         private ColorInterp _colorInterp;
         private int _overview;
+        private ImageBuffer _imageBuffer;
         #endregion
 
         #region Constructors
@@ -230,7 +228,6 @@ namespace DotSpatial.Data.Rasters.GdalExtension
         #endregion
 
         #region Methods
-
         /// <summary>
         /// This needs to return the actual image and override the base
         /// behavior that handles the internal variables only.
@@ -245,21 +242,31 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                 return null;
             }
 
-            var result = new Bitmap(window.Width, window.Height);
-            using (var g = Graphics.FromImage(result))
+            if (_imageBuffer == null)
             {
-                try
+                _imageBuffer = new ImageBuffer();
+            }
+            if (_imageBuffer.Bitmap == null || !envelope.Equals(_imageBuffer.Extent) || !window.Equals(_imageBuffer.Rectangle)) // 相同范围的直接使用缓存图片
+            {
+                _imageBuffer.Bitmap = new Bitmap(window.Width, window.Height);
+                _imageBuffer.Extent = envelope;
+                _imageBuffer.Rectangle = window;
+                using (var g = Graphics.FromImage(_imageBuffer.Bitmap))
                 {
-                    DrawGraphics(g, envelope, window);
-                }
-                catch (Exception e)
-                {
-                    Trace.WriteLine(e);
+                    try
+                    {
+                        DrawGraphics(g, envelope, window);
+                    }
+                    catch (Exception e)
+                    {
+                        Trace.WriteLine(e);
+                    }
                 }
             }
-
+            Bitmap result = _imageBuffer.Bitmap.Copy();
             return result;
         }
+
         private void DrawGraphics(Graphics g, Extent envelope, Rectangle window)
         {
             // Gets the scaling factor for converting from geographic to pixel coordinates
@@ -1020,6 +1027,11 @@ namespace DotSpatial.Data.Rasters.GdalExtension
         {
             if (disposeManagedResources)
             {
+                if (_imageBuffer?.Bitmap != null)
+                {
+                    _imageBuffer.Bitmap.Dispose();
+                    _imageBuffer = null;
+                }
                 _band?.Dispose();
                 _dataset?.Dispose();
             }
@@ -1171,5 +1183,6 @@ namespace DotSpatial.Data.Rasters.GdalExtension
         }
 
         #endregion
+
     }
 }

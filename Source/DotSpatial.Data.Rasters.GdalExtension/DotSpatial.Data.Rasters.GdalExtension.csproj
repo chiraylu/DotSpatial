@@ -125,6 +125,7 @@
     <Compile Include="GdalRaster.cs" />
     <Compile Include="GdalRasterProvider.cs" />
     <Compile Include="Helpers.cs" />
+    <Compile Include="ImageBuffer.cs" />
     <Compile Include="MapSelfLoadGroup.cs" />
     <Compile Include="MapSelfLoadLineLayer.cs" />
     <Compile Include="MapSelfLoadPointLayer.cs" />
