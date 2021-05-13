@@ -292,9 +292,20 @@ namespace DotSpatial.Plugins.WebMap
                     // Grab the tiles
                     Tiles tiles = TileManager.GetTiles(geogEnv, rectangle, _bw);
                     if (bwProgress?.Invoke(50) == false) return tileImage;
-
+                    PixelFormat pixelFormat = PixelFormat.Format32bppArgb;
+                    if (tiles.Bitmaps.Length > 0)
+                    {
+                        foreach (var bitmap in tiles.Bitmaps)
+                        {
+                            if (bitmap != null)
+                            {
+                                pixelFormat = bitmap.PixelFormat;
+                                break;
+                            }
+                        }
+                    }
                     // Stitch them into a single image
-                    var stitchedBasemap = TileCalculator.StitchTiles(tiles.Bitmaps, _opacity);
+                    var stitchedBasemap = TileCalculator.StitchTiles(tiles.Bitmaps, _opacity, pixelFormat);
                     var bmpExtent = new Extent(tiles.TopLeftTile.MinX, tiles.BottomRightTile.MinY, tiles.BottomRightTile.MaxX, tiles.TopLeftTile.MaxY);
                     int width = stitchedBasemap.Width;
                     int height = stitchedBasemap.Height;
@@ -306,10 +317,6 @@ namespace DotSpatial.Plugins.WebMap
                             bmpExtent = tileExtent.Reproject(ServiceProviderFactory.Wgs84Proj.Value, ServiceProviderFactory.WebMercProj.Value);
                         }
 
-                        //tileImage = new GdalImage(stitchedBasemap, TileManager.ServiceProvider.Projection, bmpExtent)
-                        //{
-                        //    Name = WebMapName
-                        //};
                         tileImage = new InRamImageData(stitchedBasemap)
                         {
                             Name = WebMapName,
@@ -329,10 +336,6 @@ namespace DotSpatial.Plugins.WebMap
                         {
                             bmpExtent = tileExtent.Reproject(ServiceProviderFactory.Wgs84Proj.Value, ServiceProviderFactory.WebMercProj.Value);
                         }
-                        //tileImage = new GdalImage(stitchedBasemap, TileManager.ServiceProvider.Projection, bmpExtent)
-                        //{
-                        //    Name = WebMapName
-                        //};
                         tileImage = new InRamImageData(stitchedBasemap)
                         {
                             Name = WebMapName,
@@ -468,7 +471,7 @@ namespace DotSpatial.Plugins.WebMap
                         ColorMatrix matrix = new ColorMatrix
                         {
                             Matrix33 = Symbolizer.Opacity // draws the image not completely opaque
-                        }; 
+                        };
                         using (var attributes = new ImageAttributes())
                         {
                             attributes.SetColorMatrix(matrix, ColorMatrixFlag.Default, ColorAdjustType.Bitmap);

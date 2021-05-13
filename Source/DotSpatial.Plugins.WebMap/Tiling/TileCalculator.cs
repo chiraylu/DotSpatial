@@ -267,14 +267,15 @@ namespace DotSpatial.Plugins.WebMap.Tiling
         /// </summary>
         /// <param name="tiles">2-dimensional array of tiles, [x by y]</param>
         /// <param name="opacity">Opacity of final image</param>
+        /// <param name="pixelFormat">pixelFormat</param>
         /// <returns>Bitmap of the tiles stitched together</returns>
-        public static Bitmap StitchTiles(Bitmap[,] tiles, short opacity)
+        public static Bitmap StitchTiles(Bitmap[,] tiles, short opacity, PixelFormat pixelFormat)
         {
             var width = tiles.GetLength(0) * 256;
             var height = tiles.GetLength(1) * 256;
 
             // create a bitmap to hold the combined image
-            var finalImage = new Bitmap(width, height);
+            var finalImage = new Bitmap(width, height, pixelFormat);
 
             // get a graphics object from the image so we can draw on it
             using (var g = Graphics.FromImage(finalImage))
