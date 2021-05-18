@@ -1143,7 +1143,11 @@ namespace DotSpatial.Controls
                 case FeatureType.Line:
                     drawFeature = (f, category, selected) =>
                     {
-                        var symbolizer = FeatureLayer.GetCategory(f).Symbolizer as ILineSymbolizer;
+                        var symbolizer = FeatureLayer.GetCategory(f)?.Symbolizer as ILineSymbolizer;
+                        if (symbolizer == null)
+                        {
+                            return;
+                        }
                         DrawLineFeature(e, g, f, category, selected, ExistingLabels, symbolizer);
                     };
                     break;
@@ -1151,7 +1155,11 @@ namespace DotSpatial.Controls
                 case FeatureType.MultiPoint:
                     drawFeature = (f, category, selected) =>
                     {
-                        var symbolizer = FeatureLayer.GetCategory(f).Symbolizer as IPointSymbolizer;
+                        var symbolizer = FeatureLayer.GetCategory(f)?.Symbolizer as IPointSymbolizer;
+                        if (symbolizer == null)
+                        {
+                            return;
+                        }
                         DrawPointFeature(e, g, f, category, selected, ExistingLabels, symbolizer);
                     };
                     break;
