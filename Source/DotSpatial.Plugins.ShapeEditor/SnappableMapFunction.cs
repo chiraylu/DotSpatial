@@ -350,6 +350,7 @@ namespace DotSpatial.Plugins.ShapeEditor
             {
                 int left, top, width, height;
                 Rectangle rectangle;
+                SnapPen.Color = Color.Red;
                 switch (SnapInfo.SnapMode)
                 {
                     case SnapMode.Point:
@@ -365,9 +366,9 @@ namespace DotSpatial.Plugins.ShapeEditor
                         e.Graphics.DrawLine(SnapPen, _mousePosition.X, rectangle.Top, _mousePosition.X, rectangle.Bottom);
                         break;
                     case SnapMode.Edege:
-                        left = _mousePosition.X - 4;
-                        top = _mousePosition.Y - 4;
-                        width = 4 * 2;
+                        left = _mousePosition.X - 8;
+                        top = _mousePosition.Y - 8;
+                        width = 8 * 2;
                         height = width;
                         rectangle = new Rectangle(left, top, width, height);
                         e.Graphics.DrawRectangle(SnapPen, rectangle);
