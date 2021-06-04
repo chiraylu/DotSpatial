@@ -2,6 +2,7 @@
 using BruTile.Web;
 using BruTile.Wmts;
 using BruTile.Wmts.Generated;
+using DotSpatial.Plugins.WebMap.Tiling;
 using DotSpatial.Projections;
 using GeoAPI.Geometries;
 using System;
@@ -86,6 +87,7 @@ namespace DotSpatial.Plugins.WebMap
             }
             return coordinate;
         }
+
         public static bool GetCoordinate(this string coordStr, out double x, out double y, string splitStr = " ")
         {
             string[] array = coordStr.Split(new string[] { splitStr }, StringSplitOptions.RemoveEmptyEntries);
@@ -176,6 +178,59 @@ namespace DotSpatial.Plugins.WebMap
                 Trace.WriteLine(e);
             }
             return projectionInfo;
+        }
+
+        /// <summary>
+        /// 坐标转行列号
+        /// </summary>
+        /// <param name="coordinate">坐标点</param>
+        /// <param name="level">级别</param>
+        /// <returns>返回行和列信息</returns>
+        public static Tuple<int, int> LatLongToTileXy(Coordinate coordinate, int level)
+        {
+            var ret = TileCalculator.LatLongToTileXy(coordinate, level);
+            return new Tuple<int, int>(ret.X, ret.Y);
+        }
+
+        /// <summary>
+        /// 坐标转像素坐标
+        /// </summary>
+        /// <param name="coordinate">坐标点</param>
+        /// <param name="level">级别</param>
+        /// <returns>返回像素xy坐标信息</returns>
+        public static Tuple<int, int> LatLongToPixelXy(Coordinate coordinate, int level)
+        {
+            var ret = TileCalculator.LatLongToPixelXy(coordinate, level);
+            return new Tuple<int, int>(ret.X, ret.Y);
+        }
+
+        /// <summary>
+        /// 获取行列号左上角像素坐标
+        /// </summary>
+        /// <param name="tileX">瓦片行</param>
+        /// <param name="tileY">瓦片列</param>
+        /// <returns>返回左上角像素坐标</returns>
+        public static Tuple<double, double> TileXyToTopLeftPixelXy(int tileX, int tileY)
+        {
+            var ret = TileCalculator.TileXyToTopLeftPixelXy(tileX, tileY);
+            return new Tuple<double, double>(ret.X, ret.Y);
+        }
+
+        /// <summary>
+        /// 输入行列号及影像级数获取瓦片范围
+        /// </summary>
+        /// <param name="x">行号</param>
+        /// <param name="y">列号</param>
+        /// <param name="zoom">级数</param>
+        /// <returns>返回行列号所对应的地图范围</returns>
+        public static Envelope GetTileEnvelope(int x, int y, int zoom)
+        {
+            var currTopLeftPixXy = TileCalculator.TileXyToTopLeftPixelXy(x, y);
+            var currTopLeftCoord = TileCalculator.PixelXyToLatLong((int)currTopLeftPixXy.X, (int)currTopLeftPixXy.Y, zoom);
+
+            var currBtmRightPixXy = TileCalculator.TileXyToBottomRightPixelXy(x, y);
+            var currBtmRightCoord = TileCalculator.PixelXyToLatLong((int)currBtmRightPixXy.X, (int)currBtmRightPixXy.Y, zoom);
+            return new Envelope(currTopLeftCoord, currBtmRightCoord);
         }
     }
 }
