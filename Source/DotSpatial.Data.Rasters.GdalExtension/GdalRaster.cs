@@ -17,7 +17,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
     /// A GDAL raster.
     /// </summary>
     /// <typeparam name="T">Type of the contained items.</typeparam>
-    public class GdalRaster<T> : Raster<T>
+    public class GdalRaster<T> : Raster<T>, IBufferable
         where T : IEquatable<T>, IComparable<T>
     {
         #region Fields
@@ -25,7 +25,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
         private readonly Dataset _dataset;
         private int _overviewCount;
         private ColorInterp _colorInterp;
-        private ImageBuffer _imageBuffer;
+        public ImageBuffer ImageBuffer { get; set; }
         #endregion
 
         #region Constructors
@@ -241,16 +241,16 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                 return null;
             }
 
-            if (_imageBuffer == null)
+            if (ImageBuffer == null)
             {
-                _imageBuffer = new ImageBuffer();
+                ImageBuffer = new ImageBuffer();
             }
-            if (_imageBuffer.Bitmap == null || !envelope.Equals(_imageBuffer.Extent) || !window.Equals(_imageBuffer.Rectangle)) // 相同范围的直接使用缓存图片
+            if (ImageBuffer.Bitmap == null || !envelope.Equals(ImageBuffer.Extent) || !window.Equals(ImageBuffer.Rectangle)) // 相同范围的直接使用缓存图片
             {
-                _imageBuffer.Bitmap = new Bitmap(window.Width, window.Height);
-                _imageBuffer.Extent = envelope;
-                _imageBuffer.Rectangle = window;
-                using (var g = Graphics.FromImage(_imageBuffer.Bitmap))
+                ImageBuffer.Bitmap = new Bitmap(window.Width, window.Height);
+                ImageBuffer.Extent = envelope;
+                ImageBuffer.Rectangle = window;
+                using (var g = Graphics.FromImage(ImageBuffer.Bitmap))
                 {
                     try
                     {
@@ -262,7 +262,7 @@ namespace DotSpatial.Data.Rasters.GdalExtension
                     }
                 }
             }
-            Bitmap result = _imageBuffer.Bitmap.Copy();
+            Bitmap result = ImageBuffer.Bitmap.Copy();
             return result;
         }
 
@@ -837,10 +837,10 @@ namespace DotSpatial.Data.Rasters.GdalExtension
         {
             if (disposeManagedResources)
             {
-                if (_imageBuffer?.Bitmap != null)
+                if (ImageBuffer?.Bitmap != null)
                 {
-                    _imageBuffer.Bitmap.Dispose();
-                    _imageBuffer = null;
+                    ImageBuffer.Bitmap.Dispose();
+                    ImageBuffer = null;
                 }
                 _band?.Dispose();
                 _dataset?.Dispose();
