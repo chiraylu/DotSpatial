@@ -928,7 +928,7 @@ namespace DotSpatial.Controls
             {
                 device.TranslateTransform(targetRectangle.X, targetRectangle.Y);
 
-                foreach (IMapLayer ml in Layers)
+                foreach (IMapLayer ml in Layers.Where(_ => _.VisibleAtExtent(ViewExtents)))
                 {
                     PrintLayer(ml, args);
                 }
@@ -1413,7 +1413,7 @@ namespace DotSpatial.Controls
             IMapGroup group = layer as IMapGroup;
             if (group != null)
             {
-                foreach (IMapLayer subLayer in group.Layers)
+                foreach (IMapLayer subLayer in group.Layers.Where(_ => _.VisibleAtExtent(ViewExtents)))
                 {
                     PrintLayer(subLayer, args);
                 }
@@ -1425,7 +1425,7 @@ namespace DotSpatial.Controls
                 return; // skip the geoLayer if its no map layer or we are zoomed out too far.
             }
 
-            if (!geoLayer.IsVisible) return;
+            if (!geoLayer.VisibleAtExtent(ViewExtents)) return;
 
             // first draw the normal colors and then the selection colors on top
             for (int i = 0; i < 2; i++)
