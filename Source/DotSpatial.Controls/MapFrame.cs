@@ -775,17 +775,22 @@ namespace DotSpatial.Controls
         public virtual void Initialize()
         {
             if (ClientRectangle.Width == 0 || ClientRectangle.Height == 0) return;
+#if !DEBUG
             try
             {
-                Initialize(new List<Extent>
+#endif
+            Initialize(new List<Extent>
                            {
                                ViewExtents
                            });
+
+#if !DEBUG
             }
             catch (Exception e)
             {
                 Debug.WriteLine(e);
             }
+#endif
         }
 
         /// <inheritdoc />

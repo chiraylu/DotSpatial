@@ -4,6 +4,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Globalization;
@@ -371,21 +372,31 @@ namespace DotSpatial.Symbology
         protected override void OnDraw(Graphics g, double scaleSize)
         {
             // base.OnDraw(g, scaleSize); // handle rotation etc.
-            Brush b = new SolidBrush(_color);
             string txt = new string(new[] { _character });
             float fontPointSize = (float)(Size.Height * scaleSize);
-            Font fnt = new Font(_fontFamilyName, fontPointSize, _style, GraphicsUnit.Pixel);
-            SizeF fSize = g.MeasureString(txt, fnt);
-            float x = -fSize.Width / 2;
-            float y = -fontPointSize / 2;
-            if (fSize.Height > fSize.Width * 5)
+            using (Font fnt = new Font(_fontFamilyName, fontPointSize, _style, GraphicsUnit.Pixel))
             {
-                // Defective fonts sometimes are created with a bad height.
-                // Use the width instead
-                y = -fSize.Width / 2;
+                SizeF fSize = g.MeasureString(txt, fnt);
+                float x = -fSize.Width / 2;
+                float y = -fontPointSize / 2;
+                if (fSize.Height > fSize.Width * 5)
+                {
+                    // Defective fonts sometimes are created with a bad height.
+                    // Use the width instead
+                    y = -fSize.Width / 2;
+                }
+                using (Brush b = new SolidBrush(_color))
+                {
+                    try
+                    {
+                        g.DrawString(txt, fnt, b, x, y);
+                    }
+                    catch (Exception e)
+                    {
+                        Debug.WriteLine($"CharacterSymbol.OnDraw»æÖÆ{txt}Ê±³ö´í£¬{e}");
+                    }
+                }
             }
-            g.DrawString(txt, fnt, b, x, y);
-            b.Dispose();
         }
 
         /// <summary>
