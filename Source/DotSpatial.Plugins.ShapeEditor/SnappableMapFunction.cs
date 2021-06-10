@@ -243,7 +243,7 @@ namespace DotSpatial.Plugins.ShapeEditor
             SnapMode snapMode = SnapMode.None;
             if ((SnapMode & SnapMode.Point) > 0)
             {
-                foreach (IFeatureLayer layer in SnapLayers.Where(_ => _.Snappable && _.IsVisible))
+                foreach (IFeatureLayer layer in SnapLayers.Where(_ => _.Snappable && _.VisibleAtExtent(_.Extent)))
                 {
                     tuple = ComputSnapPointModeFeature(layer, extent);
                     if (tuple != null)
@@ -255,7 +255,7 @@ namespace DotSpatial.Plugins.ShapeEditor
             }
             if ((SnapMode & SnapMode.End) > 0)
             {
-                foreach (IFeatureLayer layer in SnapLayers.Where(_ => _.Snappable && _.IsVisible))
+                foreach (IFeatureLayer layer in SnapLayers.Where(_ => _.Snappable && _.VisibleAtExtent(_.Extent)))
                 {
                     tuple = ComputSnapEndModeFeature(layer, extent);
                     if (tuple != null)
@@ -267,7 +267,7 @@ namespace DotSpatial.Plugins.ShapeEditor
             }
             if ((SnapMode & SnapMode.Vertex) > 0)
             {
-                foreach (IFeatureLayer layer in SnapLayers.Where(_ => _.Snappable && _.IsVisible))
+                foreach (IFeatureLayer layer in SnapLayers.Where(_ => _.Snappable && _.VisibleAtExtent(_.Extent)))
                 {
                     tuple = ComputSnapVertexModeFeature(layer, extent);
                     if (tuple != null)
@@ -279,7 +279,7 @@ namespace DotSpatial.Plugins.ShapeEditor
             }
             if ((SnapMode & SnapMode.Edege) > 0)
             {
-                foreach (IFeatureLayer layer in SnapLayers.Where(_ => _.Snappable && _.IsVisible))
+                foreach (IFeatureLayer layer in SnapLayers.Where(_ => _.Snappable && _.VisibleAtExtent(_.Extent)))
                 {
                     tuple = ComputSnapEdegeModeFeature(layer, extent, e.GeographicLocation);
                     if (tuple != null)
