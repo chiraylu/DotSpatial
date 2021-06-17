@@ -231,12 +231,14 @@ namespace DotSpatial.Controls
         /// <summary>
         /// Zooms to the next extent of the map frame
         /// </summary>
-        void ZoomToNext();
+        /// <param name="wetherResetBuffer">Wether ResetBuffer</param>
+        void ZoomToNext(bool wetherResetBuffer = true);
 
         /// <summary>
         /// Zooms to the previous extent of the map frame
         /// </summary>
-        void ZoomToPrevious();
+        /// <param name="wetherResetBuffer">Wether ResetBuffer</param>
+        void ZoomToPrevious(bool wetherResetBuffer = true);
 
         #endregion
     }

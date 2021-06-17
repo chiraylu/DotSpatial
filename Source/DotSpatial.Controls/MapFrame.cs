@@ -1047,7 +1047,8 @@ namespace DotSpatial.Controls
         /// <summary>
         /// Zooms to the next extent
         /// </summary>
-        public void ZoomToNext()
+        /// <param name="wetherResetBuffer">Wether ResetBuffer</param>
+        public void ZoomToNext(bool wetherResetBuffer = true)
         {
             if (_nextExtents.Count > 0)
             {
@@ -1055,14 +1056,22 @@ namespace DotSpatial.Controls
                 Extent extent = _nextExtents.Pop();
                 _previousExtents.Push(ViewExtents);
                 base.ViewExtents = extent;
-                ResetBuffer();
+                if (wetherResetBuffer)
+                {
+                    ResetBuffer();
+                }
+                else
+                {
+                    _backBuffer = null;
+                }
             }
         }
 
         /// <summary>
         /// Zooms to the previous extent
         /// </summary>
-        public void ZoomToPrevious()
+        /// <param name="wetherResetBuffer">Wether ResetBuffer</param>
+        public void ZoomToPrevious(bool wetherResetBuffer = true)
         {
             if (_previousExtents.Count > 0)
             {
@@ -1070,7 +1079,14 @@ namespace DotSpatial.Controls
                 Extent extent = _previousExtents.Pop();
                 _nextExtents.Push(ViewExtents);
                 base.ViewExtents = extent;
-                ResetBuffer();
+                if (wetherResetBuffer)
+                {
+                    ResetBuffer();
+                }
+                else
+                {
+                    _backBuffer = null;
+                }
             }
         }
 
