@@ -528,8 +528,6 @@ namespace DotSpatial.Symbology
             _drawnStatesNeeded = true;
             var selectedIndices = Selection.ToFeatureList().Select(x => x.Fid);
             _drawnStates = new FastDrawnState[DataSet.ShapeIndices.Count];
-            Selection.Changed -= SelectedFeaturesChanged;
-            Selection = new IndexSelection(this); // update the new drawn-states;
 
             // Fastest when no categories are used because we don't need DataTable at all
             List<IFeatureCategory> categories = _scheme.GetCategories().ToList();
@@ -545,9 +543,11 @@ namespace DotSpatial.Symbology
                 {
                     Category = deflt
                 };
+                if (selectedIndices.Contains(i))
+                {
+                    _drawnStates[i].Selected = true;
+                }
             }
-            (Selection as IndexSelection).AddRange(selectedIndices);
-            Selection.Changed += SelectedFeaturesChanged;
 
             if (categories.Count == 1 && categories[0].FilterExpression == null)
             {
