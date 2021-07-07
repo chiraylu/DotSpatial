@@ -733,10 +733,10 @@ namespace DotSpatial.Controls
                         potentialParent = _dragTarget.Item.GetValidContainerFor(_dragItem.Item);
                     }
 
-                    if (potentialParent != null)
+                    var container = BoxFromItem(potentialParent);
+                    if (potentialParent != null && container != null)
                     {
                         // update the parent, if the user is trying to move the item up the tree
-                        var container = BoxFromItem(potentialParent);
                         if (loc.X < container.ExpandBox.Right)
                         {
                             potentialParent = container.Item.GetParentItem();
