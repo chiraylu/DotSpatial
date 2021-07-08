@@ -117,7 +117,7 @@ namespace DotSpatial.Data
             Marshal.Copy(bData.Scan0, Values, 0, bData.Height * bData.Stride);
             _myImage.UnlockBits(bData);
         }
-
+        
         /// <summary>
         /// Copies the values from the specified source image.
         /// </summary>
@@ -411,8 +411,21 @@ namespace DotSpatial.Data
         /// </summary>
         private void MemorySetup()
         {
-            NumBands = 4;
-            BytesPerPixel = 4;
+            switch (_myImage?.PixelFormat)
+            {
+                case PixelFormat.Format16bppGrayScale:
+                    NumBands = 1;
+                    BytesPerPixel = 1;
+                    break;
+                case PixelFormat.Format24bppRgb:
+                    NumBands = 3;
+                    BytesPerPixel = 3;
+                    break;
+                default:
+                    NumBands = 4;
+                    BytesPerPixel = 4;
+                    break;
+            }
             CopyBitmapToValues();
         }
     }
