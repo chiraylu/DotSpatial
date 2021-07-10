@@ -290,69 +290,75 @@ namespace DotSpatial.Plugins.WebMap
                     if (bwProgress?.Invoke(40) == false) return tileImage;
 
                     // Grab the tiles
-                    Tiles tiles = TileManager.GetTiles(geogEnv, rectangle, _bw);
-                    if (bwProgress?.Invoke(50) == false) return tileImage;
-                    PixelFormat pixelFormat = PixelFormat.Format32bppArgb;
-                    if (tiles.Bitmaps.Length > 0)
+                    using (Tiles tiles = TileManager.GetTiles(geogEnv, rectangle, _bw))
                     {
-                        foreach (var bitmap in tiles.Bitmaps)
+                        if (bwProgress?.Invoke(50) == false) return tileImage;
+                        PixelFormat pixelFormat = PixelFormat.Format32bppArgb;
+                        if (tiles.Bitmaps.Length > 0)
                         {
-                            if (bitmap != null)
+                            foreach (var bitmap in tiles.Bitmaps)
                             {
-                                pixelFormat = bitmap.PixelFormat;
-                                break;
+                                if (bitmap != null)
+                                {
+                                    pixelFormat = bitmap.PixelFormat;
+                                    break;
+                                }
+                            }
+                        }
+                        // Stitch them into a single image
+                        using (var stitchedBasemap = TileCalculator.StitchTiles(tiles.Bitmaps, _opacity, pixelFormat))
+                        {
+                            var bmpExtent = new Extent(tiles.TopLeftTile.MinX, tiles.BottomRightTile.MinY, tiles.BottomRightTile.MaxX, tiles.TopLeftTile.MaxY);
+                            if (Map.Projection.Equals(ServiceProviderFactory.WebMercProj.Value))
+                            {
+                                if (TileManager.ServiceProvider.Projection?.Equals(ServiceProviderFactory.WebMercProj.Value) == true)
+                                {
+                                    var tileExtent = new Extent(tiles.TopLeftTile.MinX, tiles.BottomRightTile.MinY, tiles.BottomRightTile.MaxX, tiles.TopLeftTile.MaxY);
+                                    bmpExtent = tileExtent.Reproject(ServiceProviderFactory.Wgs84Proj.Value, ServiceProviderFactory.WebMercProj.Value);
+                                }
+                                tileImage = GetInRamImageData(stitchedBasemap, bmpExtent);
+                            }
+                            else if (Map.Projection.Equals(ServiceProviderFactory.Wgs84Proj.Value) == true)
+                            {
+                                var tileExtent = new Extent(tiles.TopLeftTile.MinX, tiles.BottomRightTile.MinY, tiles.BottomRightTile.MaxX, tiles.TopLeftTile.MaxY);
+                                if (TileManager.ServiceProvider.Projection?.Equals(ServiceProviderFactory.WebMercProj.Value) == true)
+                                {
+                                    bmpExtent = tileExtent.Reproject(ServiceProviderFactory.Wgs84Proj.Value, ServiceProviderFactory.WebMercProj.Value);
+                                }
+                                tileImage = GetInRamImageData(stitchedBasemap, bmpExtent);
                             }
                         }
                     }
-                    // Stitch them into a single image
-                    var stitchedBasemap = TileCalculator.StitchTiles(tiles.Bitmaps, _opacity, pixelFormat);
-                    var bmpExtent = new Extent(tiles.TopLeftTile.MinX, tiles.BottomRightTile.MinY, tiles.BottomRightTile.MaxX, tiles.TopLeftTile.MaxY);
-                    int width = stitchedBasemap.Width;
-                    int height = stitchedBasemap.Height;
-                    if (Map.Projection.Equals(ServiceProviderFactory.WebMercProj.Value))
-                    {
-                        if (TileManager.ServiceProvider.Projection?.Equals(ServiceProviderFactory.WebMercProj.Value) == true)
-                        {
-                            var tileExtent = new Extent(tiles.TopLeftTile.MinX, tiles.BottomRightTile.MinY, tiles.BottomRightTile.MaxX, tiles.TopLeftTile.MaxY);
-                            bmpExtent = tileExtent.Reproject(ServiceProviderFactory.Wgs84Proj.Value, ServiceProviderFactory.WebMercProj.Value);
-                        }
-
-                        tileImage = new InRamImageData(stitchedBasemap)
-                        {
-                            Name = WebMapName,
-                            Projection = TileManager.ServiceProvider.Projection,
-                            Bounds = new RasterBounds(height, width, bmpExtent)
-                        };
-                        if (TileManager.ServiceProvider.Projection?.Equals(Map.Projection) == false)
-                        {
-                            tileImage.Reproject(Map.Projection);
-                            tileImage.Projection = Map.Projection;
-                        }
-                    }
-                    else if (Map.Projection.Equals(ServiceProviderFactory.Wgs84Proj.Value) == true)
-                    {
-                        var tileExtent = new Extent(tiles.TopLeftTile.MinX, tiles.BottomRightTile.MinY, tiles.BottomRightTile.MaxX, tiles.TopLeftTile.MaxY);
-                        if (TileManager.ServiceProvider.Projection?.Equals(ServiceProviderFactory.WebMercProj.Value) == true)
-                        {
-                            bmpExtent = tileExtent.Reproject(ServiceProviderFactory.Wgs84Proj.Value, ServiceProviderFactory.WebMercProj.Value);
-                        }
-                        tileImage = new InRamImageData(stitchedBasemap)
-                        {
-                            Name = WebMapName,
-                            Projection = TileManager.ServiceProvider.Projection,
-                            Bounds = new RasterBounds(height, width, bmpExtent)
-                        };
-                        if (TileManager.ServiceProvider.Projection?.Equals(Map.Projection) == false)
-                        {
-                            tileImage.Reproject(Map.Projection);
-                            tileImage.Projection = Map.Projection;
-                        }
-                    }
-                    stitchedBasemap.Dispose();
-                    stitchedBasemap = null;
-                    tiles.Dispose();
 
                     if (bwProgress?.Invoke(90) == false) return tileImage;
+                }
+            }
+            return tileImage;
+        }
+        private InRamImageData GetInRamImageData(Bitmap bitmap, Extent bmpExtent)
+        {
+            InRamImageData tileImage = null;
+            try
+            {
+                tileImage = new InRamImageData(bitmap)
+                {
+                    Name = WebMapName,
+                    Projection = TileManager.ServiceProvider.Projection,
+                    Bounds = new RasterBounds(bitmap.Height, bitmap.Width, bmpExtent)
+                };
+                if (TileManager.ServiceProvider.Projection?.Equals(Map.Projection) == false)
+                {
+                    tileImage.Reproject(Map.Projection);
+                    tileImage.Projection = Map.Projection;
+                }
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e);
+                if (tileImage != null)
+                {
+                    tileImage.Dispose();
+                    tileImage = null;
                 }
             }
             return tileImage;

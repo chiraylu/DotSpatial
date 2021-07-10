@@ -2,6 +2,7 @@
 // Licensed under the MIT license. See License.txt file in the project root for full license information.
 
 using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Drawing.Imaging;
@@ -111,11 +112,20 @@ namespace DotSpatial.Data
         public override void CopyBitmapToValues()
         {
             BitmapData bData = GetLockedBits();
-            Stride = bData.Stride;
-
-            Values = new byte[bData.Height * bData.Stride];
-            Marshal.Copy(bData.Scan0, Values, 0, bData.Height * bData.Stride);
-            _myImage.UnlockBits(bData);
+            try
+            {
+                Stride = bData.Stride;
+                Values = new byte[bData.Height * bData.Stride];
+                Marshal.Copy(bData.Scan0, Values, 0, bData.Height * bData.Stride);
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine(e);
+            }
+            finally
+            {
+                _myImage.UnlockBits(bData);
+            }
         }
 
         /// <summary>
@@ -255,7 +265,10 @@ namespace DotSpatial.Data
                     {
                         lock (_lockObj)
                         {
-                            g.DrawImageUnscaled(_myImage, 0, 0);
+                            if (_myImage != null)
+                            {
+                                g.DrawImageUnscaled(_myImage, 0, 0); 
+                            }
                         }
                     }
                     catch (OverflowException)
@@ -369,6 +382,10 @@ namespace DotSpatial.Data
                     _myImage.Dispose();
                     _myImage = null;
                 }
+                if (Values != null)
+                {
+                    Values = null;
+                }
             }
 
             base.Dispose(disposeManagedResources);
@@ -411,8 +428,21 @@ namespace DotSpatial.Data
         /// </summary>
         private void MemorySetup()
         {
-            NumBands = 4;
-            BytesPerPixel = 4;
+            switch (_myImage?.PixelFormat)
+            {
+                case PixelFormat.Format16bppGrayScale:
+                    NumBands = 1;
+                    BytesPerPixel = 1;
+                    break;
+                case PixelFormat.Format24bppRgb:
+                    NumBands = 3;
+                    BytesPerPixel = 3;
+                    break;
+                default:
+                    NumBands = 4;
+                    BytesPerPixel = 4;
+                    break;
+            }
             CopyBitmapToValues();
         }
     }

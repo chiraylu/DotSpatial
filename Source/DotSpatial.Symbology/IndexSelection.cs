@@ -19,8 +19,8 @@ namespace DotSpatial.Symbology
     {
         #region Fields
 
-        private readonly IFeatureLayer _layer;
-        private readonly List<ShapeRange> _shapes;
+        private IFeatureLayer _layer;
+        private List<ShapeRange> Shapes => _layer?.DataSet?.ShapeIndices;
 
         #endregion
 
@@ -33,7 +33,6 @@ namespace DotSpatial.Symbology
         public IndexSelection(IFeatureLayer layer)
         {
             _layer = layer;
-            _shapes = layer.DataSet.ShapeIndices;
             SelectionMode = SelectionMode.IntersectsExtent;
             SelectionState = true;
         }
@@ -66,7 +65,7 @@ namespace DotSpatial.Symbology
                 {
                     if (drawnStates[shp].Selected == SelectionState)
                     {
-                        ext.ExpandToInclude(_shapes[shp].Extent);
+                        ext.ExpandToInclude(Shapes[shp].Extent);
                     }
                 }
 
@@ -119,12 +118,20 @@ namespace DotSpatial.Symbology
         /// <param name="indices">The indices to add</param>
         public void AddRange(IEnumerable<int> indices)
         {
+            bool isChanged = false;
             foreach (int index in indices)
             {
-                _layer.DrawnStates[index].Selected = SelectionState;
+                if (index >= 0 && _layer.DrawnStates.Length > index && _layer.DrawnStates[index].Selected != SelectionState)
+                {
+                    _layer.DrawnStates[index].Selected = SelectionState;
+                    isChanged = true;
+                }
             }
 
-            OnChanged();
+            if (isChanged)
+            {
+                OnChanged();
+            }
         }
 
         /// <summary>
@@ -488,7 +495,7 @@ namespace DotSpatial.Symbology
                 if (RegionCategory != null && _layer.DrawnStates[shp].Category != RegionCategory) continue;
 
                 bool doAction = false;
-                ShapeRange shape = _shapes[shp];
+                ShapeRange shape = Shapes[shp];
                 Shape numShape = new Shape(shape.FeatureType) { Range = shape };
                 IGeometry numGeometry = numShape.ToGeometry();
                 switch (SelectionMode)

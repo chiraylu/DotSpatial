@@ -275,8 +275,16 @@ namespace DotSpatial.Plugins.WebMap.Tiling
             var height = tiles.GetLength(1) * 256;
 
             // create a bitmap to hold the combined image
-            var finalImage = new Bitmap(width, height, pixelFormat);
-
+            Bitmap finalImage = null;
+            switch (pixelFormat)
+            {
+                case PixelFormat.Format8bppIndexed:
+                    finalImage = new Bitmap(width, height, PixelFormat.Format24bppRgb);
+                    break;
+                default:
+                    finalImage = new Bitmap(width, height, pixelFormat);
+                    break;
+            }
             // get a graphics object from the image so we can draw on it
             using (var g = Graphics.FromImage(finalImage))
             {
