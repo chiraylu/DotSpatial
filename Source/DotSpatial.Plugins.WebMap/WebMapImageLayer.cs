@@ -376,13 +376,15 @@ namespace DotSpatial.Plugins.WebMap
             });
             if (Map != null && TileManager != null)
             {
-                var imageData = GetImageData(Map.ViewExtents, Map.Bounds, bwProgress);
-                if (!_bw.CancellationPending)
+                using (var imageData = GetImageData(Map.ViewExtents, Map.Bounds, bwProgress))
                 {
-                    if (IsVisible)
+                    if (!_bw.CancellationPending)
                     {
-                        Image = imageData;
-                    }
+                        if (IsVisible)
+                        {
+                            Image = imageData;
+                        }
+                    } 
                 }
             }
             // report progress and check for cancel
