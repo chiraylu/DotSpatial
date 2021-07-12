@@ -29,23 +29,6 @@ namespace DotSpatial.Controls
         }
 
         /// <summary>
-        /// Calculates the scale based on the IFeatureSymbolizers ScaleMode.
-        /// </summary>
-        /// <param name="self">The IFeatureSymbolizer.</param>
-        /// <param name="imageRectangleWidth">The Image Width</param>
-        /// <param name="geographicExtentsWidth">Extent Width</param>
-        /// <returns>Returns args.ImageRectangle.Width / args.GeographicExtents.Width if ScaleMode is Geographic, otherwise this returns 1.</returns>
-        public static double GetScale(this IFeatureSymbolizer self, int imageRectangleWidth, double geographicExtentsWidth)
-        {
-            if (self.ScaleMode == ScaleMode.Geographic)
-            {
-                return imageRectangleWidth / geographicExtentsWidth;
-            }
-
-            return 1;
-        }
-
-        /// <summary>
         /// Gets the smoothing mode based on the IFeatureSymbolizer.
         /// </summary>
         /// <param name="self">The IFeatureSymbolizer.</param>
