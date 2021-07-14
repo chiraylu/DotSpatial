@@ -213,6 +213,10 @@ namespace DotSpatial.Plugins.WebMap
 
         private void BwDoWork(object sender, DoWorkEventArgs e)
         {
+            if (IsDisposed)
+            {
+                return;
+            }
             if (sender is BackgroundWorker worker)
             {
                 if (worker.CancellationPending)
@@ -371,24 +375,31 @@ namespace DotSpatial.Plugins.WebMap
         {
             var bwProgress = (Func<int, bool>)(p =>
             {
-                _bw.ReportProgress(p);
-                if (_bw.CancellationPending)
+                bool ret = false;
+                if (_bw != null)
                 {
-                    e.Cancel = true;
-                    return false;
+                    _bw.ReportProgress(p);
+                    if (_bw.CancellationPending)
+                    {
+                        e.Cancel = true;
+                    }
+                    else
+                    {
+                        ret = true;
+                    }
                 }
-
-                return true;
+                return ret;
             });
             if (Map != null && TileManager != null)
             {
                 var imageData = GetImageData(Map.ViewExtents, Map.Bounds, bwProgress);
-                if (!_bw.CancellationPending)
+                if (!_bw.CancellationPending && IsVisible)
                 {
-                    if (IsVisible)
-                    {
-                        Image = imageData;
-                    }
+                    Image = imageData;
+                }
+                else
+                {
+                    imageData?.Dispose();
                 }
             }
             // report progress and check for cancel
@@ -501,6 +512,18 @@ namespace DotSpatial.Plugins.WebMap
             }
             g.Transform = originMatrix;
             if (args.Device == null) g.Dispose();
+        }
+        protected override void Dispose(bool disposeManagedResources)
+        {
+            if (disposeManagedResources)
+            {
+                if (_bw != null)
+                {
+                    _bw.Dispose();
+                    _bw = null;
+                }
+            }
+            base.Dispose(disposeManagedResources);
         }
     }
 }

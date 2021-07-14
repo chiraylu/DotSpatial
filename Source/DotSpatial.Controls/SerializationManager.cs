@@ -424,6 +424,7 @@ namespace DotSpatial.Controls
             // I have tweaked it a little for arrays.
             d.Deserialize(graph, File.ReadAllText(fileName));
 
+            _applicationManager.Map.MapFrame.SuspendEvents();
             ResetMapProjection();
 
             _applicationManager.Map.Invalidate();
@@ -435,6 +436,7 @@ namespace DotSpatial.Controls
                 AssignLayerSymbologies(_applicationManager.Map.MapFrame);
             }
 
+            _applicationManager.Map.MapFrame.ResumeEvents();
             // end temporary fix
         }
 
